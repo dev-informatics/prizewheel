@@ -1,0 +1,32 @@
+<?php
+
+$title = "Affiliate Dashboard";
+$this->headTitle($title);
+?>
+This is the <?php echo $this->escapeHtml($title)?>
+<br/>
+
+<h1>Welcome back, <?php echo ($affiliate->firstName() . " " . $affiliate->lastName())?></h1>
+
+<table>
+	<tr>
+		<td>
+			<h2>Your Prize Wheel Installations</h2>
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th>Page</th>
+						<th>Views</th>
+						<th>Plays</th>
+						<th>Banner Clicks</th>
+						<th>Revenue</th>
+						<th>Installed</th>
+					</tr>
+				</thead>
+			</table>
+		</td>
+	</tr>
+</table>

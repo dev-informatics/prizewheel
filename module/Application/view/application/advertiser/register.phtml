@@ -1,0 +1,12 @@
+<?php
+
+$title = "Register as an Advertiser";
+$this->headTitle($title);
+
+$form = $this->registrationform;
+$form->setAttribute('action', $this->url('advertiser', array('action' => 'register')));
+$form->prepare();
+?>
+<h1><?php echo $this->escapeHtml($title)?></h1>
+
+<?php echo $this->partial('application/partial/registration', array('form' => $form))?>

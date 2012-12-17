@@ -1,0 +1,17 @@
+{
+    "name": "prize-wheel/prize-wheel",
+    "description": "Facebook Prize-Wheel Application",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "facebook",
+        "prizewheel",
+        "prize",
+        "wheel"
+    ],
+    "homepage": "http://fbprizewheel.com",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*",
+        "facebook/php-sdk" : "3.2.*"
+    }
+}

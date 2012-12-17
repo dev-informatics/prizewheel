@@ -1,0 +1,16 @@
+<?php
+
+$title = "Delete Advertisement ".$this->advertisement->name();
+$this->headTitle($title);
+?>
+<h2><?php echo $this->escapeHtml($title)?></h2>
+
+<form action="<?php echo $this->url('advertisement', array('action' => 'delete', 'id' => $this->advertisement->id()))?>" method="post">
+	<p>Do you really want to delete this advertisement? You will lose all your credits associated with this Advertisement.</p>
+	<button type="submit" name="del" value="yes">
+		Yes
+	</button>
+	<button type="submit" name="del" value="no">
+		No
+	</button>
+</form>

@@ -1,0 +1,152 @@
+<?php 
+ /**
+  * This is the Registration Partial
+  * 
+  * @author Michael Andrew Davidson
+  */
+?>
+<fieldset>
+	<?php echo $this->form()->openTag($form)?>
+	<table>
+		<tr>
+			<td>
+				<?php echo $this->formRow($form->get('firstname'))?>
+			</td>
+			<td>
+				<?php echo $this->formRow($form->get('lastname'))?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<hr />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo $this->formRow($form->get('address1'))?>
+			</td>			
+			<td>
+				<?php echo $this->formRow($form->get('address2'))?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo $this->formRow($form->get('city'))?>
+			</td>
+			<td>
+				<?php echo $this->formRow($form->get('state'))?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo $this->formRow($form->get('country'))?>
+			</td>		
+			<td>
+				<?php echo $this->formRow($form->get('postal'))?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<hr/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo $this->formRow($form->get('telephone'))?>
+			</td>
+			<td>
+				<?php echo $this->formRow($form->get('emailaddress'))?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button type="submit" id="register-btn">
+					Register
+				</button>
+			</td>
+		</tr>
+	</table>
+	<?php echo $this->form()->closeTag()?>
+</fieldset>
+<script type="text/javascript">
+	$(document).ready(function(){
+		 $("#<?php echo $form->getName()?>").validate({
+			rules: {
+				firstname : {
+					required : true,
+					maxlength : 100
+				},
+				lastname : {
+					required : true,
+					maxlength : 100
+				},
+				address1 : {
+					required : true,
+					maxlength: 150
+				},
+				address2 : {
+					maxlength : 100
+				},
+				city : {
+					required : true,
+					maxlength : 150
+				},
+				state : {
+					required : true,
+					maxlength : 100
+				},
+				country : {
+					required : true,
+					maxlength : 200
+				},
+				telephone : {
+					required : true,
+					maxlength : 100
+				},
+				emailaddress : {
+					required : true,
+					email : true,
+					maxlength : 255
+				}
+			},
+			messages: {
+				firstname : {
+					required : "You must provide your First Name.",
+					maxlength : "Your First Name cannot be more than 100 characters."
+				},
+				lastname : {
+					required : "You must provide your Last Name.",
+					maxlength : "Your Last Name cannot be more than 100 characters."
+				},
+				address1 : {
+					required : "You must provide your Address1.",
+					maxlength : "Your Address1 cannot be more than 150 characters."
+				},
+				address2 : {
+					maxlength : "Your Address2 cannot be more than 100 characters."
+				},
+				city : {
+					required : "You must provide your City.",
+					maxlength : "Your City cannot be more than 150 characters."
+				},
+				state : {
+					required : "You must provide your State.",
+					maxlength : "Your State cannot be more than 100 characters."
+				},
+				country : {
+					required : "You must provide your Country.",
+					maxlength : "Your Country cannot be more than 200 characters."
+				},
+				telephone : {
+					required : "You must provide your Telephone Number.",
+					maxlength : "Your Telephone Number cannot be more than 100 characters."
+				},
+				emailaddress : {
+					required : "You must provide your E-Mail Address.",
+					email : "You must enter a valid E-Mail Address.",
+					maxlength : "Your Email Address cannot be more than 255 characters."
+				}
+			}
+		 });
+	});
+</script>

@@ -1,0 +1,80 @@
+<?php
+
+$title = "Manage Advertisement";
+$this->headTitle($title);
+$form = $this->manageform;
+$form->setAttribute('action', $this->url('advertisement', array('action' => 'manage')));
+$form->prepare();
+?>
+<h2><?php echo $this->escapeHtml($title)?></h2>
+
+<table>
+	<tr>
+		<td valign="top">
+			<?php echo $this->form()->openTag($form)?>
+			<table>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('name'))?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('description'))?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('url'))?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('categories'))?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('bannerimage'))?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="<?php echo $this->bannerimage?>" alt="" style="width: 300px; height: 300px;"/>			
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<button type="submit" id="save-changes-btn">
+							Save
+						</button>
+						<button type="button" id="cancel-changes-btn">
+							Cancel
+						</button>
+					</td>
+				</tr>
+			</table>	
+			<?php echo $this->form()->closeTag()?>
+		</td>
+		<td valign="top">
+			<table>
+				<tr>
+					<td>
+						<div>Your remaining Bucket points.</div>
+						<div><?php echo $this->escapeHtml($this->bucket)?></div>
+					</td>
+				</tr>			
+			</table>
+		</td>
+	</tr>
+</table>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$("#cancel-changes-btn").click(function(){
+			window.location = '<?php echo $this->url('advertiser')?>';
+		});
+	});
+</script>
