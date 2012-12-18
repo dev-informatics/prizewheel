@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v9.02 
-MySQL - 5.1.50-community : Database - prizewheel
+SQLyog Ultimate v9.20 
+MySQL - 5.1.50-community : Database - prizewheel_mvc
 *********************************************************************
 */
 
@@ -12,9 +12,42 @@ MySQL - 5.1.50-community : Database - prizewheel
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`prizewheel` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`prizewheel_mvc` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `prizewheel`;
+USE `prizewheel_mvc`;
+
+/*Table structure for table `advertisement_categories` */
+
+DROP TABLE IF EXISTS `advertisement_categories`;
+
+CREATE TABLE `advertisement_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `description` text,
+  `clickrate` float NOT NULL DEFAULT '0',
+  `impressionrate` float NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+/*Data for the table `advertisement_categories` */
+
+insert  into `advertisement_categories`(`id`,`name`,`description`,`clickrate`,`impressionrate`,`enabled`) values (1,'Automobiles','Automobiles',1.5,0.75,1),(2,'Electronics','Electronics',1,0.6,1);
+
+/*Table structure for table `advertisement_category_entries` */
+
+DROP TABLE IF EXISTS `advertisement_category_entries`;
+
+CREATE TABLE `advertisement_category_entries` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `advertisementcategoryid` int(10) unsigned NOT NULL,
+  `advertisementid` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+/*Data for the table `advertisement_category_entries` */
+
+insert  into `advertisement_category_entries`(`id`,`advertisementcategoryid`,`advertisementid`) values (4,1,12),(5,2,12),(6,2,13),(7,1,14),(8,2,15);
 
 /*Table structure for table `advertisement_clicks` */
 
@@ -42,9 +75,26 @@ CREATE TABLE `advertisement_impressions` (
   `advertisementid` int(11) NOT NULL,
   `createdatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 /*Data for the table `advertisement_impressions` */
+
+insert  into `advertisement_impressions`(`id`,`prizewheelid`,`facebookuserid`,`advertisementid`,`createdatetime`) values (1,1,'454555353',5,'2012-12-17 09:33:34');
+
+/*Table structure for table `advertisement_placement_types` */
+
+DROP TABLE IF EXISTS `advertisement_placement_types`;
+
+CREATE TABLE `advertisement_placement_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+/*Data for the table `advertisement_placement_types` */
+
+insert  into `advertisement_placement_types`(`id`,`name`,`description`) values (1,'Prize Wheel','Prize Wheel'),(2,'Sponser','Sponser');
 
 /*Table structure for table `advertisement_types` */
 
@@ -67,19 +117,22 @@ DROP TABLE IF EXISTS `advertisements`;
 
 CREATE TABLE `advertisements` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `advertisementplacementtypeid` int(11) NOT NULL DEFAULT '1',
   `advertiserid` int(10) unsigned NOT NULL,
   `name` varchar(150) NOT NULL,
   `description` text,
   `typeid` int(11) NOT NULL,
   `bannerimage` varchar(150) NOT NULL,
   `url` varchar(300) NOT NULL,
+  `bucket` int(11) NOT NULL DEFAULT '0',
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `createdatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 /*Data for the table `advertisements` */
 
-insert  into `advertisements`(`id`,`advertiserid`,`name`,`description`,`typeid`,`bannerimage`,`url`,`enabled`) values (1,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',1),(2,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',1),(3,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',1),(4,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',1);
+insert  into `advertisements`(`id`,`advertisementplacementtypeid`,`advertiserid`,`name`,`description`,`typeid`,`bannerimage`,`url`,`bucket`,`enabled`,`createdatetime`) values (2,1,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',0,0,'0000-00-00 00:00:00'),(3,1,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',0,0,'0000-00-00 00:00:00'),(4,1,2,'Test','Test',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','',0,0,'2012-12-14 10:40:32'),(5,1,2,'fgdf','dgdfg',1,'81799881-106b-4964-aa2c-fd7dd2ed9fc0.jpg','http://google.com/',0,1,'0000-00-00 00:00:00'),(6,1,2,'sdgfg','fdgdfg',1,'169021_158793174173150_153290324723435_348535_4336805_n.jpg','http://google.com/',0,1,'0000-00-00 00:00:00'),(7,1,2,'dfgf','dgdfg',2,'amino2222caps.jpg','http://news.com',0,1,'2012-12-14 10:21:17'),(8,1,2,'Bryan Test','Bryan Test',2,'81799881-106b-4964-aa2c-fd7dd2ed9fc0.jpg','http://drudgereport.com',0,1,'2012-12-14 10:42:32'),(9,1,2,'Used Cars','Used Cars',2,'lambo-sm.png','http://auto.com',0,1,'2012-12-14 12:03:27'),(10,1,2,'ffdsf','sdfsdfsdfsdf',2,'81799881-106b-4964-aa2c-fd7dd2ed9fc0.jpg','http://coolads.com',0,1,'2012-12-14 14:43:09'),(11,1,2,'New and Used Cars','New and Used Cars',1,'multi1.jpg','http://newandusedcars.com',0,1,'2012-12-14 14:50:01'),(12,1,2,'Bob\'s Crap Cars Test','Bob\'s Crap Cars',1,'SMSCustomerPage.png','http://bobs.biz',0,1,'2012-12-14 14:52:02'),(13,1,2,'This is a new one','This is a new one',1,'81799881-106b-4964-aa2c-fd7dd2ed9fc0.jpg','http://drudgereport.com',0,1,'2012-12-17 11:58:20'),(14,0,2,'Type Test','Type Test',1,'8d63c76d-64ac-41ed-92da-d924a2998ee3.jpg','http://google.com',0,1,'2012-12-17 16:51:29'),(15,2,2,'Next Test','Next Test',1,'81799881-106b-4964-aa2c-fd7dd2ed9fc0.jpg','http://google.com',0,1,'2012-12-17 16:55:29');
 
 /*Table structure for table `advertisers` */
 
@@ -104,7 +157,7 @@ CREATE TABLE `advertisers` (
 
 /*Data for the table `advertisers` */
 
-insert  into `advertisers`(`id`,`facebookuserid`,`firstname`,`lastname`,`address1`,`address2`,`city`,`state`,`country`,`postal`,`telephone`,`emailaddress`,`createdatetime`) values (2,'100000384651852','Michael','Davidson','701 SW 60th TER','','Oklahoma City','1','United States','73139','4053719894','realityenigma@hotmail.com','2012-12-13 14:27:29');
+insert  into `advertisers`(`id`,`facebookuserid`,`firstname`,`lastname`,`address1`,`address2`,`city`,`state`,`country`,`postal`,`telephone`,`emailaddress`,`createdatetime`) values (2,'100000384651852','Michael','Davidson','701 SW 60th TER','','Oklahoma City','1','United States','73139','4053719894','realityenigma@hotmail.com','2012-12-14 09:58:09');
 
 /*Table structure for table `affiliates` */
 
@@ -125,11 +178,11 @@ CREATE TABLE `affiliates` (
   `emailaddress` varchar(255) NOT NULL,
   `createdatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `affiliates` */
 
-insert  into `affiliates`(`id`,`facebookuserid`,`firstname`,`lastname`,`address1`,`address2`,`city`,`state`,`country`,`postal`,`telephone`,`emailaddress`,`createdatetime`) values (1,'','Michael','Davidson','701 SW 60th TER','','Oklahoma City','1','USA','73139','4053719894','realityenigma@hotmail.com','2012-12-12 14:37:54'),(2,'','Janice','Davidson','701 SW 60th TER','','Oklahoma City','1','USA','73139','4054050136','preciouspresh@hotmail.com','2012-12-12 14:45:50'),(3,'','Marcus','Davidson','701 SW 60th TER','','Oklahoma City','1','USA','73139','4053884578','marcus@gmail.com','2012-12-12 14:49:07');
+insert  into `affiliates`(`id`,`facebookuserid`,`firstname`,`lastname`,`address1`,`address2`,`city`,`state`,`country`,`postal`,`telephone`,`emailaddress`,`createdatetime`) values (1,'','Michael','Davidson','701 SW 60th TER','','Oklahoma City','1','USA','73139','4053719894','realityenigma@hotmail.com','2012-12-12 14:37:54'),(2,'','Janice','Davidson','701 SW 60th TER','','Oklahoma City','1','USA','73139','4054050136','preciouspresh@hotmail.com','2012-12-12 14:45:50'),(3,'','Marcus','Davidson','701 SW 60th TER','','Oklahoma City','1','USA','73139','4053884578','marcus@gmail.com','2012-12-12 14:49:07'),(4,'100000384651852','Michael','Davidson','701 SW 60th TER','','Oklahoma City','1','United States','73139','4053719894','realityenigma@hotmail.com','2012-12-14 10:41:34');
 
 /*Table structure for table `prizewheel_impressions` */
 
@@ -144,6 +197,21 @@ CREATE TABLE `prizewheel_impressions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `prizewheel_impressions` */
+
+/*Table structure for table `prizewheel_types` */
+
+DROP TABLE IF EXISTS `prizewheel_types`;
+
+CREATE TABLE `prizewheel_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+/*Data for the table `prizewheel_types` */
+
+insert  into `prizewheel_types`(`id`,`name`,`description`) values (1,'Ad-Driven','Ad-Driven'),(2,'Personalized','Personalized');
 
 /*Table structure for table `prizewheels` */
 

@@ -3,10 +3,19 @@
 $title = "Affiliate Dashboard";
 $this->headTitle($title);
 ?>
+
+<?php if(isset($this->loginredirect)):?>
+<script type="text/javascript">
+	window.top.location = '<?php echo $this->loginredirect?>';
+</script>
+<?php else:?>
+
 This is the <?php echo $this->escapeHtml($title)?>
 <br/>
 
 <h1>Welcome back, <?php echo ($affiliate->firstName() . " " . $affiliate->lastName())?></h1>
+
+<button id="install-prize-wheel-btn">Install Prize Wheel</button>
 
 <table>
 	<tr>
@@ -30,3 +39,123 @@ This is the <?php echo $this->escapeHtml($title)?>
 		</td>
 	</tr>
 </table>
+
+<div id="install-prizewheel-dialog">
+	<div>Select the page to install the Prize Wheel on.</div>
+	<select id="fb-pages" name="fb-pages"></select>
+	<button id="add-prizewheel-to-page">
+		Add to Page
+	</button>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$("#install-prizewheel-dialog").dialog({
+			title: "Install the Prize Wheel",
+			width: 300,
+			height: 300,
+			autoOpen: false,
+			modal: true
+		});
+
+		$("#install-prize-wheel-btn").click(function(){
+			$("#install-prizewheel-dialog").dialog("open");
+		});
+	});
+
+	var appId = '<?php echo $this->fbappid?>';
+
+	window.fbAsyncInit = function(){
+
+		FB.init({
+			appId: appId,
+			cookie: true,
+			status: true,
+			channelUrl: '//fbstaging.ecrmplus.net:9090/channel.html',
+			oauth: true,
+			xfbml: true
+		});
+
+		FB.login(function(response){
+			if(response.status == "connected"){
+				fetchPages();
+			} // if
+			else{
+				FB.login(function(response){
+					if(response.status == "connected"){
+						fetchPages();
+					} // if
+					else{
+						window.top.location = '/';
+					} // else
+				}, {scope: 'email, manage_pages'});
+			}
+		});
+		
+		FB.getLoginStatus(function(response){
+		
+			if(response.status == "connected"){
+				fetchPages();
+			} // if
+			else{
+				FB.login(function(response){
+					if(response.status == "connected"){
+						fetchPages();
+					} // if
+					else{
+						window.top.location = '/';
+					} // else
+				}, {scope: 'email, manage_pages'});
+			}
+		}, true);
+	};
+
+	function fetchPages(){
+		var fbpages = $("#fb-pages");
+		fbpages.children().remove();
+
+		FB.api('/me/accounts', function(response){							
+
+			var length = response.data.length;
+			var count = 1;
+
+			$.each(response.data, function(idx, page){										
+
+				var found = false;				
+					
+				FB.api('/' + page.id + '/tabs', function(response, pageCount){
+					
+					$.each(response.data, function(idx, tab){
+						if(tab.application !== undefined){
+							if(tab.application.id == appId){
+								found = true;								
+							} //
+						} // if					
+					});
+
+					if(!found){
+						fbpages.append($('<option value="' + page.id + '">' + page.name + '</option>'));				
+					} // if
+
+					count++;
+
+					if(count == length && fbpages.children().length <= 0){						
+						$("#no-pages-messages").css("display", "block");
+						$("#fb-pages").css("display", "none");
+						$("#add-to-page").css("display", "none");	
+					} // if												
+				});													
+			});							
+		});	
+	}
+
+	(function(){
+		var e = document.createElement('script');
+		e.type = "text/javascript";
+		e.src = document.location.protocol + "//connect.facebook.net/en_US/all.js";
+		e.async = true;
+		document.getElementById("fb-root").appendChild(e);
+	}());
+</script>
+<?php endif;?>

@@ -73,7 +73,7 @@ class AdvertisementCategoryEntryTable
 	public function saveArray(array $categories)
 	{
 		foreach($categories as $category){
-			if($category instanceof AdvertisementCategoryEntry){
+			if($category instanceof \Application\Model\AdvertisementCategoryEntry){
 				$this->save($category);
 			} // if
 		} // foreach

@@ -13,8 +13,8 @@ abstract class FacebookAwareController extends AbstractActionController
 		$config = $this->getServiceLocator()->get('Config');
 	
 		$params = array(
-				'scope' => 'email',
-				'redirect_uri' => $config['appconfig']['baseurl'] . $route
+			'scope' => 'email, manage_pages',
+			'redirect_uri' => $config['appconfig']['baseurl'] . $route
 		);
 	
 		return $this->facebook->getLoginUrl($params);

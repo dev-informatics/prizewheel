@@ -29,11 +29,13 @@ class AffiliateController extends FacebookAwareController
 	 * The default action - show the home page
 	 */
 	public function indexAction() 
-	{		
+	{	
 		// Check if we are logged into facebook, if not
 		// redirect to login and await return.
 		if(!$this->isLoggedIntoFacebook()){
-			return $this->redirect()->toUrl($this->fetchLoginUrl('/affiliate'));
+			return new ViewModel(array(
+				'loginredirect' => 	$this->fetchLoginUrl('/affiliate')
+			)); 
 		} // if
 		
 		$affiliate = $this->affiliateTable->getAffiliateByFacebookId($this->getFacebookUserId());
@@ -48,14 +50,15 @@ class AffiliateController extends FacebookAwareController
 		
 		// TODO Auto-generated AffiliateController::indexAction() default action
 		return new ViewModel(array(
-			'affiliate' => $affiliate		
+			'affiliate' => $affiliate,
+			'fbappid' => $this->getFacebookAppId()
 		));
 	}
 	
 	public function registerAction()
 	{
 		if(!$this->isLoggedIntoFacebook()){
-			return $this->redirect()->toUrl($this->fetchLoginUrl('/affiliate/register'));
+			return $this->redirect()->toRoute("affiliate");
 		} // if
 		
 		$registrationform = new AffiliateRegistrationForm();

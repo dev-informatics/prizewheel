@@ -3,6 +3,13 @@
 $title = "Advertiser Dashboard";
 $this->headTitle($title);
 ?>
+
+<?php if(isset($this->loginredirect)):?>
+<script type="text/javascript">
+	window.top.location = '<?php echo $this->loginredirect?>';
+</script>
+<?php else:?>
+
 <h1><?php echo $this->escapeHtml($title)?></h1>
 
 <h1>Welcome back, <?php echo $this->escapeHtml($this->advertiser->firstName() . ' ' . $this->advertiser->lastName())?></h1>
@@ -51,3 +58,4 @@ $this->headTitle($title);
 		});
 	});
 </script>
+<?php endif;?>

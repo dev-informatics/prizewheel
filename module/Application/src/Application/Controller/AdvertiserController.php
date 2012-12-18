@@ -2,8 +2,9 @@
 
 namespace Application\Controller;
 
+use Application\Model\AdvertisementImpressionTable;
+use Application\Model\AdvertisementClickTable;
 use Application\Model\AdvertisementTable;
-
 use Application\Form\AdvertiserRegistrationForm;
 use Zend\View\Model\ViewModel;
 use Application\Model\Advertiser;
@@ -21,18 +22,25 @@ class AdvertiserController extends FacebookAwareController
 {
 	protected $advertiserTable = null;
 	protected $advertisementTable = null;
+	protected $advertisementClickTable = null;
+	protected $advertisementImpressionTable = null;
 	
-	public function __construct(AdvertiserTable $advertiserTable, AdvertisementTable $advertisementTable, \Facebook $facebook)
+	public function __construct(AdvertiserTable $advertiserTable, AdvertisementTable $advertisementTable,
+			AdvertisementClickTable $advertisementClickTable, AdvertisementImpressionTable $advertisementImpressionTable, \Facebook $facebook)
 	{
 		$this->advertiserTable = $advertiserTable;
 		$this->advertisementTable = $advertisementTable;
+		$this->advertisementClickTable = $advertisementClickTable;
+		$this->advertisementImpressionTable = $advertisementImpressionTable;
 		$this->facebook = $facebook;
 	}
 	
 	public function indexAction()
 	{
 		if(!$this->isLoggedIntoFacebook()){
-			return $this->redirect()->toUrl($this->fetchLoginUrl("/advertiser"));
+			return new ViewModel(array(
+				'loginredirect' => 	$this->fetchLoginUrl('/affiliate')
+			)); 
 		} // if
 		
 		$advertiser = $this->advertiserTable->getAdvertiserByFacebookUserId($this->getFacebookUserId());
@@ -42,6 +50,11 @@ class AdvertiserController extends FacebookAwareController
 		} // if
 		
 		$advertisements = $this->advertisementTable->fetchAllEnabledByAdvertiserId($advertiser->id());
+				
+		foreach($advertisements as $advertisement){
+			$advertisement->impressions($this->advertisementImpressionTable->fetchCountByAdvertisementId($advertisement->id()));
+			$advertisement->clicks($this->advertisementClickTable->fetchCountByAdvertisementId($advertisement->id()));
+		} // foreach
 		
 		return new ViewModel(array(
 			'advertiser' => $advertiser,
@@ -55,7 +68,7 @@ class AdvertiserController extends FacebookAwareController
 	public function registerAction() 
 	{	
 		if(!$this->isLoggedIntoFacebook()){
-			return $this->redirect()->toUrl($this->fetchLoginUrl("/advertiser/register"));
+			return $this->redirect()->toRoute("advertiser");
 		} // if
 		
 		$registrationform = new AdvertiserRegistrationForm();

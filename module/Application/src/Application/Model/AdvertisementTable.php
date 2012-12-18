@@ -26,9 +26,20 @@ class AdvertisementTable
 
 		$results = $this->tableGateway->selectWith($select);
 	
-		return $results;
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
 	}
 	
+	/**
+	 * 
+	 * @param int $id
+	 * @return array:unknown
+	 */
 	public function fetchAllEnabledByAdvertiserId($id)
 	{
 		$select = new \Zend\Db\Sql\Select();
@@ -40,8 +51,20 @@ class AdvertisementTable
 			   ->where(array('advertiserid' => $id, 'advertisements.enabled' => 1));	       
 
 		$results = $this->tableGateway->selectWith($select);
-
-		return $results;
+		
+		// Creating a list to return back to the caller
+		// as an array of Advertisement objects. This is contrary
+		// to the ArrayObject ResultSet, which I am not convinced
+		// is the best way to return data to callers because you cannot
+		// rewind the ResultSet once iterated through. Plus I've never
+		// liked returning DB layer instances out of the layer.
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
 	}
 	
 	public function getAdvertisement($id)
@@ -61,27 +84,47 @@ class AdvertisementTable
 		$id = (int) $advertisement->id();
 
 		$data = array(
+			'advertisementplacementtypeid' => $advertisement->advertisementPlacementTypeId(),
 			'advertiserid' => $advertisement->advertiserId(),
 			'name' => $advertisement->name(),
 			'description' => $advertisement->description(),
 			'typeid' => $advertisement->typeId(),
 			'bannerimage' => $advertisement->bannerImage(),
 			'url' => $advertisement->url(),
-			'bucket' => $advertisement->bucket(),
-			'enabled' => $advertisement->enabled()	
+			'enabled' => $advertisement->enabled() ? 1 : 0	
 		);
 	
+		if($id > 0){
+			if($this->getAdvertisement($id)){				
+				$this->tableGateway->update($data, array('id' => $id));
+			} // if
+			else{
+				throw new \Exception("Could not load Advertisement by id: $id");
+			} // else
+		} // if
+		else{
+			$data['bucket'] = 0;
+			$this->tableGateway->insert($data);
+			$advertisement->id((int)$this->tableGateway->lastInsertValue);
+		} // else
+	}
+	
+	public function updateBucket($id, $bucketAmount)
+	{
+		$id = (int)$id;
+		
+		$data = array('bucket' => $bucketAmount);
+		
 		if($id > 0){
 			if($this->getAdvertisement($id)){
 				$this->tableGateway->update($data, array('id' => $id));
 			} // if
 			else{
-				throw new \Exception("Could not load Advertisement by id: $id");
-			}
+				throw new \Exception("An Advertisement with the id $id could not be located");
+			} // else
 		} // if
 		else{
-			$this->tableGateway->insert($data);
-			$advertisement->id((int)$this->tableGateway->lastInsertValue);
+			throw new \Exception("An Advertisement must have a non-negative greater than 0 value.");
 		} // else
 	}
 	

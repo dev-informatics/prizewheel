@@ -21,6 +21,21 @@ class AdvertisementClickTable
 		return $results;
 	}
 	
+	public function fetchCountByAdvertisementId($id)
+	{
+		$id = (int)$id;
+		
+		$query = "SELECT count(`id`) as `count` FROM `advertisement_clicks` WHERE `advertisementid` = ?";
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement($query, array($id));
+		
+		$results = $stmt->execute();
+		
+		$count = $results->current()['count'];
+		
+		return $count;
+	}
+	
 	public function getAdvertisementClick($id)
 	{
 		$id = (int)$id;

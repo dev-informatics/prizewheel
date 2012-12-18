@@ -11,7 +11,7 @@ class NewAdvertisementForm extends Form
 {
 	protected $inputFilter = null;
 	
-	public function __construct($name='', $advertisementTypes=array(), $advertisementCategories=array())
+	public function __construct($name='', $advertisementTypes=array(), $advertisementCategories=array(), $advertisementPlacementTypes=array())
 	{
 		parent::__construct("new-advertisement-form");
 		$this->setAttribute("method", "post");
@@ -67,6 +67,24 @@ class NewAdvertisementForm extends Form
 		));
 			
 		$this->add($types);
+		
+		$placementTypes = array();
+		
+		foreach($advertisementPlacementTypes as $type){
+			$placementTypes[$type->id()] = $type->name();
+		} // foreach
+		
+		$placementSelect = new \Zend\Form\Element\Select("advertisementplacementtypeid");
+		$placementSelect->setValueOptions($placementTypes);
+		$placementSelect->setAttributes(array(
+			'id' => 'advertisementplacementtypeid',
+			'style' => "width: 250px;"	
+		));
+		$placementSelect->setOptions(array(
+			"label" => "Placement Type"
+		));
+		
+		$this->add($placementSelect);
 		
 		$cats = array();
 		foreach($advertisementCategories as $category){
@@ -155,6 +173,11 @@ class NewAdvertisementForm extends Form
 		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "categories",
+			"required" => true
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "advertisementplacementtypeid",
 			"required" => true
 		)));
 		

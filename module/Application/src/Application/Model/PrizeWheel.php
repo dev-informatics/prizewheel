@@ -5,6 +5,7 @@ namespace Application\Model;
 class PrizeWheel
 {
 	protected $id;
+	protected $prizeWheelTypeId;
 	protected $pageId;
 	protected $affiliateId;
 	protected $forceLike = false;
@@ -129,6 +130,14 @@ class PrizeWheel
 			$this->id = $id;
 		} // if
 		return $this->id;
+	}
+	
+	public function prizeWheelTypeId($prizewheeltypeid=0)
+	{
+		if(!empty($prizewheeltypeid)){
+			$this->prizeWheelTypeId = $prizewheeltypeid;
+		} // if
+		return $this->prizeWheelTypeId;
 	}
 	
 	public function pageId($pageid='')
@@ -1059,6 +1068,7 @@ class PrizeWheel
 	public function exchangeArray($data)
 	{
 		$this->id = (isset($data['id'])) ? $data['id'] : 0;
+		$this->prizeWheelTypeId = (isset($data['prizewheeltypeid'])) ? $data['prizewheeltypeid'] : 0;
 		$this->pageId = (isset($data['pageid'])) ? $data['pageid'] : 0;
 		$this->affiliateid = (isset($data['affiliateid'])) ? $data['affiliateid'] : 0;
 		$this->forceLike = (isset($data['forcelike'])) ? $data['forcelike'] : null;
@@ -1182,6 +1192,7 @@ class PrizeWheel
 	{
 		return array(
 			'id' => $this->id,
+			'prizewheeltypeid' => $this->prizeWheelTypeId,
 			'pageid' => $this->pageId,
 			'affiliateid' => $this->affiliateId,
 			'forcelike' => $this->forceLike,

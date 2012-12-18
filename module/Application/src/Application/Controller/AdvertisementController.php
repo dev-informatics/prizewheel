@@ -2,6 +2,7 @@
 
 namespace Application\Controller;
 
+use Application\Model\AdvertisementPlacementTypeTable;
 use Application\Form\ManageAdvertisementForm;
 use Application\Form\NewAdvertisementForm;
 use Application\Model\Advertisement;
@@ -23,11 +24,13 @@ class AdvertisementController extends FacebookAwareController
 	protected $advertisementTypeTable = null;
 	protected $advertisementCategoryTable = null;
 	protected $advertisementCategoryEntryTable = null;
+	protected $advertisementPlacementTypeTable = null;
 	
 	public function __construct(AdvertisementTable $advertisementTable, AdvertiserTable $advertiserTable, 
 			AdvertisementClickTable $advertisementClickTable, AdvertisementTypeTable $advertisementTypeTable, 
 			AdvertisementCategoryTable $advertisementCategoryTable, 
-			AdvertisementCategoryEntryTable $advertisementCategoryEntryTable, \Facebook $facebook)
+			AdvertisementCategoryEntryTable $advertisementCategoryEntryTable, 
+			AdvertisementPlacementTypeTable $advertisementPlacementTypeTable, \Facebook $facebook)
 	{
 		$this->advertisementTable = $advertisementTable;
 		$this->advertiserTable = $advertiserTable;
@@ -35,6 +38,7 @@ class AdvertisementController extends FacebookAwareController
 		$this->advertisementTypeTable = $advertisementTypeTable;
 		$this->advertisementCategoryTable = $advertisementCategoryTable;
 		$this->advertisementCategoryEntryTable = $advertisementCategoryEntryTable;
+		$this->advertisementPlacementTypeTable = $advertisementPlacementTypeTable;
 		$this->facebook = $facebook;
 	}
 	
@@ -88,7 +92,8 @@ class AdvertisementController extends FacebookAwareController
 		
 		$form = new NewAdvertisementForm("", 
 			$this->advertisementTypeTable->fetchAll(), 
-			$this->advertisementCategoryTable->fetchAll()
+			$this->advertisementCategoryTable->fetchAll(),
+			$this->advertisementPlacementTypeTable->fetchAll()
 		);	
 		
 		$request = $this->getRequest();
@@ -186,30 +191,46 @@ class AdvertisementController extends FacebookAwareController
 		$id = (int)$this->params()->fromRoute('id', 0);
 		
 		$advertisement = $this->advertisementTable->getAdvertisement($id);
-		
+	
 		if(!$advertisement || ($advertisement->advertiserId() != $advertiser->id())){
 			return $this->redirect()->toRoute('advertisement', array("action" => "create"));
 		} // if
 		
-		$form = new ManageAdvertisementForm("", $this->advertisementCategoryTable->fetchAll());
+		$form = new ManageAdvertisementForm(
+			"", 
+			$this->advertisementCategoryTable->fetchAll()
+		);
+		
 		$request = $this->getRequest();
 		
 		if($request->isPost()){
 			
-			$nonFile = $request->getPost();
-			$file = $request->params()->fromFile('bannerimage');
-			
-			$data = array_merge($nonFile, array('bannerimage' => $file['name']));
-			
+			$nonFile = $request->getPost()->toArray();
+	
+			$file = $this->params()->fromFiles('bannerimage');
+				
+			$fileInfo = array('bannerimage' => ($file['error'] > 0 ?  "" : $file['name']));
+	
+			$data = array_merge($nonFile, $fileInfo);
+
 			$form->setData($data);
 			
 			if($form->isValid()){
-				$data = $form->getData();
 
-				$advertisement->name($data['name']);
-				$advertisement->description($data['description']);
-				$advertisement->bannerImage(!empty($data['bannerimage']) ? $data['bannerimage'] : $advertisement->bannerImage());
+				$bannerImage = $advertisement->bannerImage();
+				$enabled = $advertisement->enabled();
+				$typeId = $advertisement->typeId();
+				$advertisementPlacementTypeId = $advertisement->advertisementPlacementTypeId();
 				
+				$advertisement->exchangeArray($form->getData());
+				$advertisement->id($id);
+				$advertisement->advertiserId($advertiser->id());
+				$advertisement->typeId($typeId);
+				$advertisement->enabled($enabled);
+				$advertisement->advertisementPlacementTypeId($advertisementPlacementTypeId);
+			
+				$advertisement->bannerImage(!empty($data['bannerimage']) ? $data['bannerimage'] : $bannerImage);
+		
 				try{
 					$this->advertisementTable->save($advertisement);
 					
@@ -238,11 +259,52 @@ class AdvertisementController extends FacebookAwareController
 									"Could not upload file " . $file['name']
 								)));
 							} // if
+							else{								
+								$this->advertisementCategoryEntryTable->deleteByAdvertisementId($advertisement->id());
+								
+								foreach($form->getData()['categories'] as $categoryid){
+								
+									$entry = new AdvertisementCategoryEntry();
+								
+									$entry->advertisementCategoryId($categoryid);
+									$entry->advertisementId($advertisement->id());
+								
+									try{
+										$this->advertisementCategoryEntryTable->save($entry);
+									} // try
+									catch(\Exception $e){
+										error_log("Prize Wheel Exception: " . $e->getMessage());
+									} // catch
+								} // foreach
+								
+								return $this->redirect()->toRoute('advertisement', array('action' => 'manage', 'id' => $advertisement->id()));
+							} // else
 						} // else
 					} // if
+					else {
+						$this->advertisementCategoryEntryTable->deleteByAdvertisementId($advertisement->id());
+						
+						foreach($form->getData()['categories'] as $categoryid){
+						
+							$entry = new AdvertisementCategoryEntry();
+						
+							$entry->advertisementCategoryId($categoryid);
+							$entry->advertisementId($advertisement->id());
+						
+							try{
+								$this->advertisementCategoryEntryTable->save($entry);
+							} // try
+							catch(\Exception $e){
+								error_log("Prize Wheel Exception: " . $e->getMessage());
+							} // catch
+						} // foreach
+						
+						return $this->redirect()->toRoute('advertisement', array('action' => 'manage', 'id' => $advertisement->id()));
+					} // else
 				} // try
 				catch(\Exception $e){
-					error_log("Prize Wheel Exception: " . $e->getMessage());
+					throw $e;
+					//error_log("Prize Wheel Exception: " . $e->getMessage());
 				} // catch
 			} // if
 		} // if
@@ -262,6 +324,7 @@ class AdvertisementController extends FacebookAwareController
 		
 		return new ViewModel(array(
 			'manageform' => $form,
+			'id' => $advertisement->id(),
 			'bannerimage' => $this->getServiceLocator()->get('Config')['appconfig']['baseurl'].
 				'/images/advertisements/'.$advertisement->id().'/'.$advertisement->bannerImage(),
 			'bucket' => $advertisement->bucket()

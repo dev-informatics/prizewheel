@@ -96,6 +96,17 @@ class Module
     				$prototype->setArrayObjectPrototype(new AdvertisementClick());
     				return new TableGateway('advertisement_clicks', $adapter, null, $prototype);	
     			},
+    			'Application\Model\AdvertisementImpressionTable' => function($sm){
+    				$tg = $sm->get('AdvertisementImpressionTableGateway');
+    				$table = new \Application\Model\AdvertisementImpressionTable($tg);
+    				return $table;    				
+    			},
+    			'AdvertisementImpressionTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\AdvertisementImpression());
+    				return new TableGateway('advertisement_impressions', $adapter, null, $prototype);    				
+    			},
     			'Application\Model\AdvertisementCategoryTable' => function($sm){
     				$tg = $sm->get('AdvertisementCategoryTableGateway');
     				$table = new \Application\Model\AdvertisementCategoryTable($tg);
@@ -117,6 +128,17 @@ class Module
     				$prototype = new ResultSet();
     				$prototype->setArrayObjectPrototype(new \Application\Model\AdvertisementCategoryEntry());
     				return new TableGateway("advertisement_category_entries", $adapter, null, $prototype);
+    			},
+    			'Application\Model\AdvertisementPlacementTypeTable' => function($sm){
+    				$tg = $sm->get('AdvertisementPlacementTypeTableGateway');
+    				$table = new \Application\Model\AdvertisementPlacementTypeTable($tg);
+    				return $table;    				
+    			},
+    			'AdvertisementPlacementTypeTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\AdvertisementPlacementType());
+    				return new TableGateway('advertisement_placement_types', $adapter, null, $prototype);
     			}
     		)	
     	);
@@ -130,8 +152,11 @@ class Module
     				$sm = $cm->getServiceLocator();
     				$table = $sm->get('Application\Model\AdvertiserTable');
     				$advertisementTable = $sm->get('Application\Model\AdvertisementTable');
+    				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
+    				$advertisementImpressionTable = $sm->get('Application\Model\AdvertisementImpressionTable');
     				$facebook = $sm->get('Facebook');
-    				$controller = new \Application\Controller\AdvertiserController($table, $advertisementTable, $facebook);
+    				$controller = new \Application\Controller\AdvertiserController($table, $advertisementTable, 
+    						$advertisementClickTable, $advertisementImpressionTable, $facebook);
     				
     				return $controller;
     			},
@@ -158,10 +183,12 @@ class Module
     				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
     				$advertisementTypeTable = $sm->get('Application\Model\AdvertisementTypeTable');
     				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');  
-    				$advertisementCategoryEntryTable = $sm->get('Application\Model\AdvertisementCategoryEntryTable');    				
+    				$advertisementCategoryEntryTable = $sm->get('Application\Model\AdvertisementCategoryEntryTable'); 
+    				$advertisementPlacementTypeTable = $sm->get('Application\Model\AdvertisementPlacementTypeTable');   				
     				$controller = new \Application\Controller\AdvertisementController($advertisementTable, $advertiserTable, 
     						$advertisementClickTable, $advertisementTypeTable, 
-    						$advertisementCategoryTable, $advertisementCategoryEntryTable, $facebook);
+    						$advertisementCategoryTable, $advertisementCategoryEntryTable, 
+    						$advertisementPlacementTypeTable, $facebook);
     				
     				return $controller;
     			}

@@ -16,7 +16,14 @@ class AdvertisementCategoryTable
 	public function fetchAll()
 	{
 		$results = $this->tableGateway->select();
-		return $results;
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		}
+		
+		return $list;
 	}
 	
 	public function getAdvertisementCategory($id)

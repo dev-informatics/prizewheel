@@ -20,7 +20,14 @@ class AdvertisementTypeTable
 	public function fetchAll()
 	{
 		$results = $this->tableGateway->select();
-		return $results;		
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;		
 	}
 	
 	/**

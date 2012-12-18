@@ -14,9 +14,31 @@ class AdvertisementImpressionTable
 		$this->tableGateway = $advertisementTableGateway;
 	}
 	
+	public function fetchCountByAdvertisementId($id)
+	{
+		$id = (int)$id;
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement("SELECT count(id) as `count` FROM advertisement_impressions WHERE advertisementid = ?", array($id));
+		
+		$results = $stmt->execute();
+		
+		$count = $results->current()['count'];
+
+		return $count;
+	}
+	
 	public function getAdvertisementImpression($id)
 	{
+		$id = (int)$id;
 		
+		$results = $this->tableGateway->select(array('id' => $id));
+		$result = $result->current();
+		
+		if(!$result){
+			return null;
+		} // if
+		
+		return $result;
 	}
 	
 	public function getAdvertisementImpressionByFacebookUserId($prizewheelid, $facebookuserid)

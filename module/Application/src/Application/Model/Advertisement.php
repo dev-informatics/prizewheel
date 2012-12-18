@@ -5,6 +5,7 @@ namespace Application\Model;
 class Advertisement
 {
 	protected $id;
+	protected $advertisementPlacementTypeId;
 	protected $advertiserId;
 	protected $name;
 	protected $description;
@@ -17,6 +18,7 @@ class Advertisement
 	protected $typeName;
 	protected $clicks;
 	protected $impressions;	
+	protected $categories = array();
 	
 	public function id($id=0)
 	{
@@ -24,6 +26,14 @@ class Advertisement
 			$this->id = $id;
 		}
 		return $this->id;
+	}
+	
+	public function advertisementPlacementTypeId($advertisementplacementtypeid=0)
+	{
+		if(!empty($advertisementplacementtypeid)){
+			$this->advertisementPlacementTypeId = $advertisementplacementtypeid;
+		} // if
+		return $this->advertisementPlacementTypeId;
 	}
 	
 	public function advertiserId($advertiserid=0)
@@ -84,7 +94,7 @@ class Advertisement
 	
 	public function enabled($enabled=null)
 	{
-		if(!empty($enabled) && is_bool($enabled)){
+		if(!empty($enabled)){
 			$this->enabled = $enabled;
 		}  // if
 		return $this->enabled;
@@ -119,6 +129,14 @@ class Advertisement
 		return $this->impressions;
 	}
 	
+	public function categories($categories=array())
+	{
+		if(is_array($categories) && count($categories) > 0){
+			$this->categories = $categories;
+		} // if
+		return $this->categories;
+	} // categories
+	
 	public function __construct()
 	{
 		
@@ -127,6 +145,7 @@ class Advertisement
 	public function exchangeArray($data)
 	{
 		$this->id = (isset($data['id'])) ? $data['id'] : 0;
+		$this->advertisementPlacementTypeId = (isset($data['advertisementplacementtypeid'])) ? $data['advertisementplacementtypeid'] : 0;
 		$this->advertiserId = (isset($data['advertiserid'])) ? $data['advertiserid'] : 0;
 		$this->name = (isset($data['name'])) ? $data['name'] : null;
 		$this->description = (isset($data['description'])) ? $data['description'] : null;
@@ -138,13 +157,15 @@ class Advertisement
 		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : null;
 		$this->typeName = (isset($data['typename'])) ? $data['typename'] : null;
 		$this->impressions = (isset($data['impressions'])) ? $data['impressions'] : 0;
-		$this->clicks = (isset($data['clicks'])) ? $data['clicks'] : 0;	
+		$this->clicks = (isset($data['clicks'])) ? $data['clicks'] : 0;
+		$this->categories = (isset($data['categories'])) ? $data['categories'] : array();
 	} 
 	
 	public function getArrayCopy()
 	{
 		return array(
 			'id' => $this->id,
+			'advertisementplacementtypeid' => $this->advertisementPlacementTypeId,
 			'advertiserid' => $this->advertiserId,	
 			'name' => $this->name,
 			'description' => $this->description,
@@ -156,7 +177,8 @@ class Advertisement
 			'createdatetime' => $this->createDateTime,
 			'typename' => $this->typeName,
 			'clicks' => $this->clicks,
-			'impressions' => $this->impressions,	 
-		);  
+			'impressions' => $this->impressions,
+			'categories' => $this->categories	 
+		);   
  	}
 }

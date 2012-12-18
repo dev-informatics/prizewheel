@@ -26,7 +26,7 @@ class AffiliateTable
 		$results = $this->tableGateway->select(array('id' => $id));
 		$result = $results->current();
 		
-		if(!result){
+		if(!$result){
 			throw new \Exception("Could not locate Affiliate with id: $id");
 		} // if
 		
@@ -39,7 +39,7 @@ class AffiliateTable
 		$results = $this->tableGateway->select(array('facebookuserid' => $fbid));
 		$result = $results->current();
 		
-		if(!result){
+		if(!$result){
 			return null;
 		} // if
 		

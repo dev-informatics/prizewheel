@@ -67,7 +67,7 @@ class ManageAdvertisementForm extends Form
 			"label" => "Target Categories"	
 		));
 		
-		$this->add($select);
+		$this->add($select);	
 		
 		$upload = new \Zend\Form\Element\File();
 		$upload->setName("bannerimage");
@@ -106,7 +106,13 @@ class ManageAdvertisementForm extends Form
  						)
  				)
  		)));
- 	
+ 		$inputFilter->add($factory->createInput(array(
+ 			'name' => 'description',
+ 			'required' => false,
+ 			'filters' => array(
+ 				array('name' => 'StripTags')
+ 			)	
+ 		)));
  		$inputFilter->add($factory->createInput(array(
  			'name' => 'url',
  			'required' => true,
@@ -124,7 +130,10 @@ class ManageAdvertisementForm extends Form
  				)
  			)
  		)));
- 		
+ 		$inputFilter->add($factory->createInput(array(
+ 			'name' => 'categories',
+ 			'required' => false	
+ 		)));
  		$inputFilter->add($factory->createInput(array(
  			"name" => "bannerimage",
  			"required" => false 

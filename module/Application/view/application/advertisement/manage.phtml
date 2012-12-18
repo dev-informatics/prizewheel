@@ -3,7 +3,7 @@
 $title = "Manage Advertisement";
 $this->headTitle($title);
 $form = $this->manageform;
-$form->setAttribute('action', $this->url('advertisement', array('action' => 'manage')));
+$form->setAttribute('action', $this->url('advertisement', array('action' => 'manage', 'id' => $this->id)));
 $form->prepare();
 ?>
 <h2><?php echo $this->escapeHtml($title)?></h2>
