@@ -1,0 +1,157 @@
+<?php
+$prizeWheel = $this->prizewheel;
+
+$title = "Manage Prize Wheel " . $prizeWheel->id();
+$this->headTitle($title);
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('prize-wheel', array('action' => 'manage', 'id' => $prizeWheel->id())));
+$form->prepare();
+?>
+<style type="text/css">
+	#tabs{
+		height: 750px;
+	}
+</style>
+
+<?php echo $this->form()->openTag($form)?>
+<div id="tabs">
+	<ul>
+		<li><a href="#basic-tab">Basic</a></li>
+		<li><a href="#validation-tab">Validation</a></li>
+		<li><a href="#prizes-tab">Prizes</a></li>
+		<li><a href="#display-tab">Display</a></li>
+		<li><a href="#notifications-tab">Notifications</a></li>
+		<li><a href="#email-tab">E-Mail</a></li>
+		<li><a href="#submissions">Submissions</a></li>
+		<li><a href="#preview">Preview</a></li>
+	</ul>
+	
+	<div id="basic-tab">
+		<?php echo $this->formRow($form->get('forcelike'))?>
+		<?php echo $this->formRow($form->get('forcelikeimage'))?>
+		<?php echo $this->formRow($form->get('firsttext'))?>
+		<?php echo $this->formRow($form->get('rulestext'))?>
+		<?php echo $this->formRow($form->get('categories'))?>
+	</div>
+	<div id="validation-tab">
+		<fieldset>
+			<legend>Validation Options</legend>
+			<?php echo $this->formRow($form->get('ipaddressfilter'))?>
+			<?php echo $this->formRow($form->get('phonefilter'))?>
+			<?php echo $this->formRow($form->get('emailfilter'))?>
+		</fieldset>
+		
+		<fieldset>
+			<legend>Prize Wheel Error Messages</legend>
+			<table>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('validemail'))?>
+						<?php echo $this->formRow($form->get('alreadyplayed'))?>
+						<?php echo $this->formRow($form->get('errorsubmit'))?>
+					</td>
+					<td>
+						<?php echo $this->formRow($form->get('errorprize'))?>
+						<?php echo $this->formRow($form->get('accesserror'))?>
+						<?php echo $this->formRow($form->get('accesslimit'))?>
+					</td>
+				</tr>
+			</table>			
+		</fieldset>
+	</div>
+	<div id="prizes-tab">
+		
+		<div id="prizes">
+			<?php foreach($this->prizenumberstrings as $numberString):?>
+			<h3>Prize <?php echo $this->escapeHtml(ucfirst($numberString))?></h3>
+			<div>
+				<table>
+					<tr>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'name'))?>
+						</td>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'code'))?>
+						</td>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'text'))?>
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'image'))?>
+						</td>
+						<td>
+							
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'url'))?>
+						</td>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'weight'))?>
+						</td>
+					</tr>
+				</table>							
+			</div>			
+			<?php endforeach;?>		
+		</div>
+	</div>
+	<div id="display-tab">
+		<?php echo $this->formRow($form->get('backimage'))?>
+		<?php echo $this->formRow($form->get('topimage'))?>
+		<?php echo $this->formRow($form->get('buttonimage'))?>
+	</div>
+	<div id="notifications-tab">
+		<?php echo $this->formRow($form->get('sendemailnotifications'))?>
+		<?php echo $this->formRow($form->get('notificationemailaddress'))?>
+	</div>
+	<div id="email-tab">
+		<table>
+			<tr>
+				<td valign="top" style="padding-right: 10px;">
+					<fieldset>
+						<legend>SMTP Settings</legend>
+						<?php echo $this->formRow($form->get('smtpserver'))?>
+						<?php echo $this->formRow($form->get('smtpusername'))?>
+						<?php echo $this->formRow($form->get('smtppassword'))?>
+						<?php echo $this->formRow($form->get('smtpport'))?>
+						<?php echo $this->formRow($form->get('smtpfromaddress'))?>
+						<?php echo $this->formRow($form->get('smtpencryption'))?>
+						<?php echo $this->formRow($form->get('smtpauthmethod'))?>
+					</fieldset>					
+				</td>
+				<td valign="top">
+					<fieldset>
+						<legend>E-Mail Notification Template</legend>
+						<?php echo $this->formRow($form->get('notificationemailsubject'))?>
+						<?php echo $this->formRow($form->get('notificationemailbody'))?>
+					</fieldset>					
+				</td>
+			</tr>
+		</table>
+		
+	</div>
+	<div id="submissions">
+	
+	</div>
+	<div id="preview">
+	
+	</div>
+</div>
+<?php echo $this->form()->closeTag()?>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#tabs").tabs();
+
+		$("#prizes").accordion({
+			heightStyle: "content"
+		});
+	});
+</script>

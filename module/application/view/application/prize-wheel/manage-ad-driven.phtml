@@ -1,0 +1,27 @@
+<?php
+
+$title = "Manage Prize Wheel " . $this->prizewheel->id();
+$this->headTitle($title);
+
+$form = $this->form;
+$form->setAttribute("action", $this->url("prize-wheel", array("action" => "manage", "id" => $this->prizewheel->id())));
+$form->prepare();
+?>
+<h2>Manage Prize Wheel for Page <?php echo $this->escapeHtml($this->facebookpage)?></h2>
+
+<?php echo $this->form()->openTag($form)?>
+<table>
+	<tr>
+		<td>
+			<?php echo $this->formRow($form->get('categories'))?>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<button id="save-changes" type="submit">
+				Save Changes
+			</button>
+		</td>
+	</tr>
+</table>
+<?php echo $this->form()->closeTag()?>
