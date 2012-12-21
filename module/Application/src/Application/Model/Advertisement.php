@@ -3,7 +3,7 @@
 namespace Application\Model;
 
 class Advertisement
-{
+{	
 	protected $id;
 	protected $advertisementPlacementTypeId;
 	protected $advertiserId;
@@ -19,6 +19,7 @@ class Advertisement
 	protected $clicks;
 	protected $impressions;	
 	protected $categories = array();
+	protected $placementTypeName = "";
 	
 	public function id($id=0)
 	{
@@ -137,6 +138,11 @@ class Advertisement
 		return $this->categories;
 	} // categories
 	
+	public function placementTypeName()
+	{
+		return $this->placementTypeName;
+	}
+	
 	public function __construct()
 	{
 		
@@ -159,6 +165,7 @@ class Advertisement
 		$this->impressions = (isset($data['impressions'])) ? $data['impressions'] : 0;
 		$this->clicks = (isset($data['clicks'])) ? $data['clicks'] : 0;
 		$this->categories = (isset($data['categories'])) ? $data['categories'] : array();
+		$this->placementTypeName = (isset($data['placementtypename'])) ? $data['placementtypename'] : "";
 	} 
 	
 	public function getArrayCopy()
@@ -178,7 +185,8 @@ class Advertisement
 			'typename' => $this->typeName,
 			'clicks' => $this->clicks,
 			'impressions' => $this->impressions,
-			'categories' => $this->categories	 
+			'categories' => $this->categories,
+			'placementtypename' => $this->placementTypeName	 
 		);   
  	}
 }

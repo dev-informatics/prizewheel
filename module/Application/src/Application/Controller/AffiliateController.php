@@ -6,6 +6,12 @@ use Application\Model\Affiliate;
 use Application\Form\AffiliateRegistrationForm;
 use Zend\View\Model\ViewModel;
 use Application\Model\AffiliateTable;
+use Application\Model\PrizeWheelTypeTable;
+use Application\Model\PrizeWheelTable;
+use Application\Model\AdvertisementCategoryTable;
+use Application\Model\PrizeWheelEntryTable;
+use Application\Model\PrizeWheelImpressionTable;
+use Application\Model\AdvertisementClickTable;
 
 /**
  * AffiliateController
@@ -18,10 +24,28 @@ use Application\Model\AffiliateTable;
 class AffiliateController extends FacebookAwareController 
 {
 	protected $affiliateTable = null;
+	protected $prizeWheelTypeTable = null;
+	protected $prizeWheelTable = null;
+	protected $advertisementCategoryTable = null;
+	protected $prizeWheelEntryTable = null;
+	protected $prizeWheelImpressionTable = null;
+	protected $advertisementClickTable = null;
 	
-	public function __construct(AffiliateTable $affiliateTable, \Facebook $facebook)
+	public function __construct(AffiliateTable $affiliateTable, 
+			PrizeWheelTypeTable $prizeWheelTypeTable, 
+			PrizeWheelTable $prizeWheelTable, 
+			AdvertisementCategoryTable $advertisementCategoryTable, 
+			PrizeWheelEntryTable $prizeWheelEntryTable,
+			PrizeWheelImpressionTable $prizeWheelImpressionTable,
+			AdvertisementClickTable $advertisementClickTable, \Facebook $facebook)
 	{
 		$this->affiliateTable = $affiliateTable;
+		$this->prizeWheelTypeTable = $prizeWheelTypeTable;
+		$this->prizeWheelTable = $prizeWheelTable;
+		$this->advertisementCategoryTable = $advertisementCategoryTable;
+		$this->prizeWheelEntryTable = $prizeWheelEntryTable;
+		$this->prizeWheelImpressionTable = $prizeWheelImpressionTable;
+		$this->advertisementClickTable = $advertisementClickTable;
 		$this->facebook = $facebook;
 	}
 	
@@ -48,10 +72,24 @@ class AffiliateController extends FacebookAwareController
 		// Attempt to locate the Affiliate by the Facebook ID, if
 		// we cannot locate them, redirect to register action.
 		
+		$prizeWheelTypes = $this->prizeWheelTypeTable->fetchAll();
+		
+		$prizeWheels = $this->prizeWheelTable->fetchAllEnabledByAffiliateId($affiliate->id(), 1, 100);
+		$categories = $this->advertisementCategoryTable->fetchAll();
+		
+		foreach($prizeWheels as $prizeWheel){
+			$prizeWheel->plays($this->prizeWheelEntryTable->getCountByPrizeWheelId($prizeWheel->id()));
+			$prizeWheel->views($this->prizeWheelImpressionTable->getCountByPrizeWheelId($prizeWheel->id()));
+			$prizeWheel->advertisementClicks($this->advertisementClickTable->getCountByPrizeWheelId($prizeWheel->id()));
+		} // foreach
+		
 		// TODO Auto-generated AffiliateController::indexAction() default action
 		return new ViewModel(array(
 			'affiliate' => $affiliate,
-			'fbappid' => $this->getFacebookAppId()
+			'fbappid' => $this->getFacebookAppId(),
+			'prizewheeltypes' => $prizeWheelTypes,
+			'prizewheels' => $prizeWheels,
+			'categories' => $categories
 		));
 	}
 	

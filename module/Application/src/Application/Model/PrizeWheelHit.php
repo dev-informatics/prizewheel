@@ -19,7 +19,7 @@ abstract class PrizeWheelHit
 	
 	public function prizeWheelId($prizewheelid=0)
 	{
-		if(is_int($prizewheelid) && $prizewheelid > 0){
+		if(!empty($prizewheelid)){
 			$this->prizeWheelId = $prizewheelid;
 		} // if
 		return $this->prizeWheelId;

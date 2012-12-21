@@ -41,18 +41,18 @@ class AdvertisementImpressionTable
 		return $result;
 	}
 	
-	public function getAdvertisementImpressionByFacebookUserId($prizewheelid, $facebookuserid)
+	public function getAdvertisementImpressionByFacebookUserId($facebookuserid, $advertisementid)
 	{
-		$pid = (int)$prizewheelid;
+		$advertisementid = (int)$advertisementid;
 		$fid = (string)$facebookuserid;
 		
-		$results = $this->tableGateway->select(array('prizewheelid' => $pid, 'facebookuserid' => $fid));
+		$results = $this->tableGateway->select(array('advertisementid' => $advertisementid, 'facebookuserid' => $fid));
 		$result = $results->current();
-		
+	
 		if(!$result){
 			return null;
 		} // if
-		
+	
 		return $result;
 	}
 	
@@ -60,17 +60,18 @@ class AdvertisementImpressionTable
 	{
 		$fid = (string)$advertisementImpression->facebookUserId();
 		$pid = (int)$advertisementImpression->prizeWheelId();
-		
-		$data = $advertisementImpression->getArrayCopy();
-		unset($data['id']);
-		
+		$aid = (int)$advertisementImpression->advertisementId();
+	
+		$data = array(
+			'prizewheelid' => $advertisementImpression->prizeWheelId(),
+			'facebookuserid' => $advertisementImpression->facebookUserId(),
+			'advertisementid' => $advertisementImpression->advertisementId()
+		);
+
 		if(!empty($fid) && $pid > 0){
-			if(!$this->getAdvertisementImpressionByFacebookUserId($pid, $fid)){
+			if(!$this->getAdvertisementImpressionByFacebookUserId($fid, $aid)){
 				$this->tableGateway->insert($data);
 			} // if
-			else{
-				throw new \Exception("Advertisement Impression already exists for this Facebook User ID and PrizeWheel ID");
-			} // else
 		} // if
 		else{
 			

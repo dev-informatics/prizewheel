@@ -23,7 +23,7 @@ $this->headTitle($title);
 		<tr>
 			<th></th>
 			<th>Name</th>
-			<th>Category</th>
+			<th>Placement</th>
 			<th>Type</th>
 			<th>Redirect</th>
 			<th>Impressions</th>
@@ -37,7 +37,8 @@ $this->headTitle($title);
 		<?php foreach($this->advertisements as $advertisement):?>
 		<tr>
 			<td><a href="<?php echo $this->url('advertisement', array('action' => 'manage', 'id' => $advertisement->id()))?>">Manage</a></td>
-			<td><?php echo $this->escapeHtml($advertisement->name())?></td>			
+			<td><?php echo $this->escapeHtml($advertisement->name())?></td>	
+			<td><?php echo $this->escapeHtml($advertisement->placementTypeName())?></td>		
 			<td><?php echo $this->escapeHtml($advertisement->typeName())?></td>
 			<td><?php echo $this->escapeHtml($advertisement->url())?></td>
 			<td><?php echo $this->escapeHtml($advertisement->impressions())?></td>

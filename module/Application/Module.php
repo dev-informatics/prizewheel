@@ -139,6 +139,72 @@ class Module
     				$prototype = new ResultSet();
     				$prototype->setArrayObjectPrototype(new \Application\Model\AdvertisementPlacementType());
     				return new TableGateway('advertisement_placement_types', $adapter, null, $prototype);
+    			},
+    			'Application\Model\PrizeWheelTable' => function($sm){
+    				$tg = $sm->get('PrizeWheelTableGateway');
+    				$table = new \Application\Model\PrizeWheelTable($tg);
+    				return $table;    				
+    			},
+    			'PrizeWheelTableGateway' => function($sm){    				
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheel());
+    				return new TableGateway('prizewheels', $adapter, null, $prototype);
+    			},
+    			'Application\Model\PrizeWheelEntryTable' => function($sm){
+    				$tg = $sm->get('PrizeWheelEntryTableGateway');
+    				$table = new \Application\Model\PrizeWheelEntryTable($tg);
+    				return $table;    				
+    			},
+    			'PrizeWheelEntryTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheelEntry());
+    				return new TableGateway('prizewheel_entries', $adapter, null, $prototype);
+    			},
+    			'Application\Model\PrizeWheelTypeTable' => function($sm){
+    				$tg = $sm->get('PrizeWheelTypeTableGateway');
+    				$table = new \Application\Model\PrizeWheelTypeTable($tg);
+    				return $table;    				
+    			},
+    			'PrizeWheelTypeTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheelType());
+    				return new TableGateway('prizewheel_types', $adapter, null, $prototype);
+    			},
+    			'Application\Model\PrizeWheelEntryCategoryEntryTable' => function($sm){
+    				$tg = $sm->get('PrizeWheelEntryCategoryEntryTableGateway');
+    				$table = new \Application\Model\PrizeWheelEntryCategoryEntryTable($tg);
+    				return $table;
+    			},
+    			'PrizeWheelEntryCategoryEntryTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheelEntryCategoryEntry());
+    				return new TableGateway('prizewheel_entry_category_entries', $adapter, null, $prototype);    				
+    			},
+    			'Application\Model\PrizeWheelCategoryEntryTable' => function($sm){
+    				$tg = $sm->get('PrizeWheelCategoryEntryTableGateway');
+    				$table = new \Application\Model\PrizeWheelCategoryEntryTable($tg);
+    				return $table;    				
+    			},
+    			'PrizeWheelCategoryEntryTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheelCategoryEntry());
+    				return new TableGateway('prizewheel_category_entries', $adapter, null, $prototype);
+    			},
+    			'Application\Model\PrizeWheelImpressionTable' => function($sm){
+    				$tg = $sm->get('PrizeWheelImpressionTableGateway');
+    				$table = new \Application\Model\PrizeWheelImpressionTable($tg);
+    				return $table;    				
+    			},
+    			'PrizeWheelImpressionTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheelImpression());
+    				return new TableGateway('prizewheel_impressions', $adapter, null, $prototype);    				
     			}
     		)	
     	);
@@ -148,12 +214,32 @@ class Module
     {
     	return array(
     		'factories' => array(
+    			'Application\Controller\PrizeWheel' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$prizeWheelTable = $sm->get('Application\Model\PrizeWheelTable');
+    				$prizeWheelEntryTable = $sm->get('Application\Model\PrizeWheelEntryTable');
+    				$advertisementImpressionTable = $sm->get('Application\Model\AdvertisementImpressionTable');
+    				$affiliateTable = $sm->get('Application\Model\AffiliateTable');
+    				$advertisementTable = $sm->get('Application\Model\AdvertisementTable');
+    				$prizeWheelEntryCategoryEntryTable = $sm->get('Application\Model\PrizeWheelEntryCategoryEntryTable');
+    				$prizeWheelCategoryEntryTable = $sm->get('Application\Model\PrizeWheelCategoryEntryTable');
+    				$prizeWheelImpressionTable = $sm->get('Application\Model\PrizeWheelImpressionTable');
+    				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');
+    				$facebook = $sm->get('Facebook');
+    				$controller = new \Application\Controller\PrizeWheelController(
+    						$prizeWheelTable, $prizeWheelEntryTable, 
+    						$advertisementImpressionTable, $affiliateTable, $advertisementTable, 
+    						$prizeWheelEntryCategoryEntryTable, $prizeWheelCategoryEntryTable, 
+    						$prizeWheelImpressionTable, $advertisementCategoryTable, $facebook);
+    				
+    				return $controller;
+    			},
     			'Application\Controller\Advertiser' => function(ControllerManager $cm){
     				$sm = $cm->getServiceLocator();
     				$table = $sm->get('Application\Model\AdvertiserTable');
     				$advertisementTable = $sm->get('Application\Model\AdvertisementTable');
     				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
-    				$advertisementImpressionTable = $sm->get('Application\Model\AdvertisementImpressionTable');
+    				$advertisementImpressionTable = $sm->get('Application\Model\AdvertisementImpressionTable');    				
     				$facebook = $sm->get('Facebook');
     				$controller = new \Application\Controller\AdvertiserController($table, $advertisementTable, 
     						$advertisementClickTable, $advertisementImpressionTable, $facebook);
@@ -162,9 +248,18 @@ class Module
     			},
     			'Application\Controller\Affiliate' => function(ControllerManager $cm){
     				$sm = $cm->getServiceLocator();
-    				$table = $sm->get('Application\Model\AffiliateTable');
+    				$affiliateTable = $sm->get('Application\Model\AffiliateTable');
+    				$prizeWheelTypeTable = $sm->get('Application\Model\PrizeWheelTypeTable');
+    				$prizeWheelTable = $sm->get('Application\Model\PrizeWheelTable');
+    				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');
+    				$prizeWheelEntryTable = $sm->get('Application\Model\PrizeWheelEntryTable');
+    				$prizeWheelImpressionTable = $sm->get('Application\Model\PrizeWheelImpressionTable');
+    				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
     				$facebook = $sm->get('Facebook');
-    				$controller = new \Application\Controller\AffiliateController($table, $facebook);
+    				$controller = new \Application\Controller\AffiliateController(
+    						$affiliateTable, $prizeWheelTypeTable, $prizeWheelTable, 
+    						$advertisementCategoryTable, $prizeWheelEntryTable, 
+    						$prizeWheelImpressionTable, $advertisementClickTable, $facebook);
     				
     				return $controller;
     			},

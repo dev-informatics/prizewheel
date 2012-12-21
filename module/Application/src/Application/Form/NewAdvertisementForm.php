@@ -134,24 +134,27 @@ class NewAdvertisementForm extends Form
 					"options" => array(
 						"encoding" => "UTF-8",
 						"min" => 1,
-						"max" => `150`
+						"max" => 150
 					)		
 				)		
 			)
-		)));
-		
+		)));		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "description",
-			"required" => false	
-		)));
-		
+			"required" => false,
+			"filters" => array(
+				array("name" => "StripTags"),
+				array("name" => "StringTrim")
+			)	
+		)));		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "url",
 			"requred" => "true",
 			"filters" => array(
 				array("name" => "StringTrim")
 			),
-			"validtors" => array(
+			"validators" => array(
+				array("name" => "NotEmpty"),
 				array(
 					"name" => "StringLength",
 					"options" => array(
@@ -161,29 +164,48 @@ class NewAdvertisementForm extends Form
 					)
 				)
 			)	
-		)));
-		
+		)));		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "typeid",
 			"required" => true,
 			"filters" => array(
 				array("name" => "Int")
+			),
+			'validators' => array(
+				array('name' => 'Digits')
 			)
-		)));
-		
+		)));		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "categories",
 			"required" => true
-		)));
-		
+		)));		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "advertisementplacementtypeid",
-			"required" => true
-		)));
-		
+			"required" => true,
+			"filters" => array(
+				array("name" => "Int")
+			),
+			'validators' => array(
+				array('name' => 'Digits')
+			)
+		)));		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "bannerimage",
 			"required" => true,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 150
+					)		
+				)
+			)
 		)));
 		
 		return $inputFilter;

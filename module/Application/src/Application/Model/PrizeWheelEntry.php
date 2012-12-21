@@ -5,16 +5,16 @@ namespace Application\Model;
 class PrizeWheelEntry
 {
 	protected $id;
-	protected $prizeWheelId;
-	protected $facebookUserId;
-	protected $firstName;
-	protected $lastName;
-	protected $emailAddress;
-	protected $telephone;
-	protected $ipAddress;
-	protected $playTime;
-	protected $prize;	
-	protected $exported;
+	protected $prizeWheelId = 0;
+	protected $facebookUserId = "";
+	protected $firstName = "";
+	protected $lastName = "";
+	protected $emailAddress = "";
+	protected $telephone = "";
+	protected $ipAddress = "";
+	protected $playTime = "";
+	protected $prize = "";	
+	protected $exported = false;
 	
 	public function id($id=0)
 	{
@@ -26,7 +26,7 @@ class PrizeWheelEntry
 	
 	public function prizeWheelId($prizewheelid=0)
 	{
-		if(is_int($prizewheelid) && $prizewheelid > 0){
+		if(!empty($prizewheelid)){
 			$this->prizeWheelId = $prizewheelid;
 		} // if
 		return $this->prizeWheelId;
@@ -112,16 +112,16 @@ class PrizeWheelEntry
 	public function exchangeArray($data)
 	{
 		$this->id = (isset($data['id'])) ? $data['id'] : 0;
-		$this->prizeWheelid = (isset($data['prizewheelid'])) ? $data['prizewheelid'] : 0;
-		$this->facebookUserId = (isset($data['facebookuserid'])) ? $data['facebookuserid'] : null;
-		$this->firstName = (isset($data['firstname'])) ? $data['firstname'] : null;
-		$this->lastName = (isset($data['lastname'])) ? $data['lastname'] : null;
-		$this->emailAddress = (isset($data['emailaddress'])) ? $data['emailaddress'] : null;
-		$this->telephone = (isset($data['telephone'])) ? $data['telephone'] : null;
-		$this->ipAddress = (isset($data['ipaddress'])) ? $data['ipaddress'] : null;
-		$this->playTime = (isset($data['playtime'])) ? $data['playtime'] : null;
-		$this->prize = (isset($data['prize'])) ? $data['prize'] : null;
-		$this->exported = (isset($data['exported'])) ? $data['exported'] : null;
+		$this->prizeWheelId = (isset($data['prizewheelid'])) ? $data['prizewheelid'] : 0;
+		$this->facebookUserId = (isset($data['facebookuserid'])) ? $data['facebookuserid'] : "";
+		$this->firstName = (isset($data['firstname'])) ? $data['firstname'] : "";
+		$this->lastName = (isset($data['lastname'])) ? $data['lastname'] : "";
+		$this->emailAddress = (isset($data['emailaddress'])) ? $data['emailaddress'] : "";
+		$this->telephone = (isset($data['telephone'])) ? $data['telephone'] : "";
+		$this->ipAddress = (isset($data['ipaddress'])) ? $data['ipaddress'] : "";
+		$this->playTime = (isset($data['playtime'])) ? $data['playtime'] : "";
+		$this->prize = (isset($data['prize'])) ? $data['prize'] : "";
+		$this->exported = (isset($data['exported'])) ? $data['exported'] : false;
 	}
 	
 	public function getArrayCopy()

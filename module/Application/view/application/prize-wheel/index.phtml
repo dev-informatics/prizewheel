@@ -1,1 +1,85 @@
 <?php
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<script src="/js/AC_RunActiveContent.js" type="text/javascript"></script>
+		<script type="text/javascript" src="https://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+		<script type="text/javascript" src="/js/jquery.min.js"></script>
+		<script type="text/javascript">
+			var date = new Date();	
+	
+			$(document).ready(function(){
+	
+				$("#embed-spin-wheel").attr("src", "/content/spinwheel3.swf?xmlfile=/prize-wheel/settings/<?php echo $this->prizewheel->Id()?>?time=" + date.getMilliseconds());
+				$("#flash-vars").attr("value", "xmlfile=/prize-wheel/settings/<?php echo $this->escapeHtml($this->prizewheel->Id())?>?time=" + date.getMilliseconds());
+				
+				$("#share-fb-link-btn").click(function(){
+						
+					FB.ui({
+						method: 'feed',
+						name: 'Prize Wheel',
+						link: 'https://facebook.com/<?php echo $this->escapeHtml($this->facebookpagename)?>/app_<?php echo $this->escapeHtml($this->facebookappid)?>',
+						picture : '',
+						caption: 'Play the Prize Wheel today!',
+						description: 'The Prize Wheel is a Facebook game of chance',
+						message: 'Come spin the Prize Wheel today for the chance to win awesome prizes!'
+					});
+				});
+			});
+				
+			FB.init({
+				appId: '<?php echo $this->escapeHtml($this->facebookappid)?>',
+				status: true,
+				cookie: true,
+				xfbml: true
+			});
+				
+			window.fbAsyncInit = function(){
+				FB.Canvas.setAutoGrow();			
+			}
+		</script>
+		<style type="text/css">
+			body 
+			{
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body onload="FB.Canvas.setSize({ width: 800, height: 700})">
+		<div id="fb-root"></div>		
+		<table>
+			<tr>
+				<td>
+					<script type="text/javascript">
+						AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0','width','800','height','500','title','flash','src','/content/spinwheel3',
+							'quality','high','pluginspage','http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash','movie','/content/spinwheel3','FlashVars',
+							'xmlfile=/prize-wheel/settings/<?php echo $this->prizewheel->Id()?>?time=' + date.getMilliseconds() 
+						); //end AC code
+					</script>
+					<noscript>
+						<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0" width="800" height="500" title="flash">
+							<param name="movie" value="/content/spinwheel3.swf" />
+				  			<param name="quality" value="high" />
+				  			<param id="flash-vars" name="FlashVars" value="xmlfile=xmlgenerator.php" />
+				 		 	<embed id="embed-spin-wheel" src="/content/spinwheel3.swf?xmlfile=xmlgenerator.php" quality="high" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="800" height="500"></embed>
+						</object>
+					</noscript>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button id="share-fb-link-btn" type="button">
+						Share it with your Friends!
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="fb-comments" data-href="https://fbstaging.ecrmplus.net:9090/prize-wheel/index/<?php echo $this->escapeHtml($this->prizewheel->Id())?>" data-width="790" data-num-posts="10"></div>
+				</td>
+			</tr>
+		</table>	
+	</body>
+</html>

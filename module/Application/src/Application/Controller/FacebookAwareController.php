@@ -54,4 +54,9 @@ abstract class FacebookAwareController extends AbstractActionController
 	{
 		return $this->facebook->getSignedRequest();
 	}
+	
+	protected function getApiResult($call)
+	{
+		return $this->facebook->api($call);
+	}
 }

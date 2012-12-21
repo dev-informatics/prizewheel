@@ -17,6 +17,10 @@ return array(
         			'constraints' => array(
         				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
         				'id' => '[0-9]+'
+        			),
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\PrizeWheel',
+        				'action' => 'index'
         			)
         		)	
         	),
@@ -74,6 +78,21 @@ return array(
         				'action' => 'index'
         			)
         		)
+        	),
+        	'ads' => array(
+	        	'type' => 'segment',
+	        	'options' => array(
+	        		'route' => '/ads[/:action][/:id][/:prizewheelid]',
+	        		'constraints' => array(
+	        			'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+	        			'id' => '[0-9]+',
+	        			'prizewheelid' => '[0-9]+'
+	        		),
+	        		'defaults' => array(
+	        			'controller' => 'Application\Controller\Advertisement',
+	        			'action' => 'click'
+	        		)
+	        	)
         	),
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
@@ -176,6 +195,9 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+        	'ViewJsonStrategy'
         ),
         'template_map' => array(
         	'application/partial/registration' => __DIR__ . '/../view/partial/registration.phtml'

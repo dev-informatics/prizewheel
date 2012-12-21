@@ -36,6 +36,24 @@ class AdvertisementClickTable
 		return $count;
 	}
 	
+	public function getCountByPrizeWheelId($prizewheelid)
+	{
+		$prizewheelid = (int)$prizewheelid;
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement(
+				"SELECT count(id) as count FROM advertisement_clicks WHERE prizewheelid = ?", array($prizewheelid));
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result || !isset($result['count'])){
+			return 0;
+		} // if
+		
+		return $result['count'];
+	}
+	
 	public function getAdvertisementClick($id)
 	{
 		$id = (int)$id;
@@ -49,15 +67,16 @@ class AdvertisementClickTable
 		return $result;
 	}
 	
-	public function getAdvertisementClickByFacebookUserId($id, $facebookuserid)
+	public function getAdvertisementClickByFacebookUserId($facebookuserid, $advertisementid)
 	{
 		$fid = (string)$facebookuserid;
-		$id = (int)$id;
-		$results = $this->tableGateway->select(array('id' => $id, 'facebookuserid' => $fid));
+		$id = (int)$advertisementid;
+		
+		$results = $this->tableGateway->select(array('advertisementid' => $id, 'facebookuserid' => $fid));
 		$result = $results->current();
 		
 		if(!$result){
-			throw new \Exception("Could not locate an Advertisement Click with the id of $id and Facebook User ID of $fid");
+			return null;
 		} // if
 		
 		return $result;
@@ -66,6 +85,8 @@ class AdvertisementClickTable
 	public function save(AdvertisementClick $advertisementClick)
 	{
 		$id = (int)$advertisementClick->id();
+		$aid = (int)$advertisementClick->advertisementId();
+		$fid = (string)$advertisementClick->facebookUserId();		
 		
 		$data = array(
 			'advertisementid' => $advertisementClick->advertisementId(),
@@ -74,7 +95,7 @@ class AdvertisementClickTable
 		);	
 		
 		if($id <= 0){
-			if($this->getAdvertisementClickByFacebookUserId($advertisementClick->facebookUserId())){
+			if($this->getAdvertisementClickByFacebookUserId($fid, $aid)){
 				throw new AdvertisementClickSaveException("A Facebook User has already executed a Click for this Advertisement");
 			} // if
 			else{

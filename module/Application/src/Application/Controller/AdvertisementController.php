@@ -48,7 +48,9 @@ class AdvertisementController extends FacebookAwareController
 		$prizewheelid = $this->params()->fromRoute('prizewheelid', 0);
 		
 		if(!$this->isLoggedIntoFacebook()){
-			return $this->redirect()->toUrl($this->fetchLoginUrl("/advertisement/click/".$id));
+			return $this->response->setContent(
+					'<script type="text/javascript">window.location = \''. 	
+					$this->fetchLoginUrl("/advertisement/click/".$id) . '\';</script>');
 		} // if
 		
 		// Check token here.
@@ -284,20 +286,24 @@ class AdvertisementController extends FacebookAwareController
 					else {
 						$this->advertisementCategoryEntryTable->deleteByAdvertisementId($advertisement->id());
 						
-						foreach($form->getData()['categories'] as $categoryid){
+						$formData = $form->getData();
 						
-							$entry = new AdvertisementCategoryEntry();
-						
-							$entry->advertisementCategoryId($categoryid);
-							$entry->advertisementId($advertisement->id());
-						
-							try{
-								$this->advertisementCategoryEntryTable->save($entry);
-							} // try
-							catch(\Exception $e){
-								error_log("Prize Wheel Exception: " . $e->getMessage());
-							} // catch
-						} // foreach
+						if(isset($formData['categories'])){
+							foreach($formData['categories'] as $categoryid){
+							
+								$entry = new AdvertisementCategoryEntry();
+							
+								$entry->advertisementCategoryId($categoryid);
+								$entry->advertisementId($advertisement->id());
+							
+								try{
+									$this->advertisementCategoryEntryTable->save($entry);
+								} // try
+								catch(\Exception $e){
+									error_log("Prize Wheel Exception: " . $e->getMessage());
+								} // catch
+							} // foreach
+						} // if
 						
 						return $this->redirect()->toRoute('advertisement', array('action' => 'manage', 'id' => $advertisement->id()));
 					} // else

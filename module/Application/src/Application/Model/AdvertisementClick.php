@@ -8,7 +8,7 @@ class AdvertisementClick extends PrizeWheelHit
 	
 	public function advertisementId($advertisementid=0)
 	{
-		if(is_int($advertisementid) && $advertisementid > 0){
+		if(!empty($advertisementid)){
 			$this->advertisementId = $advertisementid;
 		} // if
 		return $this->advertisementId;

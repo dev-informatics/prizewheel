@@ -19,9 +19,8 @@ class AdvertisementTable
 		$select = new \Zend\Db\Sql\Select();
 		
 		$select->from('advertisements')
-		       ->join(array("adt" => "advertisement_types"),
-			     	'advertisements.typeid = adt.id',
-					array("typename" => "name"))
+		       ->join(array('adt' => 'advertisement_types'), 'advertisements.typeid = adt.id', array('typename' => 'name'))
+			   ->join(array('apt' => 'advertisement_placement_types'), 'apt.id = advertisements.advertisementplacementtypeid', array('placementtypename' => 'name'))
 			   ->where(array('advertiserid' => $id));
 
 		$results = $this->tableGateway->selectWith($select);
@@ -45,9 +44,8 @@ class AdvertisementTable
 		$select = new \Zend\Db\Sql\Select();
 		
 		$select->from('advertisements')
-		       ->join(array("adt" => "advertisement_types"),
-			     	'advertisements.typeid = adt.id',
-					array("typename" => "name"))
+		       ->join(array('adt' => 'advertisement_types'), 'advertisements.typeid = adt.id', array('typename' => 'name'))
+			   ->join(array('apt' => 'advertisement_placement_types'), 'apt.id = advertisements.advertisementplacementtypeid', array('placementtypename' => 'name'))
 			   ->where(array('advertiserid' => $id, 'advertisements.enabled' => 1));	       
 
 		$results = $this->tableGateway->selectWith($select);
@@ -75,6 +73,74 @@ class AdvertisementTable
 		if(!$result){
 			return null;
 		} // if
+		
+		return $result;
+	}
+	
+	public function getCountOfPlacementType($placementTypeId, $categories=array())
+	{
+		$id = (int)$placementTypeId;
+		
+		$query = "";
+		
+		if(count($categories) > 0){
+			$query = "SELECT count(advertisements.id) as `count` FROM `advertisements` INNER JOIN `advertisement_category_entries` ace ON ace.advertisementid = advertisements.id WHERE advertisementplacementtypeid = ? AND ace.advertisementcategoryid IN (";
+			
+			foreach($categories as $category){
+				$query .= $category . ",";
+			} // foreach
+			
+			$query = rtrim($query, ',');
+			
+			$query .= ")";
+		} // if
+		else{
+			$query = "SELECT count(id) as `count` FROM `advertisements` WHERE advertisementplacementtypeid = ?";
+		} // else
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement($query, array($id));
+		
+		$results = $stmt->execute();
+		
+		$count = $results->current()['count'];
+
+		return $count;
+	}
+	
+	public function getRandomOfPlacementType($placementTypeId, $categories=array())
+	{
+		$count = $this->getCountOfPlacementType($placementTypeId, $categories);
+
+		$offset = rand(0, $count - 1);
+		
+		$select = new \Zend\Db\Sql\Select();
+		
+		$select->from($this->tableGateway->getTable());
+		
+		$where = new \Zend\Db\Sql\Where();
+		
+		$where = $where->equalTo('advertisementplacementtypeid', $placementTypeId);
+
+		if(count($categories) > 0){
+			
+			$select->join(array('ace' => 'advertisement_category_entries'), 'ace.advertisementid = advertisements.id', array());
+			
+			$categorylist = array();
+			
+			foreach($categories as $category){
+				$categorylist[] = $category;				
+			} // foreach		
+			
+			$where = $where->in('ace.advertisementcategoryid', $categorylist);
+		} // if
+	
+		$select->where($where)
+			   ->offset($offset)
+			   ->limit(1);
+
+		$results = $this->tableGateway->selectWith($select);
+			
+		$result = $results->current();
 		
 		return $result;
 	}

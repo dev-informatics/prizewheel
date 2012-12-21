@@ -37,7 +37,7 @@ class IndexController extends FacebookAwareController
     }
     
     public function termsAction()
-    {
+    {    	
     	return new ViewModel();
     }
     
