@@ -1,0 +1,27 @@
+<?php
+
+$this->layout("layout/admin_layout");
+$title = "Admin Settings";
+$this->headTitle($title);
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('settings'));
+$form->prepare();
+?>
+
+<div>
+	<a href="<?php echo $this->url('authentication', array('action' => 'manage'))?>">Manage Admin User</a>
+</div>
+
+<br/>
+
+<h2>Settings</h2>
+
+<?php echo $this->form()->openTag($form)?>
+<?php echo $this->formRow($form->get('affiliate-payout-rate'))?>
+<?php echo $this->formRow($form->get('paypal-button-code'))?>
+<br/>
+<button type="submit">
+	Save
+</button>
+<?php echo $this->form()->closeTag()?>

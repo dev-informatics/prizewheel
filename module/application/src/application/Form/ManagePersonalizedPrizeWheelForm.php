@@ -11,10 +11,11 @@ class ManagePersonalizedPrizeWheelForm extends Form
 {
 	protected $inputFilter = null;
 	
-	public function __construct($name='', $advertisementCategories=array())
+	public function __construct($name='', $advertisementCategories=array(), $displayenabled=false)
 	{
 		parent::__construct("manage-prize-wheel");
 		$this->setAttribute("method", "post");
+		$this->setAttribute("enctype", "multipart/form-data");
 		
 		$options = array();
 		foreach($advertisementCategories as $category){
@@ -62,9 +63,9 @@ class ManagePersonalizedPrizeWheelForm extends Form
 		));		
 		$this->add($firstText);
 		
-		$rulesText = new \Zend\Form\Element\Textarea("rulestext");
+		$rulesText = new \Zend\Form\Element\Textarea("textrules");
 		$rulesText->setAttributes(array(
-			'id' => 'rulestext',
+			'id' => 'textrules',
 			'style' => 'width: 400px; height: 150px;'	
 		));
 		$rulesText->setOptions(array(
@@ -171,6 +172,33 @@ class ManagePersonalizedPrizeWheelForm extends Form
 			)
 		));
 		
+		$resetBackImageCheckbox = new \Zend\Form\Element\Checkbox("resetbackimage");
+		$resetBackImageCheckbox->setAttributes(array(
+					'id' => 'resetbackimage'
+				));
+		$resetBackImageCheckbox->setOptions(array(
+					'label' => 'Reset'
+				));
+		$this->add($resetBackImageCheckbox);
+		
+		$resetTopImageCheckbox = new \Zend\Form\Element\Checkbox("resettopimage");
+		$resetTopImageCheckbox->setAttributes(array(
+				'id' => 'resettopimage'
+		));
+		$resetTopImageCheckbox->setOptions(array(
+				'label' => 'Reset'
+		));
+		$this->add($resetTopImageCheckbox);
+		
+		$resetButtonImageCheckbox = new \Zend\Form\Element\Checkbox("resetbuttonimage");
+		$resetButtonImageCheckbox->setAttributes(array(
+				'id' => 'resetbuttonimage'
+		));
+		$resetButtonImageCheckbox->setOptions(array(
+				'label' => 'Reset'
+		));
+		$this->add($resetButtonImageCheckbox);
+		
 		foreach($this->getPrizeNameNumericalStrings() as $number){
 			$this->add(array(
 				"name" => "prize" . $number . "name",
@@ -209,6 +237,19 @@ class ManagePersonalizedPrizeWheelForm extends Form
 				"options" => array(
 					"label" => "Prize " . ucfirst($number) . " Text"
 				)
+			));
+			
+			$this->add(array(
+				"name" => "prize" . $number . "textsize",
+				"attributes" => array(
+					"id" => "prize" . $number . "textsize",
+					"type" => "text",
+					"maxlength" => 2,
+					"style" => "width: 100px"
+				),
+				"options" => array(
+					"label" => "Prize " . ucfirst($number) . " Text Size"
+				)	
 			));
 			
 			$this->add(array(
@@ -423,6 +464,17 @@ class ManagePersonalizedPrizeWheelForm extends Form
 		));
 		$this->add($emailBody);
 		
+		if($displayenabled){
+			$enabled = new \Zend\Form\Element\Checkbox("enabled");
+			$enabled->setAttributes(array(
+					'id' => 'enabled'
+			));
+			$enabled->setOptions(array(
+					'label' => 'Enabled'
+			));
+			$this->add($enabled);
+		} // if
+		
 		$this->inputFilter = $this->getDefaultInputFilter();
 	}
 	
@@ -482,8 +534,8 @@ class ManagePersonalizedPrizeWheelForm extends Form
 		)));
 		
 		$inputFilter->add($factory->createInput(array(
-			"name" => "rulestext",
-			"required" => false,
+			"name" => "textrules",
+			"required" => true,
 			"filters" => array(
 				array("name" => "StringTrim"),
 				array("name" => "StripTags")
@@ -666,7 +718,6 @@ class ManagePersonalizedPrizeWheelForm extends Form
 					array("name" => "StripTags")
 				),
 				"validators" => array(
-					array("name" => "NotEmpty"),
 					array(
 						"name" => "StringLength",
 						"options" => array(
@@ -685,8 +736,7 @@ class ManagePersonalizedPrizeWheelForm extends Form
 					array("name" => "StringTrim"),
 					array("name" => "StripTags")
 				),
-				"validators" => array(
-					array("name" => "NotEmpty"),
+				"validators" => array(				
 					array(
 						"name" => "StringLength",
 						"options" => array(
@@ -699,8 +749,21 @@ class ManagePersonalizedPrizeWheelForm extends Form
 			)));
 			
 			$inputFilter->add($factory->createInput(array(
-				"name" => "prize".$numerical."image",
+				"name" => "prize".$numerical."textsize",
 				"required" => true,
+				"filters" => array(
+					array("name" => "StringTrim"),
+					array("name" => "StripTags"),
+					array("name" => "Int")
+				),
+				"validators" => array(
+					array("name" => "Digits")
+				)
+			)));
+			
+			$inputFilter->add($factory->createInput(array(
+				"name" => "prize".$numerical."image",
+				"required" => false,
 				"filters" => array(
 					array("name" => "StringTrim"),
 					array("name" => "StripTags")
@@ -725,8 +788,7 @@ class ManagePersonalizedPrizeWheelForm extends Form
 					array("name" => "StringTrim"),
 					array("name" => "StripTags")
 				),
-				"validators" => array(
-					array("name" => "Hostname"),
+				"validators" => array(					
 					array("name" => "NotEmpty"),
 					array(
 						"name" => "StringLength",
@@ -752,7 +814,302 @@ class ManagePersonalizedPrizeWheelForm extends Form
 			)));
 		} // foreach
 		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "backimage",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array("name" => "NotEmpty"),
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 300
+					)
+				)
+			)
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "topimage",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array("name" => "NotEmpty"),
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 300
+					)
+				)
+			)
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "backimage",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array("name" => "NotEmpty"),
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 300
+					)
+				)
+			)
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "buttonimage",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 300
+					)
+				)
+			)
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+						"name" => "sendemailnotifications",
+						"required" => true	
+					)));
+		
+		$inputFilter->add($factory->createInput(array(
+					"name" => "smtpserver",
+					"required" => false,
+					"filters" => array(
+						array("name" => "StringTrim"),
+						array("name" => "StripTags")
+					),
+					"validators" => array(
+						array("name" => "Hostname"),
+						array(
+							"name" => "StringLength",
+							"options" => array(
+								"encoding" => "UTF-8",
+								"min" => 1,
+								"max" => 100
+							)		
+						)
+					)	
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
+					'name' => 'notificationemailaddress',
+					'required' => false,
+					'filters' => array(
+						array("name" => "StringTrim"),
+						array("name" => "StripTags")
+					),
+					'validators' => array(
+						array('name' => 'EmailAddress'),
+						array(
+							'name' => 'StringLength',
+							'options' => array(
+									'encoding' => 'UTF-8',
+									'min' => 1,
+									'max' => 300
+								)		
+						)
+					)
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "smtpusername",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 150
+					)
+				)
+			)	
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "smtppassword",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 50
+					)
+				)
+			)	
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "smtpport",
+			"required" => false,
+			"filters" => array(
+				array("name" => "Int")
+			),
+			"validators" => array(
+				array("name" => "Digits")
+			)	
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "smtpfromaddress",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array("name" => "EmailAddress"),
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 150					
+					)		
+				)
+			)
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+				"name" => "smtpencryption",
+				"required" => false,
+				"filters" => array(
+					array("name" => "StringTrim"),
+					array("name" => "StripTags")
+				),
+				"validators" => array(
+					array('name' => 'NotEmpty'),
+					array(
+						"name" => "StringLength",
+						"options" => array(
+							"encoding" => "UTF-8",
+							"min" => 1,
+							"max" => 150					
+						)		
+					)
+				)
+			)));
+		
+		$inputFilter->add($factory->createInput(array(
+				"name" => "smtpauthmethod",
+				"required" => false,
+				"filters" => array(
+					array("name" => "StringTrim"),
+					array("name" => "StripTags")
+				),
+				"validators" => array(
+					array('name' => 'NotEmpty'),
+					array(
+						"name" => "StringLength",
+						"options" => array(
+							"encoding" => "UTF-8",
+							"min" => 1,
+							"max" => 150					
+						)		
+					)
+				)	
+			))); 
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "notificationemailsubject",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 300
+					)
+				)
+			)	
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "notificationemailbody",
+			"required" => false,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			)	
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+				'name' => 'enabled',
+				'required' => false
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+					"name" => "resetbackimage",
+					"required" => false
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
+					"name" => "resettopimage",
+					"required" => false
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
+					"name" => "resetbuttonimage",
+					"required" => false
+				)));
+		
 		return $inputFilter;
+	}
+	
+	public function setInputFilter(\Zend\InputFilter\InputFilterInterface $inputFilter)
+	{
+		$this->inputFilter = $inputFilter;
+	}
+	
+	public function getInputFilter()
+	{
+		if(!$this->inputFilter){
+			$this->inputFilter = $this->getDefaultInputFilter();
+		} // if
+		
+		return $this->inputFilter;
 	}
 	
 	private function getPrizeNameNumericalStrings()

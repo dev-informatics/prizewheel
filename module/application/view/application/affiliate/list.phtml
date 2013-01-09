@@ -1,0 +1,103 @@
+<?php
+
+$this->layout("layout/admin_layout");
+$title = "Affiliates";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
+
+<h2>Affiliates</h2>
+
+<div id="paginator"></div>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th style="text-align: left;">Enabled</th>
+			<th style="text-align: left;">Name</th>
+			<th style="text-align: left;">Address1</th>
+			<th style="text-align: left;">Address2</th>
+			<th style="text-align: left;">City</th>
+			<th style="text-align: left;">State</th>
+			<th style="text-align: left;">Country</th>
+			<th style="text-align: left;">Postal</th>
+			<th style="text-align: left;">E-Mail</th>
+			<th style="text-align: left;">Telephone</th>
+		</tr>
+	</thead>
+	<tbody id="list-body">
+		<?php foreach($this->affiliates as $affiliate):?>
+		<tr>
+			<td>
+				<a href="<?php echo $this->url('affiliate', array('action' => 'manage', 'id' => $affiliate->id()))?>">View</a>
+			</td>
+			<td>
+				<?php if($affiliate->enabled()):?>
+				<input type="checkbox" id="affiliate-status-<?php echo $this->escapeHtml($affiliate->id())?>" checked="checked" />
+				<?php else:?>
+				<input type="checkbox" id="affiliate-status-<?php echo $this->escapeHtml($affiliate->id())?>" />
+				<?php endif;?>
+			</td>
+			<td><?php echo $this->escapeHtml($affiliate->name())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->address1())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->address2())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->city())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->state())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->country())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->postal())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->emailAddress())?></td>
+			<td><?php echo $this->escapeHtml($affiliate->telephone())?></td>
+		</tr>
+		<?php endforeach;?>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('affiliate', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber,
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.affiliates, function(index, affiliate){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/affiliate/manage/' + affiliate.id + '">View</a></td>'));							
+							if(affiliate.enabled){
+								row.append($('<td><input type="checkbox" id="affiliate-status-<?php echo $affiliate->id()?>" checked="checked" /></td>'));
+							} // if
+							else{
+								row.append($('<td><input type="checkbox" id="affiliate-status-<?php echo $affiliate->id()?>" /></td>'));
+							} // else
+							row.append($('<td>' + affiliate.name + '</td>'));
+							row.append($('<td>' + affiliate.address1 + '</td>'));
+							row.append($('<td>' + affiliate.address2 + '</td>'));
+							row.append($('<td>' + affiliate.city + '</td>'));
+							row.append($('<td>' + affiliate.state + '</td>'));
+							row.append($('<td>' + affiliate.country + '</td>'));
+							row.append($('<td>' + affiliate.postal + '</td>'));
+							row.append($('<td>' + affiliate.emailaddress + '</td>'));
+							row.append($('<td>' + affiliate.telephone + '</td>'));
+							
+							listBody.append(row);	
+						});
+					}
+				});
+			}
+		});
+	});
+</script>

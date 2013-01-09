@@ -3,6 +3,6 @@
 $title = "Non-Fan Prize Wheel View";
 $this->headTitle($title);
 
-$nonFanImage = $this->nonfanimage;
+$prizeWheel = $this->prizewheel;
 ?>
-<img src="<?php echo $nonFanImage?>" alt="Non-Fan Image" />
+<img src="/images/prizewheels/<?php echo $prizeWheel->id()?>/<?php echo $prizeWheel->forceLikeImage()?>" alt="Non-Fan Image" />

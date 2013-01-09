@@ -4,12 +4,12 @@ namespace Application\Model;
 
 class AdvertisementCategory
 {
-	protected $id;
-	protected $name;
-	protected $description;
-	protected $clickRate;
-	protected $impressionRate;
-	protected $enabled;
+	protected $id = 0;
+	protected $name = "";
+	protected $description = "";
+	protected $clickRate = 0.00;
+	protected $impressionRate = 0.00;
+	protected $enabled = false;
 	
 	public function id($id=0)
 	{
@@ -66,12 +66,12 @@ class AdvertisementCategory
 	
 	public function exchangeArray($data)
 	{
-		$this->id = (isset($data['id'])) ? $data['id'] : 0;
-		$this->name = (isset($data['name'])) ? $data['name'] : null;
-		$this->description = (isset($data['description'])) ? $data['description'] : null;
-		$this->clickRate = (isset($data['clickrate'])) ? $data['clickrate'] : 0.00;
-		$this->impressionRate = (isset($data['impressionrate'])) ? $data['impressionrate'] : 0.00;
-		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : false;
+		$this->id = (isset($data['id'])) ? $data['id'] : $this->id;
+		$this->name = (isset($data['name'])) ? $data['name'] : $this->name;
+		$this->description = (isset($data['description'])) ? $data['description'] : $this->description;
+		$this->clickRate = (isset($data['clickrate'])) ? $data['clickrate'] : $this->clickRate;
+		$this->impressionRate = (isset($data['impressionrate'])) ? $data['impressionrate'] : $this->impressionRate;
+		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : $this->enabled;
 	}
 
 	public function getArrayCopy()

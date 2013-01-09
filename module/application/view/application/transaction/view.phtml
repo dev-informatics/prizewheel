@@ -1,0 +1,99 @@
+<?php
+
+$this->layout($this->layoutpath);
+$transaction = $this->transaction;
+$title = "View Transaction " . $transaction->id();
+$this->headTitle($title);
+?>
+
+<h2><?php echo $this->escapeHtml($title)?></h2>
+
+<table>
+	<tr>
+		<td>ID</td>
+		<td><?php echo $this->escapeHtml($transaction->id())?></td>
+	</tr>
+	<tr>
+		<td>Advertisement</td>
+		<td><?php echo $this->escapeHtml($transaction->advertisementName())?></td>
+	</tr>
+	<tr>
+		<td>Advertiser</td>
+		<td><?php echo $this->escapeHtml($transaction->advertiserName())?></td>
+	</tr>
+	<tr>
+		<td>First Name</td>
+		<td><?php echo $this->escapeHtml($transaction->firstName())?></td>
+	</tr>
+	<tr>
+		<td>Last Name</td>
+		<td><?php echo $this->escapeHtml($transaction->lastName())?></td>
+	</tr>
+	<tr>
+		<td>Address1</td>
+		<td><?php echo $this->escapeHtml($transaction->address1())?></td>
+	</tr>
+	<tr>
+		<td>Address2</td>
+		<td><?php echo $this->escapeHtml($transaction->address2())?></td>
+	</tr>
+	<tr>
+		<td>City</td>
+		<td><?php echo $this->escapeHtml($transaction->city())?></td>
+	</tr>
+	<tr>
+		<td>State</td>
+		<td><?php echo $this->escapeHtml($transaction->state())?></td>
+	</tr>
+	<tr>
+		<td>Country</td>
+		<td><?php echo $this->escapeHtml($transaction->country())?></td>
+	</tr>
+	<tr>
+		<td>Postal</td>
+		<td><?php echo $this->escapeHtml($transaction->postal())?></td>
+	</tr>
+	<tr>
+		<td>Processor</td>
+		<td><?php echo $this->escapeHtml($transaction->processor())?></td>
+	</tr>
+	<tr>
+		<td>Amount</td>
+		<td><?php echo $this->escapeHtml(number_format($transaction->amount(), 2, '.', ','))?></td>
+	</tr>
+	<tr>
+		<td>Payment ID</td>
+		<td><?php echo $this->escapeHtml($transaction->paymentId())?></td>
+	</tr>
+	<tr>
+		<td>Status</td>
+		<td><?php echo $this->escapeHtml($transaction->status())?></td>
+	</tr>
+	<tr>
+		<td>Memo</td>
+		<td><?php echo $this->escapeHtml($transaction->memo())?></td>
+	</tr>
+	<tr>
+		<td>IP Address</td>
+		<td><?php echo $this->escapeHtml($transaction->ipAddress())?></td>
+	</tr>
+	<tr>
+		<td>Created</td>
+		<td><?php echo $this->escapeHtml($transaction->createDateTime())?></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<button id="complete" type="button">
+				Finished
+			</button>
+		</td>
+	</tr>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#complete").click(function(){
+			window.top.location = '<?php echo $this->isadmin ? $this->url('transaction', array('action' => 'list')) : $this->url('advertiser')?>';
+		});
+	});
+</script>

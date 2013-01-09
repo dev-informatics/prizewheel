@@ -14,9 +14,9 @@ $this->headTitle($title);
 
 <h1>Welcome back, <?php echo $this->escapeHtml($this->advertiser->firstName() . ' ' . $this->advertiser->lastName())?></h1>
 
-<button id="create-new-advertisement-btn">
-	Create New Advertisement
-</button>
+<a href="<?php echo $this->url('advertisement', array('action' => 'create'))?>">Create Advertisement</a> |
+<a href="<?php echo $this->url('transaction', array('action' => 'list', 'id' => $this->advertiser->id()))?>">My Transactions</a> |
+<a href="<?php echo $this->url('advertiser', array('action' => 'manage'))?>">My Profile</a>
 
 <table>
 	<thead>

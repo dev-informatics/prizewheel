@@ -1,0 +1,30 @@
+<?php
+$this->layout('layout/admin_layout');
+$title = "Manage Advertisement Category " . $this->name;
+$this->headTitle($title);
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('advertisement-category', array('action' => 'manage', 'id' => $this->id)));
+$form->prepare();
+?>
+
+<h2><?php echo $this->escapeHtml($title)?></h2>
+
+<?php echo $this->form()->openTag($form)?>
+<?php echo $this->formCollection($form)?>
+<br/><br/>
+<button type="submit" id="save">
+	Save
+</button>
+<button type="button" id="cancel">
+	Cancel
+</button>
+<?php echo $this->form()->closeTag()?>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#cancel").click(function(){
+			window.top.location = '<?php echo $this->url('advertisement-category', array('action' => 'list'))?>'
+		});
+	});
+</script>

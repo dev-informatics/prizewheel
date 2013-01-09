@@ -14,10 +14,44 @@ class AffiliateTable
 		$this->tableGateway = $tableGateway;
 	}
 	
-	public function fetchAll()
+	public function fetchAll($page=1, $take=25, &$count)
 	{
-		$results = $this->tableGateway->select();
-		return $results;
+		if($page < 1){
+			$page = 1;
+		} // if
+		
+		$select = new \Zend\Db\Sql\Select();
+		$select->from($this->tableGateway->getTable());
+		$select->order('lastname ASC');
+		$select->offset(($page - 1) * $take);
+		$select->limit($take);
+	
+		$results = $this->tableGateway->selectWith($select);
+		
+		$count = $this->getCount();
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
+	}
+	
+	public function getCount()
+	{
+		$stmt = $this->tableGateway->getAdapter()->createStatement("SELECT count(id) as count FROM affiliates");
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result){
+			return 0;
+		} // if
+		
+		return $result['count'];
 	}
 	
 	public function getAffiliate($id)
@@ -27,7 +61,7 @@ class AffiliateTable
 		$result = $results->current();
 		
 		if(!$result){
-			throw new \Exception("Could not locate Affiliate with id: $id");
+			return null;
 		} // if
 		
 		return $result;
@@ -62,7 +96,8 @@ class AffiliateTable
 			'country' => $affiliate->country(),
 			'postal' => $affiliate->postal(),
 			'telephone' => $affiliate->telephone(),
-			'emailaddress' => $affiliate->emailAddress()	
+			'emailaddress' => $affiliate->emailAddress(),
+			'enabled' => $affiliate->enabled()	? 1 : 0
 		);
 		
 		if($id > 0 && !empty($fid)){

@@ -1,0 +1,95 @@
+<?php
+
+$this->layout("layout/admin_layout");
+$title = "Advertisements";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
+
+<h2>Advertisements - <?php echo $this->count?></h2>
+
+<div id="paginator"></div>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th style="text-align: left;">Enabled</th>
+			<th style="text-align: left;">Name</th>
+			<th style="text-align: left;">Type</th>
+			<th style="text-align: left;">Placement</th>
+			<th style="text-align: left;">Advertiser</th>
+			<th style="text-align: left;">Bucket</th>
+			<th style="text-align: left;">Created</th>			
+		</tr>
+	</thead>
+	<tbody id="list-body">
+		<?php foreach($this->advertisements as $advertisement):?>
+		<tr>
+			<td>
+				<a href="<?php echo $this->url('advertisement', array('action' => 'manage', 'id' => $advertisement->id()))?>">View</a>
+			</td>
+			<td>
+				<?php if($advertisement->enabled()):?>
+				<input type="checkbox" id="advertisement-status-<?php echo $this->escapeHtml($advertisement->id())?>" checked="checked" />
+				<?php else:?>
+				<input type="checkbox" id="advertisement-status-<?php echo $this->escapeHtml($advertisement->id())?>" />
+				<?php endif;?>
+			</td>
+			<td><?php echo $this->escapeHtml($advertisement->name())?></td>
+			<td><?php echo $this->escapeHtml($advertisement->typeName())?></td>
+			<td><?php echo $this->escapeHtml($advertisement->placementTypeName())?></td>
+			<td><a href="<?php echo $this->url('advertiser', array('action' => 'manage', 'id' => $advertisement->advertiserId()))?>"><?php echo $this->escapeHtml($advertisement->advertiserName())?></a></td>
+			<td>$<?php echo number_format($advertisement->bucket(), 2, '.', ',')?></td>
+			<td><?php echo $this->escapeHtml($advertisement->createDateTime())?></td>
+		</tr>
+		<?php endforeach;?>
+		
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('advertisement', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber,
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.advertisements, function(index, advertisement){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/advertisement/manage/' + advertisement.id + '">View</a></td>'));							
+							if(advertisement.enabled){
+								row.append($('<td><input type="checkbox" id="advertisement-status-' + advertisement.id + '" checked="checked" /></td>'));
+							} // if
+							else{
+								row.append($('<td><input type="checkbox" id="advertisement-status-' + advertisement.id + '" /></td>'));
+							} // else
+							row.append($('<td>' + advertisement.name + '</td>'));
+							row.append($('<td>' + advertisement.typename + '</td>'));
+							row.append($('<td>' + advertisement.placementtypename + '</td>'));
+							row.append($('<td>' + advertisement.advertisername + '</td>'));
+							row.append($('<td>' + parseFloat(advertisement.bucket).toFixed(2) + '</td>'));
+							row.append($('<td>' + advertisement.createdatetime + '</td>'));
+														
+							listBody.append(row);	
+						});
+					}
+				});
+			}
+		});
+	});
+</script>

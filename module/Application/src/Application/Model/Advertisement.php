@@ -4,22 +4,25 @@ namespace Application\Model;
 
 class Advertisement
 {	
-	protected $id;
-	protected $advertisementPlacementTypeId;
-	protected $advertiserId;
-	protected $name;
-	protected $description;
-	protected $typeId;
-	protected $bannerImage;
-	protected $url;
+	protected $id = 0;
+	protected $advertisementPlacementTypeId = 0;
+	protected $advertiserId = 0;
+	protected $name = "";
+	protected $description = "";
+	protected $typeId = 0;
+	protected $sponserImage = "";
+	protected $bannerImage = "";
+	protected $url = "";
 	protected $bucket = 0;
-	protected $enabled;
-	protected $createDateTime;
-	protected $typeName;
-	protected $clicks;
-	protected $impressions;	
+	protected $enabled = true;
+	protected $createDateTime = "";
+	protected $typeName = "";
+	protected $clicks = 0;
+	protected $impressions = 0;	
 	protected $categories = array();
 	protected $placementTypeName = "";
+	protected $advertiserName = "";
+	protected $cost = 0.00;
 	
 	public function id($id=0)
 	{
@@ -67,6 +70,14 @@ class Advertisement
 			$this->typeId = $typeid;
 		} // if
 		return $this->typeId;
+	}
+	
+	public function sponserImage($sponserimage='')
+	{
+		if(!empty($sponserimage)){
+			$this->sponserImage = $sponserimage;
+		} // if
+		return $this->sponserImage;
 	}
 	
 	public function bannerImage($bannerimage='')
@@ -138,9 +149,19 @@ class Advertisement
 		return $this->categories;
 	} // categories
 	
+	public function advertiserName()
+	{
+		return $this->advertiserName;
+	}
+	
 	public function placementTypeName()
 	{
 		return $this->placementTypeName;
+	}
+	
+	public function cost()
+	{
+		return $this->cost;
 	}
 	
 	public function __construct()
@@ -148,24 +169,45 @@ class Advertisement
 		
 	}
 	
+	public function addBucketCredits($amount=0.00)
+	{
+		$amount = (float)$amount;
+		
+		$this->bucket += $amount;
+		
+		return $this;
+	}
+	
+	public function removeBucketCredits($amount=0.00)
+	{
+		$amount = (float)$amount;
+		
+		$this->bucket -= $amount;
+		
+		return $this;
+	}
+	
 	public function exchangeArray($data)
 	{
-		$this->id = (isset($data['id'])) ? $data['id'] : 0;
-		$this->advertisementPlacementTypeId = (isset($data['advertisementplacementtypeid'])) ? $data['advertisementplacementtypeid'] : 0;
-		$this->advertiserId = (isset($data['advertiserid'])) ? $data['advertiserid'] : 0;
-		$this->name = (isset($data['name'])) ? $data['name'] : null;
-		$this->description = (isset($data['description'])) ? $data['description'] : null;
-		$this->typeId = (isset($data['typeid'])) ? $data['typeid'] : 0;
-		$this->bannerImage = (isset($data['bannerimage'])) ? $data['bannerimage'] : null;
-		$this->url = (isset($data['url'])) ? $data['url'] : null;
-		$this->bucket = (isset($data['bucket'])) ? $data['bucket'] : (!$this->bucket ? 0 : $this->bucket);
-		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : false;
-		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : null;
-		$this->typeName = (isset($data['typename'])) ? $data['typename'] : null;
-		$this->impressions = (isset($data['impressions'])) ? $data['impressions'] : 0;
-		$this->clicks = (isset($data['clicks'])) ? $data['clicks'] : 0;
-		$this->categories = (isset($data['categories'])) ? $data['categories'] : array();
-		$this->placementTypeName = (isset($data['placementtypename'])) ? $data['placementtypename'] : "";
+		$this->id = (isset($data['id'])) ? $data['id'] : $this->id();
+		$this->advertisementPlacementTypeId = (isset($data['advertisementplacementtypeid'])) ? $data['advertisementplacementtypeid'] : $this->advertisementPlacementTypeId();
+		$this->advertiserId = (isset($data['advertiserid'])) ? $data['advertiserid'] : $this->advertiserId();
+		$this->name = (isset($data['name'])) ? $data['name'] : $this->name();
+		$this->description = (isset($data['description'])) ? $data['description'] : $this->description();
+		$this->typeId = (isset($data['typeid'])) ? $data['typeid'] : $this->typeId();
+		$this->sponserImage = (isset($data['sponserimage'])) ? $data['sponserimage'] : $this->sponserImage;
+		$this->bannerImage = (isset($data['bannerimage'])) ? $data['bannerimage'] : $this->bannerImage();
+		$this->url = (isset($data['url'])) ? $data['url'] : $this->url();
+		$this->bucket = (isset($data['bucket'])) ? $data['bucket'] : $this->bucket();
+		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : $this->enabled();
+		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : $this->createDateTime();
+		$this->typeName = (isset($data['typename'])) ? $data['typename'] : $this->typeName();
+		$this->impressions = (isset($data['impressions'])) ? $data['impressions'] : $this->impressions();
+		$this->clicks = (isset($data['clicks'])) ? $data['clicks'] : $this->clicks();
+		$this->categories = (isset($data['categories'])) ? $data['categories'] : $this->categories();
+		$this->placementTypeName = (isset($data['placementtypename'])) ? $data['placementtypename'] : $this->placementTypeName();
+		$this->advertiserName = (isset($data['advertiserfirstname']) && isset($data['advertiserlastname'])) ? ($data['advertiserfirstname'] . " " . $data['advertiserlastname']) : $this->advertiserName();
+		$this->cost = (isset($data['cost'])) ? $data['cost'] : $this->cost;
 	} 
 	
 	public function getArrayCopy()
@@ -177,6 +219,7 @@ class Advertisement
 			'name' => $this->name,
 			'description' => $this->description,
 			'typeid' => $this->typeId,
+			'sponserimage' => $this->sponserImage,
 			'bannerimage' => $this->bannerImage,
 			'url' => $this->url,
 			'bucket' => $this->bucket,
@@ -186,7 +229,9 @@ class Advertisement
 			'clicks' => $this->clicks,
 			'impressions' => $this->impressions,
 			'categories' => $this->categories,
-			'placementtypename' => $this->placementTypeName	 
+			'placementtypename' => $this->placementTypeName,
+			'advertisername' => $this->advertiserName,
+			'cost' => $this->cost	 
 		);   
  	}
 }

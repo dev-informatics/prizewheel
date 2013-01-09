@@ -19,7 +19,13 @@ class AdvertisementCategoryEntryTable
 		$advertisementid = (int)$advertisementid;
 		$results = $this->tableGateway->select(array('advertisementid' => $advertisementid));
 		
-		return $results;
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
 	}
 	
 	public function fetchAllByCategoryId($categoryid)
@@ -27,7 +33,13 @@ class AdvertisementCategoryEntryTable
 		$categoryid = (int)$categoryid;
 		$results = $this->tableGateway->select(array('advertisementcategoryid' => $categoryid));
 		
-		return $results;
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
 	}
 	
 	public function getAdvertisementCategoryEntry($id)

@@ -17,6 +17,13 @@ This is the <?php echo $this->escapeHtml($title)?>
 
 <button id="install-prize-wheel-btn">Install Prize Wheel</button>
 
+<a href="<?php echo $this->url('affiliate-payout-entry', array('action' => 'list'))?>">My Payouts</a> |
+<a href="<?php echo $this->url('affiliate', array('action' => 'manage', 'id' => $affiliate->id()))?>">My Profile</a>
+
+<h3>Current Per Click Reward $<?php echo number_format($this->cpcreward, 2, '.', ',')?></h3>
+<h3>Paid Rewards $<?php echo number_format($this->paidrewards, 2, '.', ',')?></h3>
+<h3>Unpaid Rewards $<?php echo number_format($this->unpaidrewards, 2, '.', ',')?></h3>
+
 <table>
 	<tr>
 		<td>
@@ -24,31 +31,29 @@ This is the <?php echo $this->escapeHtml($title)?>
 			<table id="prize-wheel-installation-table">
 				<thead>
 					<tr>
+						<th></th>						
 						<th></th>
-						<th></th>
-						<th></th>
-						<th>Page</th>
-						<th>Type</th>
-						<th>Views</th>
-						<th>Plays</th>
-						<th>Banner Clicks</th>
-						<th>Revenue</th>
-						<th>Installed</th>
+						<th style="text-align: left">Page ID</th>
+						<th style="text-align: left">Page Name</th>
+						<th style="text-align: left">Type</th>
+						<th style="text-align: left">Views</th>
+						<th style="text-align: left">Plays</th>
+						<th style="text-align: left">Banner Clicks</th>
+						<th style="text-align: left">Installed</th>
 						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php foreach($this->prizewheels as $prizeWheel):?>
 					<tr>
-						<td><a href="#">View</a></td>
-						<td><a href="#">Stats</a></td>
+						<td><a target="_blank" href="https://www.facebook.com/<?php echo $this->escapeHtml($prizeWheel->facebookPageName())?>/app_<?php echo $this->fbappid?>">View</a></td>
 						<td><a href="/prize-wheel/manage/<?php echo $this->escapeHtml($prizeWheel->id())?>">Manage</a></td>
 						<td><a href="#" target="_blank" id="fb-prizewheel-pageid-<?php echo $this->escapeHtml($prizeWheel->id())?>"><?php echo $this->escapeHtml($prizeWheel->pageId())?></a></td>
+						<td><a href="#" target="_blank" id="fb-prizewheel-pagename-<?php echo $this->escapeHtml($prizeWheel->id())?>"><?php echo $this->escapeHtml($prizeWheel->facebookPageName())?></a></td>
 						<td><?php echo $this->escapeHtml($prizeWheel->prizeWheelTypeName())?></td>
 						<td><?php echo $this->escapeHtml($prizeWheel->views())?></td>
 						<td><?php echo $this->escapeHtml($prizeWheel->plays())?></td>
 						<td><?php echo $this->escapeHtml($prizeWheel->advertisementClicks())?></td>
-						<td><?php echo $this->escapeHtml('$'.number_format($prizeWheel->advertisementClicks() * 0.05, 2, '.', ','))?></td>
 						<td><?php echo $this->escapeHtml($prizeWheel->createDateTime())?></td>
 						<td><a href="<?php echo $this->url('prize-wheel', array('action' => 'disable', 'id' => $this->escapeHtml($prizeWheel->id())))?>">Remove</a></td>
 					</tr>
@@ -68,6 +73,7 @@ This is the <?php echo $this->escapeHtml($title)?>
 		<option value="<?php echo $prizeWheelType->id()?>"><?php echo $prizeWheelType->name()?></option>
 		<?php endforeach;?>
 	</select>
+	Target Categories<br/>
 	<select multiple="multiple" id="prizewheel-categories" name="prizewheel-categories">
 		<?php foreach($this->categories as $category):?>
 		<option value="<?php echo $category->id()?>"><?php echo $category->name()?></option>
@@ -140,12 +146,12 @@ This is the <?php echo $this->escapeHtml($title)?>
 			appId: appId,
 			cookie: true,
 			status: true,
-			channelUrl: '//fbstaging.ecrmplus.net:9090/channel.html',
+			channelUrl: '//fbstaging.devinformatics.com/channel.html',
 			oauth: true,
 			xfbml: true
 		});
 
-		FB.login(function(response){
+		/*FB.login(function(response){
 			if(response.status == "connected"){
 				fetchPages();
 			} // if
@@ -159,7 +165,7 @@ This is the <?php echo $this->escapeHtml($title)?>
 					} // else
 				}, {scope: 'email, manage_pages'});
 			}
-		});
+		});*/
 		
 		FB.getLoginStatus(function(response){
 		
@@ -172,7 +178,7 @@ This is the <?php echo $this->escapeHtml($title)?>
 						fetchPages();
 					} // if
 					else{
-						window.top.location = '/';
+						window.location = '/';
 					} // else
 				}, {scope: 'email, manage_pages'});
 			}

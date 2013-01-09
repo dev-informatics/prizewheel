@@ -21,6 +21,49 @@ class AdvertisementClickTable
 		return $results;
 	}
 	
+	public function fetchCountByAdvertiserId($advertiserid)
+	{
+		$advertiserid = (int)$advertiserid;
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement(
+					"SELECT count(id) as count FROM advertisement_clicks INNER JOIN advertisements a ON 
+						advertisement_clicks.advertisementid = a.id WHERE a.advertiserid = ?", 
+					array($advertiserid)
+				);
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result || !isset($result['count'])){
+			return 0;
+		} // if
+		
+		return $result['count'];
+	}
+	
+	public function fetchCountByAffiliateId($affiliateid)
+	{
+		$affiliateid = (int)$affiliateid;
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement(
+					"SELECT count(advertisement_clicks.id) as count FROM advertisement_clicks 
+					 INNER JOIN prizewheels p ON p.id = advertisement_clicks.prizewheelid 
+					 WHERE p.affiliateid = ?", 
+					array($affiliateid)
+				);
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result || !isset($result['count'])){
+			return 0;
+		} // if
+		
+		return $result['count'];
+	}
+	
 	public function fetchCountByAdvertisementId($id)
 	{
 		$id = (int)$id;
@@ -31,9 +74,13 @@ class AdvertisementClickTable
 		
 		$results = $stmt->execute();
 		
-		$count = $results->current()['count'];
+		$result = $results->current();
 		
-		return $count;
+		if(!$result || !isset($result['count'])){
+			return 0;
+		} // if
+		
+		return $result['count'];
 	}
 	
 	public function getCountByPrizeWheelId($prizewheelid)
@@ -52,6 +99,45 @@ class AdvertisementClickTable
 		} // if
 		
 		return $result['count'];
+	}
+	
+	public function getAffiliateRevenue($affiliateid, $clickrate=0.00)
+	{
+		$id = (int)$affiliateid;
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement(
+				"SELECT count(ac.id) as count FROM advertisement_clicks AS ac INNER JOIN prizewheels pw ON pw.id = ac.prizewheelid WHERE pw.affiliateid = ?",
+				array($id));
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result || !isset($result['count'])){
+			return 0.00;
+		} // if
+		
+		return ($result['count'] * clickrate);
+	}
+	
+	public function getPrizeWheelRevenue($prizewheelid, $clickrate=0.00)
+	{
+		$id = (int)$prizewheelid;
+		
+		$stmt = $this->tableGateway->getAdapter()->createStatement(
+			"SELECT count(id) as count FROM advertisement_clicks WHERE prizewheelid = ?",
+			array($id)	
+		);
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+			
+		if(!$result || !isset($result['count'])){
+			return 0.00;
+		} // if
+		
+		return ($result['count'] * clickrate);
 	}
 	
 	public function getAdvertisementClick($id)
@@ -95,13 +181,10 @@ class AdvertisementClickTable
 		);	
 		
 		if($id <= 0){
-			if($this->getAdvertisementClickByFacebookUserId($fid, $aid)){
-				throw new AdvertisementClickSaveException("A Facebook User has already executed a Click for this Advertisement");
-			} // if
-			else{
+			if(!$this->getAdvertisementClickByFacebookUserId($fid, $aid)){
 				$this->tableGateway->insert($data);
 				$advertisementClick->id((int)$this->tableGateway->lastInsertValue);
-			}
+			} // if
 		} // if
 	}
 }

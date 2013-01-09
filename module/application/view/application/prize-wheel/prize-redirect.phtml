@@ -1,0 +1,21 @@
+<?php
+
+
+?>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		setTimeout(function(){
+			window.location = '<?php echo $this->redirecturl?>';
+		}, 10000);
+	});
+</script>
+<h2>Congratulations on winning your <?php echo $this->prize?></h2>
+<h3>Processing Your Prize!</h3>
+<p>Please wait 10 seconds while we process your prize, thank you for playing!</p>
+
+<hr/>
+<p>Please take a moment to look at an offer from one of our sponsers, clicking the link will not disrupt the processing of your prize.</p>
+
+<a target="_blank" href="<?php echo ($this->url('ads', array('action' => 'click', 'id' => $this->advertisementid))).'?bannerclick=true'?>"><img src="<?php echo $this->advertisementimage?>" alt="Sponser Image" /></a>

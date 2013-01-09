@@ -48,6 +48,7 @@ class PrizeWheelImpressionTable
 	public function save(PrizeWheelImpression $impression)
 	{
 		$id = (int)$impression->id();
+		$pwid = (int)$impression->prizeWheelId();
 		$fid = (string)$impression->facebookUserId();
 		
 		$data = array(
@@ -56,7 +57,7 @@ class PrizeWheelImpressionTable
 		);
 		
 		if($id <= 0){
-			if(!$this->getPrizeWheelImpressionByFacebookUserId($id, $fid)){
+			if(!$this->getPrizeWheelImpressionByFacebookUserId($pwid, $fid)){
 				$this->tableGateway->insert($data);
 				$impression->id((int)$this->tableGateway->lastInsertValue);
 			} // if

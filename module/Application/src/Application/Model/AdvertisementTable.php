@@ -5,13 +5,57 @@ namespace Application\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Application\Model\Advertisement;
 
-class AdvertisementTable
+class AdvertisementTable implements AdvertisementDataSourceInterface
 {
 	protected $tableGateway;
 	
 	public function __construct(TableGateway $tableGateway)
 	{
 		$this->tableGateway = $tableGateway;
+	}
+	
+	public function fetchAll($page=1, $size=25, &$count)
+	{
+		if($page < 1){
+			$page = 1;
+		} // if
+
+		$select = new \Zend\Db\Sql\Select();
+		
+		$select->from($this->tableGateway->getTable())
+		       ->join(array('adt' => 'advertisement_types'), 'advertisements.typeid = adt.id', array('typename' => 'name'))
+			   ->join(array('apt' => 'advertisement_placement_types'), 'apt.id = advertisements.advertisementplacementtypeid', array('placementtypename' => 'name'))
+			   ->join(array('a' => 'advertisers'), 'a.id = advertisements.advertiserid', array("advertiserfirstname" => "firstname", "advertiserlastname" => "lastname"))			 
+			   ->order('id DESC')
+			   ->offset(($page - 1) * $size)
+			   ->limit($size);
+
+		$results = $this->tableGateway->selectWith($select);
+		
+		$count = $this->getCount();
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
+	} // fetchAll
+	
+	public function getCount()
+	{
+		$stmt = $this->tableGateway->getAdapter()->createStatement("SELECT count(id) as count FROM advertisements");
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result){
+			return 0;
+		} // if
+		
+		return $result['count'];
 	}
 	
 	public function fetchAllByAdvertiserId($id)
@@ -21,7 +65,8 @@ class AdvertisementTable
 		$select->from('advertisements')
 		       ->join(array('adt' => 'advertisement_types'), 'advertisements.typeid = adt.id', array('typename' => 'name'))
 			   ->join(array('apt' => 'advertisement_placement_types'), 'apt.id = advertisements.advertisementplacementtypeid', array('placementtypename' => 'name'))
-			   ->where(array('advertiserid' => $id));
+			   ->where(array('advertiserid' => $id))
+			   ->order('id DESC');
 
 		$results = $this->tableGateway->selectWith($select);
 	
@@ -46,7 +91,8 @@ class AdvertisementTable
 		$select->from('advertisements')
 		       ->join(array('adt' => 'advertisement_types'), 'advertisements.typeid = adt.id', array('typename' => 'name'))
 			   ->join(array('apt' => 'advertisement_placement_types'), 'apt.id = advertisements.advertisementplacementtypeid', array('placementtypename' => 'name'))
-			   ->where(array('advertiserid' => $id, 'advertisements.enabled' => 1));	       
+			   ->where(array('advertiserid' => $id, 'advertisements.enabled' => 1))
+			   ->order('id DESC');	       
 
 		$results = $this->tableGateway->selectWith($select);
 		
@@ -65,6 +111,11 @@ class AdvertisementTable
 		return $list;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @return NULL|/Application/Model/Advertisement
+	 */
 	public function getAdvertisement($id)
 	{
 		$results = $this->tableGateway->select(array('id' => $id));
@@ -84,7 +135,13 @@ class AdvertisementTable
 		$query = "";
 		
 		if(count($categories) > 0){
-			$query = "SELECT count(advertisements.id) as `count` FROM `advertisements` INNER JOIN `advertisement_category_entries` ace ON ace.advertisementid = advertisements.id WHERE advertisementplacementtypeid = ? AND ace.advertisementcategoryid IN (";
+			
+			if($placementTypeId != \Application\Model\AdvertisementPlacementType::Any){
+				$query = "SELECT count(advertisements.id) as `count` FROM `advertisements` INNER JOIN `advertisement_category_entries` ace ON ace.advertisementid = advertisements.id WHERE advertisements.bucket > 0 AND advertisementplacementtypeid = ? AND ace.advertisementcategoryid IN (";
+			} // if
+			else{
+				$query = "SELECT count(advertisements.id) as `count` FROM `advertisements` INNER JOIN `advertisement_category_entries` ace ON ace.advertisementid = advertisements.id WHERE advertisements.bucket > 0 AND ace.advertisementcategoryid IN (";
+			} // else
 			
 			foreach($categories as $category){
 				$query .= $category . ",";
@@ -95,10 +152,23 @@ class AdvertisementTable
 			$query .= ")";
 		} // if
 		else{
-			$query = "SELECT count(id) as `count` FROM `advertisements` WHERE advertisementplacementtypeid = ?";
+			
+			if($placementTypeId != \Application\Model\AdvertisementPlacementType::Any){
+				$query = "SELECT count(id) as `count` FROM `advertisements` WHERE advertisementplacementtypeid = ? AND bucket > 0";
+			} // if
+			else{
+				$query = "SELECT count(id) as `count` FROM `advertisements` WHERE bucket > 0";
+			} // else
 		} // else
 		
-		$stmt = $this->tableGateway->getAdapter()->createStatement($query, array($id));
+		$stmt = null;
+		
+		if($placementTypeId != \Application\Model\AdvertisementPlacementType::Any){
+			$stmt = $this->tableGateway->getAdapter()->createStatement($query, array($id));
+		} // if
+		else{
+			$stmt = $this->tableGateway->getAdapter()->createStatement($query);
+		} // else	
 		
 		$results = $stmt->execute();
 		
@@ -119,8 +189,12 @@ class AdvertisementTable
 		
 		$where = new \Zend\Db\Sql\Where();
 		
-		$where = $where->equalTo('advertisementplacementtypeid', $placementTypeId);
+		if($placementTypeId != \Application\Model\AdvertisementPlacementType::Any){
+			$where = $where->equalTo('advertisementplacementtypeid', $placementTypeId);
+		} // if
 
+		$where = $where->greaterThan('bucket', '0');
+		
 		if(count($categories) > 0){
 			
 			$select->join(array('ace' => 'advertisement_category_entries'), 'ace.advertisementid = advertisements.id', array());
@@ -155,6 +229,7 @@ class AdvertisementTable
 			'name' => $advertisement->name(),
 			'description' => $advertisement->description(),
 			'typeid' => $advertisement->typeId(),
+			'sponserimage' => $advertisement->sponserImage(),
 			'bannerimage' => $advertisement->bannerImage(),
 			'url' => $advertisement->url(),
 			'enabled' => $advertisement->enabled() ? 1 : 0	

@@ -9,7 +9,7 @@ class PrizeWheel
 	protected $pageId;
 	protected $affiliateId;
 	protected $forceLike = false;
-	protected $forceLikeImage;
+	protected $forceLikeImage = "";
 	protected $firstText = "Spin the wheel for your chance to win a prize today!";
 	protected $validEmail = "Please enter a valid E-Mail.";
 	protected $alreadyPlayed = "You have already played!";
@@ -18,102 +18,102 @@ class PrizeWheel
 	protected $accessError = "There has been an Access error!";
 	protected $accessLimit = "You have reached your Access Limit!";
 	protected $textRules = "You must agree to the terms and conditions to play.";
-	protected $prizeOneName;
-	protected $prizeOneCode;
-	protected $prizeOneText;
+	protected $prizeOneName = "Prize One";
+	protected $prizeOneCode = "Prize One Code";
+	protected $prizeOneText = "Prize One";
 	protected $prizeOneTextSize = 10;
-	protected $prizeOneImage;
-	protected $prizeOneUrl;
-	protected $prizeOneWeight = 0;
+	protected $prizeOneImage = "";
+	protected $prizeOneUrl = "http://facebook.com";
+	protected $prizeOneWeight = 8;
 	protected $prizeTwoName = "Try Again";
 	protected $prizeTwoCode = "Try Again";
 	protected $prizeTwoText = "Try Again";
 	protected $prizeTwoTextSize = 10;
-	protected $prizeTwoImage;
-	protected $prizeTwoUrl;
-	protected $prizeTwoWeight = 0;
-	protected $prizeThreeName;
-	protected $prizeThreeCode;
-	protected $prizeThreeText;
+	protected $prizeTwoImage = "";
+	protected $prizeTwoUrl = "http://facebook.com";
+	protected $prizeTwoWeight = 8;
+	protected $prizeThreeName = "Prize Three";
+	protected $prizeThreeCode = "Prize Three Code";
+	protected $prizeThreeText = "Prize Three";
 	protected $prizeThreeTextSize = 10;
-	protected $prizeThreeImage;
-	protected $prizeThreeUrl;
-	protected $prizeThreeWeight = 0;
+	protected $prizeThreeImage = "";
+	protected $prizeThreeUrl = "http://facebook.com";
+	protected $prizeThreeWeight = 9;
 	protected $prizeFourName = "Try Again";
 	protected $prizeFourCode = "Try Again";
 	protected $prizeFourText = "Try Again";
 	protected $prizeFourTextSize = 10;
-	protected $prizeFourImage;
-	protected $prizeFourUrl;
-	protected $prizeFourWeight = 0;
-	protected $prizeFiveName;
-	protected $prizeFiveCode;
-	protected $prizeFiveText;
+	protected $prizeFourImage = "";
+	protected $prizeFourUrl = "http://facebook.com";
+	protected $prizeFourWeight = 8;
+	protected $prizeFiveName = "Prize Five";
+	protected $prizeFiveCode = "Prize Five Code";
+	protected $prizeFiveText = "Prize Five";
 	protected $prizeFiveTextSize = 10;
-	protected $prizeFiveImage;
-	protected $prizeFiveUrl;
-	protected $prizeFiveWeight = 0;
+	protected $prizeFiveImage = "";
+	protected $prizeFiveUrl = "http://facebook.com";
+	protected $prizeFiveWeight = 8;
 	protected $prizeSixName = "Try Again";
 	protected $prizeSixCode = "Try Again";
 	protected $prizeSixText = "Try Again";
 	protected $prizeSixTextSize = 10;
-	protected $prizeSixImage;
-	protected $prizeSixUrl;
-	protected $prizeSixWeight = 0;
-	protected $prizeSevenName;
-	protected $prizeSevenCode;
-	protected $prizeSevenText;
+	protected $prizeSixImage = "";
+	protected $prizeSixUrl = "http://facebook.com";
+	protected $prizeSixWeight = 9;
+	protected $prizeSevenName = "Prize Seven";
+	protected $prizeSevenCode = "Prize Seven Code";
+	protected $prizeSevenText = "Prize Seven";
 	protected $prizeSevenTextSize = 10;
-	protected $prizeSevenImage;
-	protected $prizeSevenUrl;
-	protected $prizeSevenWeight = 0;
+	protected $prizeSevenImage = "";
+	protected $prizeSevenUrl = "http://facebook.com";
+	protected $prizeSevenWeight = 8;
 	protected $prizeEightName = "Try Again";
 	protected $prizeEightCode = "Try Again";
 	protected $prizeEightText = "Try Again";
 	protected $prizeEightTextSize = 10;
-	protected $prizeEightImage;
-	protected $prizeEightUrl;
-	protected $prizeEightWeight = 0;
-	protected $prizeNineName;
-	protected $prizeNineCode;
-	protected $prizeNineText;
+	protected $prizeEightImage = "";
+	protected $prizeEightUrl = "http://facebook.com";
+	protected $prizeEightWeight = 8;
+	protected $prizeNineName = "Prize Nine";
+	protected $prizeNineCode = "Prize Nine Code";
+	protected $prizeNineText = "Prize Nine";
 	protected $prizeNineTextSize = 10;
-	protected $prizeNineImage;
-	protected $prizeNineUrl;
-	protected $prizeNineWeight = 0;
+	protected $prizeNineImage = "";
+	protected $prizeNineUrl = "http://facebook.com";
+	protected $prizeNineWeight = 9;
 	protected $prizeTenName = "Try Again";
 	protected $prizeTenCode = "Try Again";
 	protected $prizeTenText = "Try Again";
 	protected $prizeTenTextSize = 10;
-	protected $prizeTenImage;
-	protected $prizeTenUrl;
-	protected $prizeTenWeight = 0;
-	protected $prizeElevenName;
-	protected $prizeElevenCode;
-	protected $prizeElevenText;
+	protected $prizeTenImage = "";
+	protected $prizeTenUrl = "http://facebook.com";
+	protected $prizeTenWeight = 8;
+	protected $prizeElevenName = "Prize Eleven";
+	protected $prizeElevenCode = "Prize Eleven Code";
+	protected $prizeElevenText = "Prize Eleven";
 	protected $prizeElevenTextSize = 10;
-	protected $prizeElevenImage;
-	protected $prizeElevenUrl;
-	protected $prizeElevenWeight = 0;
+	protected $prizeElevenImage = "";
+	protected $prizeElevenUrl = "http://facebook.com";
+	protected $prizeElevenWeight = 8;
 	protected $prizeTwelveName = "Try Again";
 	protected $prizeTwelveCode = "Try Again";
 	protected $prizeTwelveText = "Try Again";
 	protected $prizeTwelveTextSize = 10;
-	protected $prizeTwelveImage;
-	protected $prizeTwelveUrl;
-	protected $prizeTwelveWeight = 0;
-	protected $sponserImage;
-	protected $sponserLink;
-	protected $backImage;
-	protected $topImage;
-	protected $buttonImage;
+	protected $prizeTwelveImage = "";
+	protected $prizeTwelveUrl = "http://facebook.com";
+	protected $prizeTwelveWeight = 9;
+	protected $sponserImage = "";
+	protected $sponserLink = "";
+	protected $backImage = "";
+	protected $topImage = "";
+	protected $buttonImage = "";
 	protected $sendEmailNotifications = 0;
-	protected $notificationEmailAddress;
-	protected $smtpServer;
-	protected $smtpUserName;
-	protected $smtpPassword;
+	protected $notificationEmailAddress = "";
+	protected $smtpServer = "";
+	protected $smtpUserName = "";
+	protected $smtpPassword = "";
 	protected $smtpPort = 25;
-	protected $smtpFromAddress;
+	protected $smtpFromAddress = "";
 	protected $smtpEncryption = "none";
 	protected $smtpAuthMethod = "plain";
 	protected $notificationEmailSubject = "Thank you for playing the Prize Wheel";
@@ -122,13 +122,16 @@ class PrizeWheel
 	protected $phoneFilter = false;
 	protected $emailFilter = false;
 	protected $enabled = true;
-	protected $createDateTime;
+	protected $createDateTime = "";
 	
-	protected $prizeWheelTypeName;
-	protected $views;
-	protected $plays;
-	protected $advertisementClicks;
-	protected $categories;
+	protected $prizeWheelTypeName = "";
+	protected $views = 0;
+	protected $plays = 0;
+	protected $advertisementClicks = 0;
+	protected $categories = array();
+	protected $facebookPageName = "";
+	protected $revenue = 0.00;
+	protected $payout = 0.00;
 	
 	public function id($id=0)
 	{
@@ -170,9 +173,9 @@ class PrizeWheel
 		return $this->forceLike;
 	}
 	
-	public function forceLikeImage($forcelikeimage)
+	public function forceLikeImage($forcelikeimage=null)
 	{
-		if(!empty($forcelikeimage)){
+		if($forcelikeimage != null && is_string($forcelikeimage)){
 			$this->forceLikeImage = $forcelikeimage;
 		} // if
 		return $this->forceLikeImage;
@@ -930,25 +933,25 @@ class PrizeWheel
 		return $this->sponserLink;
 	}
 	
-	public function backImage($backimage='')
+	public function backImage($backimage=null)
 	{
-		if(!empty($backimage)){
+		if($backimage != null && is_string($backimage)){
 			$this->backImage = $backimage;
 		} // if
 		return $this->backImage;
 	}
 	
-	public function topImage($topimage='')
+	public function topImage($topimage=null)
 	{
-		if(!empty($topimage)){
+		if($topimage != null && is_string($topimage)){
 			$this->topImage = $topimage;
 		} // if
 		return $this->topImage;
 	}
 	
-	public function buttonImage($buttonimage='')
+	public function buttonImage($buttonimage=null)
 	{
-		if(!empty($buttonimage)){
+		if($buttonimage != null && is_string($buttonimage)){
 			$this->buttonImage = $buttonimage;
 		} // if
 		return $this->buttonImage;
@@ -1002,6 +1005,14 @@ class PrizeWheel
 		return $this->smtpPort;
 	}
 	
+	public function smtpFromAddress($smtpfromaddress='')
+	{
+		if(!empty($smtpfromaddress)){
+			$this->smtpFromAddress = $smtpfromaddress;
+		} // if
+		return $this->smtpFromAddress;
+	}
+	
 	public function smtpEncryption($smtpencryption='')
 	{
 		if(!empty($smtpencryption)){
@@ -1010,7 +1021,7 @@ class PrizeWheel
 		return $this->smtpEncryption;
 	}
 	
-	public function smptAuthMethod($smtpauthmethod='')
+	public function smtpAuthMethod($smtpauthmethod='')
 	{
 		if(!empty($smtpauthmethod)){
 			$this->smtpAuthMethod = $smtpauthmethod;
@@ -1111,6 +1122,30 @@ class PrizeWheel
 		return $this->categories;
 	}
 	
+	public function facebookPageName($facebookpagename="")
+	{
+		if(!empty($facebookpagename)){
+			$this->facebookPageName = $facebookpagename;
+		} // if
+		return $this->facebookPageName;
+	}
+	
+	public function revenue($revenue=null)
+	{
+		if(!empty($revenue)){
+			$this->revenue = $revenue;
+		} // if
+		return $this->revenue;
+	}
+	
+	public function payout($payout=null)
+	{
+		if(!empty($payout)){
+			$this->payout = $payout;
+		} // if
+		return $this->payout;
+	}
+	
 	public function __construct()
 	{
 		
@@ -1118,12 +1153,12 @@ class PrizeWheel
 	
 	public function exchangeArray($data)
 	{
-		$this->id = (isset($data['id'])) ? $data['id'] : 0;
-		$this->prizeWheelTypeId = (isset($data['prizewheeltypeid'])) ? $data['prizewheeltypeid'] : 0;
-		$this->pageId = (isset($data['pageid'])) ? $data['pageid'] : 0;
-		$this->affiliateId = (isset($data['affiliateid'])) ? $data['affiliateid'] : 0;
+		$this->id = (isset($data['id'])) ? $data['id'] : $this->id;
+		$this->prizeWheelTypeId = (isset($data['prizewheeltypeid'])) ? $data['prizewheeltypeid'] : $this->prizeWheelTypeId;
+		$this->pageId = (isset($data['pageid'])) ? $data['pageid'] : $this->pageId;
+		$this->affiliateId = (isset($data['affiliateid'])) ? $data['affiliateid'] : $this->affiliateId;
 		$this->forceLike = (isset($data['forcelike'])) ? $data['forcelike'] : false;
-		$this->forceLikeImage = (isset($data['forcelikeimage'])) ? $data['forcelikeimage'] : "";
+		$this->forceLikeImage = (isset($data['forcelikeimage'])) ? $data['forcelikeimage'] : $this->forceLikeImage;
 		$this->firstText = (isset($data['firsttext'])) ? $data['firsttext'] : $this->firstText;
 		$this->validEmail = (isset($data['validemail'])) ? $data['validemail'] : $this->validEmail;
 		$this->alreadyPlayed = (isset($data['alreadyplayed'])) ? $data['alreadyplayed'] : $this->alreadyPlayed;
@@ -1132,116 +1167,119 @@ class PrizeWheel
 		$this->accessError = (isset($data['accesserror'])) ? $data['accesserror'] : $this->accessError;
 		$this->accessLimit = (isset($data['accesslimit'])) ? $data['accesslimit'] : $this->accessLimit;
 		$this->textRules = (isset($data['textrules'])) ? $data['textrules'] : $this->textRules;
-		$this->prizeOneName = (isset($data['prizeonename'])) ? $data['prizeonename'] : "";
-		$this->prizeOneCode = (isset($data['prizeonecode'])) ? $data['prizeonecode'] : "";
-		$this->prizeOneText = (isset($data['prizeonetext'])) ? $data['prizeonetext'] : "";
-		$this->prizeOneTextSize = (isset($data['prizeonetextsize'])) ? $data['prizeonetextsize'] : 10;
-		$this->prizeOneImage = (isset($data['prizeoneimage'])) ? $data['prizeoneimage'] : "";
-		$this->prizeOneUrl = (isset($data['prizeoneurl'])) ? $data['prizeoneurl'] : "";
-		$this->prizeOneWeight = (isset($data['prizeoneweight'])) ? $data['prizeoneweight'] : 0;		  
-		$this->prizeTwoName = (isset($data['prizetwoname'])) ? $data['prizetwoname'] : "";
-		$this->prizeTwoCode = (isset($data['prizetwocode'])) ? $data['prizetwocode'] : "";
-		$this->prizeTwoText = (isset($data['prizetwotext'])) ? $data['prizetwotext'] : "";
-		$this->prizeTwoTextSize = (isset($data['prizetwotextsize'])) ? $data['prizetwotextsize'] : 10;
-		$this->prizeTwoImage = (isset($data['prizetwoimage'])) ? $data['prizetwoimage'] : "";
-		$this->prizeTwoUrl = (isset($data['prizetwourl'])) ? $data['prizetwourl'] : "";
-		$this->prizeTwoWeight = (isset($data['prizetwoweight'])) ? $data['prizetwoweight'] : 0;		
-		$this->prizeThreeName = (isset($data['prizethreename'])) ? $data['prizethreename'] : "";
-		$this->prizeThreeCode = (isset($data['prizethreecode'])) ? $data['prizethreecode'] : "";
-		$this->prizeThreeText = (isset($data['prizethreetext'])) ? $data['prizethreetext'] : "";
-		$this->prizeThreeTextSize = (isset($data['prizethreetextsize'])) ? $data['prizethreetextsize'] : 10;
-		$this->prizeThreeImage = (isset($data['prizethreeimage'])) ? $data['prizethreeimage'] : "";
-		$this->prizeThreeUrl = (isset($data['prizethreeurl'])) ? $data['prizethreeurl'] : "";
-		$this->prizeThreeWeight = (isset($data['prizethreeweight'])) ? $data['prizethreeweight'] : 0;
-		$this->prizeFourName = (isset($data['prizefourname'])) ? $data['prizefourname'] : "";
-		$this->prizeFourCode = (isset($data['prizefourcode'])) ? $data['prizefourcode'] : "";
-		$this->prizeFourText = (isset($data['prizefourtext'])) ? $data['prizefourtext'] : "";
-		$this->prizeFourTextSize = (isset($data['prizefourtextsize'])) ? $data['prizefourtextsize'] : 10;
-		$this->prizeFourImage = (isset($data['prizefourimage'])) ? $data['prizefourimage'] : "";
-		$this->prizeFourUrl = (isset($data['prizefoururl'])) ? $data['prizefoururl'] : "";
-		$this->prizeFourWeight = (isset($data['prizefourweight'])) ? $data['prizefourweight'] : 0;
-		$this->prizeFiveName = (isset($data['prizefivename'])) ? $data['prizefivename'] : "";
-		$this->prizeFiveCode = (isset($data['prizefivecode'])) ? $data['prizefivecode'] : "";
-		$this->prizeFiveText = (isset($data['prizefivetext'])) ? $data['prizefivetext'] : "";
-		$this->prizeFiveTextSize = (isset($data['prizefivetextsize'])) ? $data['prizefivetextsize'] : 10;
-		$this->prizeFiveImage = (isset($data['prizefiveimage'])) ? $data['prizefiveimage'] : "";
-		$this->prizeFiveUrl = (isset($data['prizefiveurl'])) ? $data['prizefiveurl'] : "";
-		$this->prizeFiveWeight = (isset($data['prizefiveweight'])) ? $data['prizefiveweight'] : 0;
-		$this->prizeSixName = (isset($data['prizesixname'])) ? $data['prizesixname'] : "";
-		$this->prizeSixCode = (isset($data['prizesixcode'])) ? $data['prizesixcode'] : "";
-		$this->prizeSixText = (isset($data['prizesixtext'])) ? $data['prizesixtext'] : "";
-		$this->prizeSixTextSize = (isset($data['prizesixtextsize'])) ? $data['prizesixtextsize'] : 10;
-		$this->prizeSixImage = (isset($data['prizesiximage'])) ? $data['prizesiximage'] : "";
-		$this->prizeSixUrl = (isset($data['prizesixurl'])) ? $data['prizesixurl'] : "";
-		$this->prizeSixWeight = (isset($data['prizesixweight'])) ? $data['prizesixweight'] : 0;
-		$this->prizeSevenName = (isset($data['prizesevenname'])) ? $data['prizesevenname'] : "";
-		$this->prizeSevenCode = (isset($data['prizesevencode'])) ? $data['prizesevencode'] : "";
-		$this->prizeSevenText = (isset($data['prizeseventext'])) ? $data['prizeseventext'] : "";
-		$this->prizeSevenTextSize = (isset($data['prizeseventextsize'])) ? $data['prizeseventextsize'] : 10;
-		$this->prizeSevenImage = (isset($data['prizesevenimage'])) ? $data['prizesevenimage'] : "";
-		$this->prizeSevenUrl = (isset($data['prizesevenurl'])) ? $data['prizesevenurl'] : "";
-		$this->prizeSevenWeight = (isset($data['prizesevenweight'])) ? $data['prizesevenweight'] : 0;
-		$this->prizeEightName = (isset($data['prizeeightname'])) ? $data['prizeeightname'] : "";
-		$this->prizeEightCode = (isset($data['prizeeightcode'])) ? $data['prizeeightcode'] : "";
-		$this->prizeEightText = (isset($data['prizeeighttext'])) ? $data['prizeeighttext'] : "";
-		$this->prizeEightTextSize = (isset($data['prizeeighttextsize'])) ? $data['prizeeighttextsize'] : 10;
-		$this->prizeEightImage = (isset($data['prizeeightimage'])) ? $data['prizeeightimage'] : "";
-		$this->prizeEightUrl = (isset($data['prizeeighturl'])) ? $data['prizeeighturl'] : "";
-		$this->prizeEightWeight = (isset($data['prizeeightweight'])) ? $data['prizeeightweight'] : 0;
-		$this->prizeNineName = (isset($data['prizeninename'])) ? $data['prizeninename'] : "";
-		$this->prizeNineCode = (isset($data['prizeninecode'])) ? $data['prizeninecode'] : "";
-		$this->prizeNineText = (isset($data['prizeninetext'])) ? $data['prizeninetext'] : "";
-		$this->prizeNineTextSize = (isset($data['prizeninetextsize'])) ? $data['prizeninetextsize'] : 10;
-		$this->prizeNineImage = (isset($data['prizenineimage'])) ? $data['prizenineimage'] : "";
-		$this->prizeNineUrl = (isset($data['prizenineurl'])) ? $data['prizenineurl'] : "";
-		$this->prizeNineWeight = (isset($data['prizenineweight'])) ? $data['prizenineweight'] : 0;
-		$this->prizeTenName = (isset($data['prizetenname'])) ? $data['prizetenname'] : "";
-		$this->prizeTenCode = (isset($data['prizetencode'])) ? $data['prizetencode'] : "";
-		$this->prizeTenText = (isset($data['prizetentext'])) ? $data['prizetentext'] : "";
-		$this->prizeTenTextSize = (isset($data['prizetentextsize'])) ? $data['prizetentextsize'] : 10;
-		$this->prizeTenImage = (isset($data['prizetenimage'])) ? $data['prizetenimage'] : "";
-		$this->prizeTenUrl = (isset($data['prizetenurl'])) ? $data['prizetenurl'] : "";
-		$this->prizeTenWeight = (isset($data['prizetenweight'])) ? $data['prizetenweight'] : 0;
-		$this->prizeElevenName = (isset($data['prizeelevenname'])) ? $data['prizeelevenname'] : "";
-		$this->prizeElevenCode = (isset($data['prizeelevencode'])) ? $data['prizeelevencode'] : "";
-		$this->prizeElevenText = (isset($data['prizeeleventext'])) ? $data['prizeeleventext'] : "";
-		$this->prizeElevenTextSize = (isset($data['prizeeleventextsize'])) ? $data['prizeeleventextsize'] : 10;
-		$this->prizeElevenImage = (isset($data['prizeelevenimage'])) ? $data['prizeelevenimage'] : "";
-		$this->prizeElevenUrl = (isset($data['prizeelevenurl'])) ? $data['prizeelevenurl'] : "";
-		$this->prizeElevenWeight = (isset($data['prizeelevenweight'])) ? $data['prizeelevenweight'] : 0;		
-		$this->prizeTwelveName = (isset($data['prizetwelvename'])) ? $data['prizetwelvename'] : "";
-		$this->prizeTwelveCode = (isset($data['prizetwelvecode'])) ? $data['prizetwelvecode'] : "";
-		$this->prizeTwelveText = (isset($data['prizetwelvetext'])) ? $data['prizetwelvetext'] : "";
-		$this->prizeTwelveTextSize = (isset($data['prizetwelvetextsize'])) ? $data['prizetwelvetextsize'] : 10;
-		$this->prizeTwelveImage = (isset($data['prizetwelveimage'])) ? $data['prizetwelveimage'] : "";
-		$this->prizeTwelveUrl = (isset($data['prizetwelveurl'])) ? $data['prizetwelveurl'] : "";
-		$this->prizeTwelveWeight = (isset($data['prizetwelveweight'])) ? $data['prizetwelveweight'] : 0;
-		$this->sponserImage = (isset($data['sponserimage'])) ? $data['sponserimage'] : "";
-		$this->sponserLink = (isset($data['sponserlink'])) ? $data['sponserlink'] : "";
-		$this->backImage = (isset($data['backimage'])) ? $data['backimage'] : "";
-		$this->topImage = (isset($data['topimage'])) ? $data['topimage'] : "";
-		$this->buttonImage = (isset($data['buttonimage'])) ? $data['buttonimage'] : "";
-		$this->sendEmailNotifications = (isset($data['sendemailnotifications'])) ? $data['sendemailnotifications'] : false;
-		$this->notificationEmailAddress = (isset($data['notificationemailaddress'])) ? $data['notificationemailaddress'] : "";
-		$this->smtpServer = (isset($data['smtpserver'])) ? $data['smtpserver'] : "";
-		$this->smtpUserName = (isset($data['smtpusername'])) ? $data['smtpusername'] : "";
-		$this->smtpPassword = (isset($data['smtppassword'])) ? $data['smtppassword'] : "";
-		$this->smtpPort = (isset($data['smtpport'])) ? $data['smtpport'] : 25;
-		$this->smtpFromAddress = (isset($data['smtpfromaddress'])) ? $data['smtpfromaddress'] : "";
-		$this->smtpEncryption = (isset($data['smtpencryption'])) ? $data['smtpencryption'] : "none";
-		$this->smtpAuthMethod = (isset($data['smtpauthmethod'])) ? $data['smtpauthmethod'] : "login";
-		$this->notificationEmailSubject = (isset($data['notificationemailsubject'])) ? $data['notificationemailsubject'] : "";
-		$this->notificationEmailBody = (isset($data['notificationemailbody'])) ? $data['notificationemailbody'] : "";
-		$this->ipAddressFilter = (isset($data['ipaddressfilter'])) ? $data['ipaddressfilter'] : false;
-		$this->phoneFilter = (isset($data['phonefilter'])) ? $data['phonefilter'] : false;
-		$this->emailFilter = (isset($data['emailfilter'])) ? $data['emailfilter'] : false;
-		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : true;
-		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : null;
-		$this->prizeWheelTypeName = (isset($data['prizewheeltypename'])) ? $data['prizewheeltypename'] : "";
-		$this->views = (isset($data['views'])) ? $data['views'] : 0;
-		$this->plays = (isset($data['plays'])) ? $data['plays'] : 0;
-		$this->advertisementClicks = (isset($data['advertisementclicks'])) ? $data['advertisementclicks'] : 0;
-		$this->categories = (isset($data['categories'])) ? $data['categories'] : array();
+		$this->prizeOneName = (isset($data['prizeonename'])) ? $data['prizeonename'] : $this->prizeOneName;
+		$this->prizeOneCode = (isset($data['prizeonecode'])) ? $data['prizeonecode'] : $this->prizeOneCode;
+		$this->prizeOneText = (isset($data['prizeonetext'])) ? $data['prizeonetext'] : $this->prizeOneText;
+		$this->prizeOneTextSize = (isset($data['prizeonetextsize'])) ? $data['prizeonetextsize'] : $this->prizeOneTextSize;
+		$this->prizeOneImage = (isset($data['prizeoneimage'])) ? $data['prizeoneimage'] : $this->prizeOneImage;
+		$this->prizeOneUrl = (isset($data['prizeoneurl'])) ? $data['prizeoneurl'] : $this->prizeOneUrl;
+		$this->prizeOneWeight = (isset($data['prizeoneweight'])) ? $data['prizeoneweight'] : $this->prizeOneWeight;		  
+		$this->prizeTwoName = (isset($data['prizetwoname'])) ? $data['prizetwoname'] : $this->prizeTwoName;
+		$this->prizeTwoCode = (isset($data['prizetwocode'])) ? $data['prizetwocode'] : $this->prizeTwoCode;
+		$this->prizeTwoText = (isset($data['prizetwotext'])) ? $data['prizetwotext'] : $this->prizeTwoText;
+		$this->prizeTwoTextSize = (isset($data['prizetwotextsize'])) ? $data['prizetwotextsize'] : $this->prizeTwoTextSize;
+		$this->prizeTwoImage = (isset($data['prizetwoimage'])) ? $data['prizetwoimage'] : $this->prizeTwoImage;
+		$this->prizeTwoUrl = (isset($data['prizetwourl'])) ? $data['prizetwourl'] : $this->prizeTwoUrl;
+		$this->prizeTwoWeight = (isset($data['prizetwoweight'])) ? $data['prizetwoweight'] : $this->prizeTwoWeight;		
+		$this->prizeThreeName = (isset($data['prizethreename'])) ? $data['prizethreename'] : $this->prizeThreeName;
+		$this->prizeThreeCode = (isset($data['prizethreecode'])) ? $data['prizethreecode'] : $this->prizeThreeCode;
+		$this->prizeThreeText = (isset($data['prizethreetext'])) ? $data['prizethreetext'] : $this->prizeThreeText;
+		$this->prizeThreeTextSize = (isset($data['prizethreetextsize'])) ? $data['prizethreetextsize'] : $this->prizeThreeTextSize;
+		$this->prizeThreeImage = (isset($data['prizethreeimage'])) ? $data['prizethreeimage'] : $this->prizeThreeImage;
+		$this->prizeThreeUrl = (isset($data['prizethreeurl'])) ? $data['prizethreeurl'] : $this->prizeThreeUrl;
+		$this->prizeThreeWeight = (isset($data['prizethreeweight'])) ? $data['prizethreeweight'] : $this->prizeThreeWeight;
+		$this->prizeFourName = (isset($data['prizefourname'])) ? $data['prizefourname'] : $this->prizeFourName;
+		$this->prizeFourCode = (isset($data['prizefourcode'])) ? $data['prizefourcode'] : $this->prizeFourCode;
+		$this->prizeFourText = (isset($data['prizefourtext'])) ? $data['prizefourtext'] : $this->prizeFourText;
+		$this->prizeFourTextSize = (isset($data['prizefourtextsize'])) ? $data['prizefourtextsize'] : $this->prizeFourTextSize;
+		$this->prizeFourImage = (isset($data['prizefourimage'])) ? $data['prizefourimage'] : $this->prizeFourImage;
+		$this->prizeFourUrl = (isset($data['prizefoururl'])) ? $data['prizefoururl'] : $this->prizeFourUrl;
+		$this->prizeFourWeight = (isset($data['prizefourweight'])) ? $data['prizefourweight'] : $this->prizeFourWeight;
+		$this->prizeFiveName = (isset($data['prizefivename'])) ? $data['prizefivename'] : $this->prizeFiveName;
+		$this->prizeFiveCode = (isset($data['prizefivecode'])) ? $data['prizefivecode'] : $this->prizeFiveCode;
+		$this->prizeFiveText = (isset($data['prizefivetext'])) ? $data['prizefivetext'] : $this->prizeFiveText;
+		$this->prizeFiveTextSize = (isset($data['prizefivetextsize'])) ? $data['prizefivetextsize'] : $this->prizeFiveTextSize;
+		$this->prizeFiveImage = (isset($data['prizefiveimage'])) ? $data['prizefiveimage'] : $this->prizeFiveImage;
+		$this->prizeFiveUrl = (isset($data['prizefiveurl'])) ? $data['prizefiveurl'] : $this->prizeFiveUrl;
+		$this->prizeFiveWeight = (isset($data['prizefiveweight'])) ? $data['prizefiveweight'] : $this->prizeFiveWeight;
+		$this->prizeSixName = (isset($data['prizesixname'])) ? $data['prizesixname'] : $this->prizeSixName;
+		$this->prizeSixCode = (isset($data['prizesixcode'])) ? $data['prizesixcode'] : $this->prizeSixCode;
+		$this->prizeSixText = (isset($data['prizesixtext'])) ? $data['prizesixtext'] : $this->prizeSixText;
+		$this->prizeSixTextSize = (isset($data['prizesixtextsize'])) ? $data['prizesixtextsize'] : $this->prizeSixTextSize;
+		$this->prizeSixImage = (isset($data['prizesiximage'])) ? $data['prizesiximage'] : $this->prizeSixImage;
+		$this->prizeSixUrl = (isset($data['prizesixurl'])) ? $data['prizesixurl'] : $this->prizeSixUrl;
+		$this->prizeSixWeight = (isset($data['prizesixweight'])) ? $data['prizesixweight'] : $this->prizeSixWeight;
+		$this->prizeSevenName = (isset($data['prizesevenname'])) ? $data['prizesevenname'] : $this->prizeSevenName;
+		$this->prizeSevenCode = (isset($data['prizesevencode'])) ? $data['prizesevencode'] : $this->prizeSevenCode;
+		$this->prizeSevenText = (isset($data['prizeseventext'])) ? $data['prizeseventext'] : $this->prizeSevenText;
+		$this->prizeSevenTextSize = (isset($data['prizeseventextsize'])) ? $data['prizeseventextsize'] : $this->prizeSevenTextSize;
+		$this->prizeSevenImage = (isset($data['prizesevenimage'])) ? $data['prizesevenimage'] : $this->prizeSevenImage;
+		$this->prizeSevenUrl = (isset($data['prizesevenurl'])) ? $data['prizesevenurl'] : $this->prizeSevenUrl;
+		$this->prizeSevenWeight = (isset($data['prizesevenweight'])) ? $data['prizesevenweight'] : $this->prizeSevenWeight;
+		$this->prizeEightName = (isset($data['prizeeightname'])) ? $data['prizeeightname'] : $this->prizeEightName;
+		$this->prizeEightCode = (isset($data['prizeeightcode'])) ? $data['prizeeightcode'] : $this->prizeEightCode;
+		$this->prizeEightText = (isset($data['prizeeighttext'])) ? $data['prizeeighttext'] : $this->prizeEightText;
+		$this->prizeEightTextSize = (isset($data['prizeeighttextsize'])) ? $data['prizeeighttextsize'] : $this->prizeEightTextSize;
+		$this->prizeEightImage = (isset($data['prizeeightimage'])) ? $data['prizeeightimage'] : $this->prizeEightImage;
+		$this->prizeEightUrl = (isset($data['prizeeighturl'])) ? $data['prizeeighturl'] : $this->prizeEightUrl;
+		$this->prizeEightWeight = (isset($data['prizeeightweight'])) ? $data['prizeeightweight'] : $this->prizeEightWeight;
+		$this->prizeNineName = (isset($data['prizeninename'])) ? $data['prizeninename'] : $this->prizeNineName;
+		$this->prizeNineCode = (isset($data['prizeninecode'])) ? $data['prizeninecode'] : $this->prizeNineCode;
+		$this->prizeNineText = (isset($data['prizeninetext'])) ? $data['prizeninetext'] : $this->prizeNineText;
+		$this->prizeNineTextSize = (isset($data['prizeninetextsize'])) ? $data['prizeninetextsize'] : $this->prizeNineTextSize;
+		$this->prizeNineImage = (isset($data['prizenineimage'])) ? $data['prizenineimage'] : $this->prizeNineImage;
+		$this->prizeNineUrl = (isset($data['prizenineurl'])) ? $data['prizenineurl'] : $this->prizeNineUrl;
+		$this->prizeNineWeight = (isset($data['prizenineweight'])) ? $data['prizenineweight'] : $this->prizeNineWeight;
+		$this->prizeTenName = (isset($data['prizetenname'])) ? $data['prizetenname'] : $this->prizeTenName;
+		$this->prizeTenCode = (isset($data['prizetencode'])) ? $data['prizetencode'] : $this->prizeTenCode;
+		$this->prizeTenText = (isset($data['prizetentext'])) ? $data['prizetentext'] : $this->prizeTenText;
+		$this->prizeTenTextSize = (isset($data['prizetentextsize'])) ? $data['prizetentextsize'] : $this->prizeTenTextSize;
+		$this->prizeTenImage = (isset($data['prizetenimage'])) ? $data['prizetenimage'] : $this->prizeTenImage;
+		$this->prizeTenUrl = (isset($data['prizetenurl'])) ? $data['prizetenurl'] : $this->prizeTenUrl;
+		$this->prizeTenWeight = (isset($data['prizetenweight'])) ? $data['prizetenweight'] : $this->prizeTenWeight;
+		$this->prizeElevenName = (isset($data['prizeelevenname'])) ? $data['prizeelevenname'] : $this->prizeElevenName;
+		$this->prizeElevenCode = (isset($data['prizeelevencode'])) ? $data['prizeelevencode'] : $this->prizeElevenCode;
+		$this->prizeElevenText = (isset($data['prizeeleventext'])) ? $data['prizeeleventext'] : $this->prizeElevenText;
+		$this->prizeElevenTextSize = (isset($data['prizeeleventextsize'])) ? $data['prizeeleventextsize'] : $this->prizeElevenTextSize;
+		$this->prizeElevenImage = (isset($data['prizeelevenimage'])) ? $data['prizeelevenimage'] : $this->prizeElevenImage;
+		$this->prizeElevenUrl = (isset($data['prizeelevenurl'])) ? $data['prizeelevenurl'] : $this->prizeElevenUrl;
+		$this->prizeElevenWeight = (isset($data['prizeelevenweight'])) ? $data['prizeelevenweight'] : $this->prizeElevenWeight;		
+		$this->prizeTwelveName = (isset($data['prizetwelvename'])) ? $data['prizetwelvename'] : $this->prizeTwelveName;
+		$this->prizeTwelveCode = (isset($data['prizetwelvecode'])) ? $data['prizetwelvecode'] : $this->prizeTwelveCode;
+		$this->prizeTwelveText = (isset($data['prizetwelvetext'])) ? $data['prizetwelvetext'] : $this->prizeTwelveText;
+		$this->prizeTwelveTextSize = (isset($data['prizetwelvetextsize'])) ? $data['prizetwelvetextsize'] : $this->prizeTwelveTextSize;
+		$this->prizeTwelveImage = (isset($data['prizetwelveimage'])) ? $data['prizetwelveimage'] : $this->prizeTwelveImage;
+		$this->prizeTwelveUrl = (isset($data['prizetwelveurl'])) ? $data['prizetwelveurl'] : $this->prizeTwelveUrl;
+		$this->prizeTwelveWeight = (isset($data['prizetwelveweight'])) ? $data['prizetwelveweight'] : $this->prizeTwelveWeight;
+		$this->sponserImage = (isset($data['sponserimage'])) ? $data['sponserimage'] : $this->sponserImage;
+		$this->sponserLink = (isset($data['sponserlink'])) ? $data['sponserlink'] : $this->sponserLink;
+		$this->backImage = (isset($data['backimage'])) ? $data['backimage'] : $this->backImage;
+		$this->topImage = (isset($data['topimage'])) ? $data['topimage'] : $this->topImage;
+		$this->buttonImage = (isset($data['buttonimage'])) ? $data['buttonimage'] : $this->buttonImage;
+		$this->sendEmailNotifications = (isset($data['sendemailnotifications'])) ? $data['sendemailnotifications'] : $this->sendEmailNotifications;
+		$this->notificationEmailAddress = (isset($data['notificationemailaddress'])) ? $data['notificationemailaddress'] : $this->notificationEmailAddress;
+		$this->smtpServer = (isset($data['smtpserver'])) ? $data['smtpserver'] : $this->smtpServer;
+		$this->smtpUserName = (isset($data['smtpusername'])) ? $data['smtpusername'] : $this->smtpUserName;
+		$this->smtpPassword = (isset($data['smtppassword'])) ? $data['smtppassword'] : $this->smtpPassword;
+		$this->smtpPort = (isset($data['smtpport'])) ? $data['smtpport'] : $this->smtpPort;
+		$this->smtpFromAddress = (isset($data['smtpfromaddress'])) ? $data['smtpfromaddress'] : $this->smtpFromAddress;
+		$this->smtpEncryption = (isset($data['smtpencryption'])) ? $data['smtpencryption'] : $this->smtpEncryption;
+		$this->smtpAuthMethod = (isset($data['smtpauthmethod'])) ? $data['smtpauthmethod'] : $this->smtpAuthMethod;
+		$this->notificationEmailSubject = (isset($data['notificationemailsubject'])) ? $data['notificationemailsubject'] : $this->notificationEmailSubject;
+		$this->notificationEmailBody = (isset($data['notificationemailbody'])) ? $data['notificationemailbody'] : $this->notificationEmailBody;
+		$this->ipAddressFilter = (isset($data['ipaddressfilter'])) ? $data['ipaddressfilter'] : $this->ipAddressFilter;
+		$this->phoneFilter = (isset($data['phonefilter'])) ? $data['phonefilter'] : $this->phoneFilter;
+		$this->emailFilter = (isset($data['emailfilter'])) ? $data['emailfilter'] : $this->emailFilter;
+		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : $this->enabled;
+		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : $this->createDateTime;
+		$this->prizeWheelTypeName = (isset($data['prizewheeltypename'])) ? $data['prizewheeltypename'] : $this->prizeWheelTypeName;
+		$this->views = (isset($data['views'])) ? $data['views'] : $this->views;
+		$this->plays = (isset($data['plays'])) ? $data['plays'] : $this->plays;
+		$this->advertisementClicks = (isset($data['advertisementclicks'])) ? $data['advertisementclicks'] : $this->advertisementClicks;
+		$this->categories = (isset($data['categories'])) ? $data['categories'] : $this->categories;
+		$this->facebookPageName = (isset($data['facebookpagename'])) ? $data['facebookpagename'] : $this->facebookPageName;
+		$this->revenue = (isset($data['revenue'])) ? $data['revenue'] : $this->revenue;
+		$this->payout = (isset($data['payout'])) ? $data['payout'] : $this->payout;
   	}
 	
 	public function getArrayCopy()
@@ -1370,7 +1408,10 @@ class PrizeWheel
 			'views' => $this->views,
 			'plays' => $this->plays,
 			'advertisementclicks' => $this->advertisementClicks,
-			'categories' => $this->categories
+			'categories' => $this->categories,
+			'facebookpagename' => $this->facebookPageName,
+			'revenue' => $this->revenue,
+			'payout' => $this->payout
 		);
  	}
 
@@ -1381,8 +1422,8 @@ class PrizeWheel
  				if($advertisement instanceof \Application\Model\Advertisement &&
  						$advertisement->advertisementPlacementTypeId() == \Application\Model\AdvertisementPlacementType::Sponser){
  					return array(
- 						'sponserimage' => $advertisement->bannerImage(),
- 						'sponserlink' => '/ads/click/' . $advertisement->id()	. '/' . $this->id()
+ 						'sponserimage' => $advertisement->id().'/'.$advertisement->sponserImage(),
+ 						'sponserlink' => '/ads/click/' . $advertisement->id()	. '/' . $this->id() . '?bannerclick=true'
  					);
  				} // if
  			} // foreach
@@ -1395,8 +1436,8 @@ class PrizeWheel
  			foreach($advertisements as $advertisement){
  				if($advertisement instanceof \Application\Model\Advertisement){ 					
  					if($advertisement->advertisementPlacementTypeId() == \Application\Model\AdvertisementPlacementType::Sponser){
- 						$options['sponserimage'] = $advertisement->id().'/'.$advertisement->bannerImage();
- 						$options['sponserlink'] = '/ads/click/' . $advertisement->id() . '/' . $this->id();
+ 						$options['sponserimage'] = $advertisement->id().'/'.$advertisement->sponserImage();
+ 						$options['sponserlink'] = '/ads/click/' . $advertisement->id() . '/' . $this->id() . '?bannerclick=true';
  					} // if
  					else{
  						$prizeWheelOptions[] = array(
@@ -1475,16 +1516,17 @@ class PrizeWheel
  		} // switch
  	
  		return "";
- 	} // getNumericalTextRepresentation
+ 	} // getNumericalTextRepresentation 	
  	
  	public function getSettingsXml($options=array())
  	{
  		$adir = "/images/advertisements/";
- 		$idir = "/images/prizewheels/".$this->pageId."/";
+ 		$idir = "/images/prizewheels/".$this->id()."/";
+ 		$redirect = "/prize-wheel/prize-redirect/" . $this->id() . "?redirect=";
  		
  		$image1 = "";
  		if(!isset($options['prizeoneimage'])){
- 			$image1 = strlen($this->prizeOneImage) > 0 ? $idir.$this->getPrizeOneImage() : '/images/green.png';
+ 			$image1 = strlen($this->prizeOneImage) > 0 ? $idir.$this->prizeOneImage() : '/images/green.png';
  		} // if
  		else{
  			$image1 = $adir.$options['prizeoneimage'];
@@ -1492,7 +1534,7 @@ class PrizeWheel
  		
  		$image2 = "";
  		if(!isset($options['prizetwoimage'])){
- 			$image2 = strlen($this->prizeTwoImage) > 0 ? $idir.$this->getPrizeTwoImage() : '/images/orange.png';
+ 			$image2 = strlen($this->prizeTwoImage) > 0 ? $idir.$this->prizeTwoImage() : '/images/orange.png';
  		} // if
  		else{
  			$image2 = $adir.$options['prizetwoimage'];
@@ -1500,7 +1542,7 @@ class PrizeWheel
  			
  		$image3 = "";
  		if(!isset($options['prizethreeimage'])){
- 			$image3 = strlen($this->prizeThreeImage) > 0 ? $idir.$this->getPrizeThreeImage() : '/images/purple.png';
+ 			$image3 = strlen($this->prizeThreeImage) > 0 ? $idir.$this->prizeThreeImage() : '/images/purple.png';
  		} // if
  		else{
  			$image3 = $adir.$options['prizethreeimage'];
@@ -1508,7 +1550,7 @@ class PrizeWheel
  		
  		$image4 = "";
  		if(!isset($options['prizefourimage'])){
- 			$image4 = strlen($this->prizeFourImage) > 0 ? $idir.$this->getPrizeFourImage() : '/images/yellow.png';
+ 			$image4 = strlen($this->prizeFourImage) > 0 ? $idir.$this->prizeFourImage() : '/images/yellow.png';
  		} // if
  		else{
  			$image4 = $adir.$options['prizefourimage'];
@@ -1516,7 +1558,7 @@ class PrizeWheel
  		
  		$image5 = "";
  		if(!isset($options['prizefiveimage'])){
- 			$image5 = strlen($this->prizeFiveImage) > 0 ? $idir.$this->getPrizeFiveImage() : '/images/blue.png';
+ 			$image5 = strlen($this->prizeFiveImage) > 0 ? $idir.$this->prizeFiveImage() : '/images/blue.png';
  		} // if
  		else{
  			$image5 = $adir.$options['prizefiveimage'];
@@ -1524,7 +1566,7 @@ class PrizeWheel
  		
  		$image6 = "";
  		if(!isset($options['prizesiximage'])){
- 			$image6 = strlen($this->prizeSixImage) > 0 ? $idir.$this->getPrizeSixImage() : '/images/red.png';
+ 			$image6 = strlen($this->prizeSixImage) > 0 ? $idir.$this->prizeSixImage() : '/images/red.png';
  		} // if
  		else{
  			$image6 = $adir.$options['prizesiximage'];
@@ -1532,7 +1574,7 @@ class PrizeWheel
  		
  		$image7 = "";
  		if(!isset($options['prizesevenimage'])){
- 			$image7 = strlen($this->prizeSevenImage) > 0 ? $idir.$this->getPrizeSevenImage() : '/images/green.png';
+ 			$image7 = strlen($this->prizeSevenImage) > 0 ? $idir.$this->prizeSevenImage() : '/images/green.png';
  		} // if
  		else{
  			$image7 = $adir.$options['prizesevenimage'];
@@ -1540,7 +1582,7 @@ class PrizeWheel
  			
  		$image8 = "";
  		if(!isset($options['prizeeightimage'])){
- 			$image8 = strlen($this->prizeEightImage) > 0 ? $idir.$this->getPrizeEightImage() : '/images/red.png';
+ 			$image8 = strlen($this->prizeEightImage) > 0 ? $idir.$this->prizeEightImage() : '/images/red.png';
  		} // if
  		else{
  			$image8 = $adir.$options['prizeeightimage'];
@@ -1548,7 +1590,7 @@ class PrizeWheel
  		
  		$image9 = "";
  		if(!isset($options['prizenineimage'])){
- 			$image9 = strlen($this->prizeNineImage) > 0 ? $idir.$this->getPrizeNineImage() : '/images/yellow.png';
+ 			$image9 = strlen($this->prizeNineImage) > 0 ? $idir.$this->prizeNineImage() : '/images/yellow.png';
  		} // if
  		else{
  			$image9 = $adir.$options['prizenineimage'];
@@ -1556,7 +1598,7 @@ class PrizeWheel
  		
  		$image10 = "";
  		if(!isset($options['prizetenimage'])){
- 			$image10 = strlen($this->prizeTenImage) > 0 ? $idir.$this->getPrizeTenImage() : '/images/orange.png';
+ 			$image10 = strlen($this->prizeTenImage) > 0 ? $idir.$this->prizeTenImage() : '/images/orange.png';
  		} // if
  		else{
  			$image10 = $adir.$options['prizetenimage'];
@@ -1564,7 +1606,7 @@ class PrizeWheel
  		
  		$image11 = "";
  		if(!isset($options['prizeelevenimage'])){
- 			$image11 = strlen($this->prizeElevenImage) > 0 ? $idir.$this->getPrizeElevenImage() : '/images/blue.png';
+ 			$image11 = strlen($this->prizeElevenImage) > 0 ? $idir.$this->prizeElevenImage() : '/images/blue.png';
  		} // if
  		else{
  			$image11 = $adir.$options['prizeelevenimage'];
@@ -1572,7 +1614,7 @@ class PrizeWheel
  		
  		$image12 = "";
  		if(!isset($options['prizetwelveimage'])){
- 			$image12 = strlen($this->prizeTwelveImage) > 0 ? $idir.$this->getPrizeTwelveImage() : '/images/purple.png';
+ 			$image12 = strlen($this->prizeTwelveImage) > 0 ? $idir.$this->prizeTwelveImage() : '/images/purple.png';
  		} // if
  		else{
  			$image12 = $adir.$options['prizetwelveimage'];
@@ -1585,7 +1627,7 @@ class PrizeWheel
  		
  		$sponserImage = "";
  		if(!isset($options['sponserimage'])){
- 			$sponserImage = strlen($this->sponserImage) > 0 ? $idir.$this->getPrizeTwelveImage() : '/images/test.jpg';
+ 			$sponserImage = strlen($this->sponserImage) > 0 ? $idir.$this->prizeTwelveImage() : '/images/test.jpg';
  		} // if
  		else{
  			$sponserImage = $adir.$options['sponserimage'];
@@ -1601,7 +1643,7 @@ class PrizeWheel
  			$prizeonecode = $options['prizeonecode'];
  		}
  		
- 		$prizeoneurl = $this->prizeOneUrl;
+ 		$prizeoneurl = $redirect.$this->prizeOneUrl;
  		if(isset($options['prizeoneurl'])){
  			$prizeoneurl = $options['prizeoneurl'];
  		} // if
@@ -1631,7 +1673,7 @@ class PrizeWheel
  			$prizetwocode = $options['prizetwocode'];
  		} // if
  		
- 		$prizetwourl = $this->prizeTwoUrl;
+ 		$prizetwourl = $redirect.$this->prizeTwoUrl;
  		if(isset($options['prizetwourl'])){
  			$prizetwourl = $options['prizetwourl'];
  		} // if
@@ -1661,7 +1703,7 @@ class PrizeWheel
  			$prizethreecode = $options['prizethreecode'];
  		} // if
  		
- 		$prizethreeurl = $this->prizeThreeUrl;
+ 		$prizethreeurl = $redirect.$this->prizeThreeUrl;
  		if(isset($options['prizethreeurl'])){
  			$prizethreeurl = $options['prizethreeurl'];
  		} // if
@@ -1691,7 +1733,7 @@ class PrizeWheel
  			$prizefourcode = $options['prizefourcode'];
  		}
  		
- 		$prizefoururl = $this->prizeFourUrl;
+ 		$prizefoururl = $redirect.$this->prizeFourUrl;
  		if(isset($options['prizefoururl'])){
  			$prizefoururl = $options['prizefoururl'];
  		} // if
@@ -1721,7 +1763,7 @@ class PrizeWheel
  			$prizefivecode = $options['prizefivecode'];
  		} // if
  		
- 		$prizefiveurl = $this->prizeFiveUrl;
+ 		$prizefiveurl = $redirect.$this->prizeFiveUrl;
  		if(isset($options['prizefiveurl'])){
  			$prizefiveurl = $options['prizefiveurl'];
  		} // if
@@ -1751,7 +1793,7 @@ class PrizeWheel
  			$prizesixcode = $options['prizesixcode'];
  		} // if
  		
- 		$prizesixurl = $this->prizeSixUrl;
+ 		$prizesixurl = $redirect.$this->prizeSixUrl;
  		if(isset($options['prizesixurl'])){
  			$prizesixurl = $options['prizesixurl'];
  		} // if
@@ -1781,7 +1823,7 @@ class PrizeWheel
  			$prizesevencode = $options['prizesevencode'];
  		} // if
  		
- 		$prizesevenurl = $this->prizeSevenUrl;
+ 		$prizesevenurl = $redirect.$this->prizeSevenUrl;
  		if(isset($options['prizesevenurl'])){
  			$prizesevenurl = $options['prizesevenurl'];
  		} // if
@@ -1811,7 +1853,7 @@ class PrizeWheel
  			$prizeeightcode = $options['prizeeightcode'];	
  		} // if
  		
- 		$prizeeighturl = $this->prizeEightUrl;
+ 		$prizeeighturl = $redirect.$this->prizeEightUrl;
  		if(isset($options['prizeeighturl'])){
  			$prizeeighturl = $options['prizeeighturl'];
  		} // if
@@ -1841,7 +1883,7 @@ class PrizeWheel
  			$prizeninecode = $options['prizeninecode'];
  		} // if
  		
- 		$prizenineurl = $this->prizeNineUrl;
+ 		$prizenineurl = $redirect.$this->prizeNineUrl;
  		if(isset($options['prizenineurl'])){
  			$prizenineurl = $options['prizenineurl'];
  		} // if
@@ -1871,7 +1913,7 @@ class PrizeWheel
  			$prizetencode = $options['prizetencode'];
  		} // if
  		
- 		$prizetenurl = $this->prizeTenUrl;
+ 		$prizetenurl = $redirect.$this->prizeTenUrl;
  		if(isset($options['prizetenurl'])){
  			$prizetenurl = $options['prizetenurl'];
  		} // if
@@ -1901,7 +1943,7 @@ class PrizeWheel
  			$prizeelevencode = $options['prizeelevencode'];
  		} // if
  		
- 		$prizeelevenurl = $this->prizeElevenUrl;
+ 		$prizeelevenurl = $redirect.$this->prizeElevenUrl;
  		if(isset($options['prizeelevenurl'])){
  			$prizeelevenurl = $options['prizeelevenurl'];
  		} // if
@@ -1931,7 +1973,7 @@ class PrizeWheel
  			$prizetwelvecode = $options['prizetwelvecode'];
  		} // if
  		
- 		$prizetwelveurl = $this->prizeTwelveUrl;
+ 		$prizetwelveurl = $redirect.$this->prizeTwelveUrl;
  		if(isset($options['prizetwelveurl'])){
  			$prizetwelveurl = $options['prizetwelveurl'];
  		} // if
@@ -1951,9 +1993,9 @@ class PrizeWheel
  			$prizetwelvetext = $options['prizetwelvetext'];
  		} // if
  		
- 		$backImage = strlen($this->backImage) > 0 ? $this->backImage : '/images/back.png';
-		$topImage = strlen($this->topImage) > 0 ? $this->topImage : '/images/top.png';
-		$buttonImage = strlen($this->buttonImage) > 0 ? $this->buttonImage : '/images/spinit.png';
+ 		$backImage = strlen($this->backImage) > 0 ? $idir.$this->backImage : '/images/back.png';
+		$topImage = strlen($this->topImage) > 0 ? $idir.$this->topImage : '/images/top.png';
+		$buttonImage = strlen($this->buttonImage) > 0 ? $idir.$this->buttonImage : '/images/spinit.png';
 		
 		$xmloutput = '<spinwheel>
 						<warning>

@@ -10,7 +10,7 @@ class ManageAdDrivenPrizeWheelForm extends Form
 {
 	protected $inputFilter = null;
 	
-	public function __construct($name='', $advertisementCategories=array())
+	public function __construct($name='', $advertisementCategories=array(), $displayenabled=false)
 	{
 		parent::__construct("manage-prize-wheel");
 		$this->setAttribute("method", "post");
@@ -31,6 +31,17 @@ class ManageAdDrivenPrizeWheelForm extends Form
 		));
 		$this->add($categories);
 		
+		if($displayenabled){
+			$enabled = new \Zend\Form\Element\Checkbox("enabled");
+			$enabled->setAttributes(array(
+				'id' => 'enabled'	
+			));
+			$enabled->setOptions(array(
+				'label' => 'Enabled'		
+			));
+			$this->add($enabled);
+		} // if
+		
 		$this->inputFilter = $this->getDefaultInputFilter();
 	}
 	
@@ -41,6 +52,11 @@ class ManageAdDrivenPrizeWheelForm extends Form
 		
 		$inputFilter->add($factory->createInput(array(
 			'name' => 'categories',
+			'required' => false	
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			'name' => 'enabled',
 			'required' => false	
 		)));
 		

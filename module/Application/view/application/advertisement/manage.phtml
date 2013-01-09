@@ -1,11 +1,21 @@
 <?php
 
+$this->layout($this->layoutpath);
 $title = "Manage Advertisement";
 $this->headTitle($title);
 $form = $this->manageform;
 $form->setAttribute('action', $this->url('advertisement', array('action' => 'manage', 'id' => $this->id)));
 $form->prepare();
 ?>
+
+<div>
+<?php if($this->isadmin):?>
+	<a href="<?php echo $this->url('advertisement', array('action' => 'list'))?>">Return to Advertisement list</a>
+<?php else:?>
+	<a href="<?php echo $this->url('advertiser')?>">Return to Advertiser Dashboard</a>
+<?php endif;?>
+</div>
+
 <h2><?php echo $this->escapeHtml($title)?></h2>
 
 <table>
@@ -35,14 +45,31 @@ $form->prepare();
 				</tr>
 				<tr>
 					<td>
+						<?php echo $this->formRow($form->get('sponserimage'))?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="<?php echo $this->sponserimage?>" alt="" style="width: 144px; height: 453px;" />			
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<?php echo $this->formRow($form->get('bannerimage'))?>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<img src="<?php echo $this->bannerimage?>" alt="" style="width: 300px; height: 300px;"/>			
+						<img src="<?php echo $this->bannerimage?>" alt="" style="max-width: 400px; max-height: 300px;" />			
 					</td>
 				</tr>
+				<?php if($this->isadmin):?>
+				<tr>
+					<td>
+						<?php echo $this->formRow($form->get('enabled'))?>
+					</td>
+				</tr>
+				<?php endif;?>
 				<tr>
 					<td>
 						<button type="submit" id="save-changes-btn">
@@ -63,6 +90,11 @@ $form->prepare();
 						<div>Your remaining Bucket points.</div>
 						<div><?php echo $this->escapeHtml($this->bucket)?></div>
 					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo $this->paypalbutton ?>						
+					</td>
 				</tr>			
 			</table>
 		</td>
@@ -74,7 +106,10 @@ $form->prepare();
 	$(document).ready(function(){
 
 		$("#cancel-changes-btn").click(function(){
-			window.location = '<?php echo $this->url('advertiser')?>';
+			window.top.location = '<?php echo $this->isadmin ? $this->url('advertisement', array('action' => 'list')) : $this->url('advertiser')?>';
 		});
+
+		$("#paypal").append($('<input type="hidden" name="return" value="<?php echo $this->baseurl?>/advertisement/success/<?php echo $this->id?>" />'));
+		$("#paypal").append($('<input type="hidden" name="custom" value="<?php echo $this->id?>" />'));
 	});
 </script>

@@ -20,6 +20,7 @@ class AdvertisementTypeController extends AbstractActionController
 	
 	public function __construct(AdvertisementTypeTable $advertisementTypeTable)
 	{
+		parent::__construct();
 		$this->advertisementTypeTable = $advertisementTypeTable;
 	}	
 	

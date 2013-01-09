@@ -113,7 +113,18 @@ class NewAdvertisementForm extends Form
 			"label"	=> "Banner Image"
 		));
 		
-		$this->add($upload);	
+		$this->add($upload);
+
+		$sponserUpload = new \Zend\Form\Element\File();
+		$sponserUpload->setName("sponserimage");
+		$sponserUpload->setAttributes(array(
+				"id" => "sponserimage"
+		));
+		$sponserUpload->setOptions(array(
+				"label"	=> "Sponser Image"
+		));
+		
+		$this->add($sponserUpload);
 	} // ctor
 	
 	public function getDefaultInputFilter()
@@ -138,7 +149,8 @@ class NewAdvertisementForm extends Form
 					)		
 				)		
 			)
-		)));		
+		)));
+				
 		$inputFilter->add($factory->createInput(array(
 			"name" => "description",
 			"required" => false,
@@ -146,7 +158,8 @@ class NewAdvertisementForm extends Form
 				array("name" => "StripTags"),
 				array("name" => "StringTrim")
 			)	
-		)));		
+		)));
+			
 		$inputFilter->add($factory->createInput(array(
 			"name" => "url",
 			"requred" => "true",
@@ -164,7 +177,8 @@ class NewAdvertisementForm extends Form
 					)
 				)
 			)	
-		)));		
+		)));
+			
 		$inputFilter->add($factory->createInput(array(
 			"name" => "typeid",
 			"required" => true,
@@ -175,10 +189,12 @@ class NewAdvertisementForm extends Form
 				array('name' => 'Digits')
 			)
 		)));		
+		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "categories",
 			"required" => true
-		)));		
+		)));
+		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "advertisementplacementtypeid",
 			"required" => true,
@@ -189,6 +205,7 @@ class NewAdvertisementForm extends Form
 				array('name' => 'Digits')
 			)
 		)));		
+		
 		$inputFilter->add($factory->createInput(array(
 			"name" => "bannerimage",
 			"required" => true,
@@ -204,6 +221,25 @@ class NewAdvertisementForm extends Form
 						"min" => 1,
 						"max" => 150
 					)		
+				)
+			)
+		)));
+		
+		$inputFilter->add($factory->createInput(array(
+			"name" => "sponserimage",
+			"required" => true,
+			"filters" => array(
+				array("name" => "StringTrim"),
+				array("name" => "StripTags")
+			),
+			"validators" => array(
+				array(
+					"name" => "StringLength",
+					"options" => array(
+						"encoding" => "UTF-8",
+						"min" => 1,
+						"max" => 150
+					)
 				)
 			)
 		)));

@@ -1,0 +1,201 @@
+<?php
+
+$this->layout($this->layoutpath);
+$title = "Transactions";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
+
+<div>
+<?php if(!$this->isadmin):?>
+	<a href="<?php echo $this->url("advertiser")?>">Return to Advertiser Dashboard</a>
+<?php endif;?>
+</div>
+
+<h2>Transactions - <?php echo $this->count?></h2>
+
+<?php if($this->isadmin):?>
+<div>
+	<table>
+		<tr>
+			<td>
+				<label for="firstname">First Name</label>
+			</td>
+			<td>
+				<label for="lastname">Last Name</label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" id="firstname" />
+			</td>
+			<td>
+				<input type="text" id="lastname" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button id="search-btn" type="button">
+					Search
+				</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<br/><br/>
+<?php endif;?>
+
+<div id="paginator"></div>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th style="text-align: left;">ID</th>
+			<th style="text-align: left;">Amount</th>
+			<th style="text-align: left;">Processor</th>
+			<th style="text-align: left;">Advertisement</th>
+			<th style="text-align: left;">Advertiser</th>
+			<th style="text-align: left;">Status</th>
+			<th style="text-align: left;">Payment ID</th>
+			<th style="text-align: left;">IP Address</th>
+			<th style="text-align: left;">Created</th>	
+		</tr>
+	</thead>
+	<tbody id="list-body">
+		<?php foreach($this->transactions as $transaction):?>
+		<tr>
+			<td>
+				<a href="<?php echo $this->url('transaction', array('action' => 'view', 'id' => $transaction->id()))?>">View</a>
+			</td>
+			<td><?php echo $this->escapeHtml($transaction->id())?></td>
+			<td><?php echo $this->escapeHtml(number_format($transaction->amount(), 2, '.', ','))?></td>
+			<td><?php echo $this->escapeHtml($transaction->processor())?></td>	
+			<td><?php echo $this->escapeHtml($transaction->advertisementName())?></td>
+			<td><?php echo $this->escapeHtml($transaction->advertiserName())?></td>
+			<td><?php echo $this->escapeHtml($transaction->status())?></td>
+			<td><?php echo $this->escapeHtml($transaction->paymentId())?></td>
+			<td><?php echo $this->escapeHtml($transaction->ipAddress())?></td>
+			<td><?php echo $this->escapeHtml($transaction->createDateTime())?>	
+		</tr>
+		<?php endforeach;?>
+		
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$("#search-btn").click(function(){
+			$.ajax({
+				url: '<?php echo $this->url('transaction', array('action' => 'list'))?>',
+				data: 'firstname=' + $("#firstname").val() + '&lastname=' + $("#lastname").val(),
+				type: 'post',
+				dataType: 'json',
+				success: function(response){
+
+					var listBody = $("#list-body");
+					
+					listBody.empty();
+
+					$.each(response.transactions, function(index, transaction){
+		
+						var row = $('<tr></tr>');
+
+						row.append($('<td><a href="/transaction/view/' + transaction.id + '">View</a></td>'));							
+						row.append($('<td>' + transaction.id + '</td>'));
+						row.append($('<td>' + parseFloat(transaction.amount).toFixed(2) + '</td>'));
+						row.append($('<td>' + transaction.processor + '</td>'));
+						row.append($('<td>' + transaction.advertisementname + '</td>'));
+						row.append($('<td>' + transaction.advertisername + '</td>'));
+						row.append($('<td>' + transaction.status + '</td>'));
+						row.append($('<td>' + transaction.paymentid + '</td>'));
+						row.append($('<td>' + transaction.ipaddress + '</td>'));
+						row.append($('<td>' + transaction.createdatetime + '</td>'));
+						
+						listBody.append(row);
+					});
+				}
+			});
+		});
+
+		<?php if($this->isadmin):?>
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('transaction', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber + '&firstname=' + $("#firstname").val() + '&lastname=' + $("#lastname").val(),
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.transactions, function(index, transaction){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/transaction/view/' + transaction.id + '">View</a></td>'));							
+							row.append($('<td>' + transaction.id + '</td>'));
+							row.append($('<td>' + parseFloat(transaction.amount).toFixed(2) + '</td>'));
+							row.append($('<td>' + transaction.processor + '</td>'));
+							row.append($('<td>' + transaction.advertisementname + '</td>'));
+							row.append($('<td>' + transaction.advertisername + '</td>'));
+							row.append($('<td>' + transaction.status + '</td>'));
+							row.append($('<td>' + transaction.paymentid + '</td>'));
+							row.append($('<td>' + transaction.ipaddress + '</td>'));
+							row.append($('<td>' + transaction.createdatetime + '</td>'));
+							
+							listBody.append(row);
+						});
+					}
+				});
+			}
+		});
+		<?php else:?>
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('transaction', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber,
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.transactions, function(index, transaction){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/transaction/view/' + transaction.id + '">View</a></td>'));							
+							row.append($('<td>' + transaction.id + '</td>'));
+							row.append($('<td>' + parseFloat(transaction.amount).toFixed(2) + '</td>'));
+							row.append($('<td>' + transaction.processor + '</td>'));
+							row.append($('<td>' + transaction.advertisementname + '</td>'));
+							row.append($('<td>' + transaction.advertisername + '</td>'));
+							row.append($('<td>' + transaction.status + '</td>'));
+							row.append($('<td>' + transaction.paymentid + '</td>'));
+							row.append($('<td>' + transaction.ipaddress + '</td>'));
+							row.append($('<td>' + transaction.createdatetime + '</td>'));
+							
+							listBody.append(row);
+						});
+					}
+				});
+			}
+		});
+		<?php endif;?>
+	});
+</script>

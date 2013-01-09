@@ -1,0 +1,39 @@
+<?php
+
+$this->layout($this->layoutpath);
+$title = "Manage Advertiser " . $this->escapeHtml($this->advertisername);
+$this->headTitle($title);
+$form = $this->form;
+$form->setAttribute('action', $this->url('advertiser', array('action' => 'manage', 'id' => $this->id)));
+$form->prepare();
+?>
+
+<div>
+<?php if($this->isadmin):?>
+	<a href="<?php echo $this->url("advertiser", array("action" => "list"))?>">Return to Advertiser List</a>
+<?php else:?>
+	<a href="<?php echo $this->url("advertiser")?>">Return to Advertiser Dashboard</a>
+<?php endif;?>
+</div>
+
+<h2>Manage Advertiser <?php echo $this->escapeHtml($this->advertisername)?></h2>
+
+<?php echo $this->form()->openTag($form)?>
+<?php echo $this->formCollection($form)?>
+<br/>
+<br/>
+<button type="submit" id="save-changes">
+	Save
+</button>
+<button  type="button" id="cancel-changes">
+	Cancel
+</button>
+<?php echo $this->form()->closeTag()?>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#cancel-changes").click(function(){
+			window.location = '<?php echo $this->isadmin ? $this->url('advertiser', array('action' => 'list')) : $this->url('advertiser')?>';
+		});
+	});
+</script>

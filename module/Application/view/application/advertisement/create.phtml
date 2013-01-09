@@ -7,6 +7,11 @@ $form = $this->createform;
 $form->setAttribute("action", $this->url("advertisement", array("action" => "create")));
 $form->prepare();
 ?>
+
+<div>
+	<a href="<?php echo $this->url('advertiser')?>">Return to Advertiser Dashboard</a>
+</div>
+
 <h2><?php echo $this->escapeHtml($title)?></h2>
 
 <?php echo $this->form()->openTag($form)?>
@@ -43,6 +48,11 @@ $form->prepare();
 	</tr>
 	<tr>
 		<td>
+			<?php echo $this->formRow($form->get('sponserimage'))?>
+		</td>
+	</tr>
+	<tr>
+		<td>
 			<?php echo $this->formRow($form->get("bannerimage"))?>
 		</td>
 	</tr>
@@ -50,6 +60,9 @@ $form->prepare();
 		<td>
 			<button type="submit" id="create-advertisement-btn">
 				Create
+			</button>
+			<button type="button" id="cancel-advertisement-btn">
+				Cancel
 			</button>
 		</td>
 	</tr>
@@ -69,6 +82,10 @@ $form->prepare();
 					required : "Please provide a Name for your Advertisement."
 				}
 			}
+		});
+
+		$("#cancel-advertisement-btn").click(function(){
+			window.location = '<?php echo $this->url('advertiser')?>';
 		});
 	});
 </script>

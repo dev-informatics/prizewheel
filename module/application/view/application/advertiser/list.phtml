@@ -1,0 +1,103 @@
+<?php
+
+$this->layout('layout/admin_layout');
+$title = "List Advertisers";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
+
+<h2>Advertisers</h2>
+
+<div id="paginator"></div>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th style="text-align: left;">Enabled</th>
+			<th style="text-align: left;">Name</th>
+			<th style="text-align: left;">Address1</th>
+			<th style="text-align: left;">Address2</th>
+			<th style="text-align: left;">City</th>
+			<th style="text-align: left;">State</th>
+			<th style="text-align: left;">Country</th>
+			<th style="text-align: left;">Postal</th>
+			<th style="text-align: left;">E-Mail</th>
+			<th style="text-align: left;">Telephone</th>
+		</tr>
+	</thead>
+	<tbody id="list-body">
+		<?php foreach($this->advertisers as $advertiser):?>
+		<tr>
+			<td>
+				<a href="<?php echo $this->url('advertiser', array('action' => 'manage', 'id' => $advertiser->id()))?>">View</a>
+			</td>
+			<td>
+				<?php if($advertiser->enabled()):?>
+				<input type="checkbox" id="affiliate-status-<?php echo $this->escapeHtml($advertiser->id())?>" checked="checked" />
+				<?php else:?>
+				<input type="checkbox" id="affiliate-status-<?php echo $this->escapeHtml($advertiser->id())?>" />
+				<?php endif;?>
+			</td>
+			<td><?php echo $this->escapeHtml($advertiser->name())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->address1())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->address2())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->city())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->state())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->country())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->postal())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->emailAddress())?></td>
+			<td><?php echo $this->escapeHtml($advertiser->telephone())?></td>
+		</tr>
+		<?php endforeach;?>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('advertiser', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber,
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.advertisers, function(index, advertiser){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/advertiser/manage/' + affiliate.id + '">View</a></td>'));							
+							if(affiliate.enabled){
+								row.append($('<td><input type="checkbox" id="advertiser-status-<?php echo $advertiser->id()?>" checked="checked" /></td>'));
+							} // if
+							else{
+								row.append($('<td><input type="checkbox" id="advertiser-status-<?php echo $advertiser->id()?>" /></td>'));
+							} // else
+							row.append($('<td>' + advertiser.name + '</td>'));
+							row.append($('<td>' + advertiser.address1 + '</td>'));
+							row.append($('<td>' + advertiser.address2 + '</td>'));
+							row.append($('<td>' + advertiser.city + '</td>'));
+							row.append($('<td>' + advertiser.state + '</td>'));
+							row.append($('<td>' + advertiser.country + '</td>'));
+							row.append($('<td>' + advertiser.postal + '</td>'));
+							row.append($('<td>' + advertiser.emailaddress + '</td>'));
+							row.append($('<td>' + advertiser.telephone + '</td>'));
+							
+							listBody.append(row);	
+						});
+					}
+				});
+			}
+		});
+	});
+</script>

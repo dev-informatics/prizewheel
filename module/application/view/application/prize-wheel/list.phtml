@@ -1,0 +1,88 @@
+<?php
+
+$this->layout("layout/admin_layout");
+$title = "Prize Wheels";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
+
+<h2>Prize Wheels</h2>
+
+<div id="paginator"></div>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>			
+			<th style="text-align: left;">Enabled</th>
+			<th style="text-align: left;">ID</th>
+			<th style="text-align: left;">Page ID</th>
+			<th style="text-align: left;">Type</th>
+			<th style="text-align: left;">Created</th>			
+		</tr>
+	</thead>
+	<tbody id="list-body">
+		<?php foreach($this->prizewheels as $prizeWheel):?>
+		<tr>
+			<td>
+				<a href="<?php echo $this->url('prize-wheel', array('action' => 'manage', 'id' => $prizeWheel->id()))?>">View</a>
+			</td>
+			<td>
+				<?php if($prizeWheel->enabled()):?>
+				<input type="checkbox" id="affiliate-status-<?php echo $this->escapeHtml($prizeWheel->id())?>" checked="checked" />
+				<?php else:?>
+				<input type="checkbox" id="affiliate-status-<?php echo $this->escapeHtml($prizeWheel->id())?>" />
+				<?php endif;?>
+			</td>
+			<td><?php echo $this->escapeHtml($prizeWheel->id())?></td>
+			<td><?php echo $this->escapeHtml($prizeWheel->pageId())?></td>
+			<td><?php echo $this->escapeHtml($prizeWheel->prizeWheelTypeName())?></td>
+			<td><?php echo $this->escapeHtml($prizeWheel->createDateTime())?></td>		
+		</tr>
+		<?php endforeach;?>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('prize-wheel', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber,
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.prizeWheels, function(index, prizeWheel){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/prize-wheel/manage/' + prizeWheel.id + '">View</a></td>'));							
+							if(prizeWheel.enabled){
+								row.append($('<td><input type="checkbox" id="prizewheel-status-' + prizeWheel.id + '" checked="checked" /></td>'));
+							} // if
+							else{
+								row.append($('<td><input type="checkbox" id="prizewheel-status-' + prizeWheel.id + '" /></td>'));
+							} // else
+							row.append($('<td>' + prizeWheel.id + '</td>'));
+							row.append($('<td>' + prizeWheel.pageid + '</td>'));
+							row.append($('<td>' + prizeWheel.prizewheeltypename + '</td>'));
+							row.append($('<td>' + prizeWheel.createdatetime + '</td>'));
+							
+							listBody.append(row);	
+						});
+					}
+				});
+			}
+		});
+	});
+</script>

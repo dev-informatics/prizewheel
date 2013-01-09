@@ -4,6 +4,9 @@ namespace Application\Model;
 
 class AdvertisementType
 {
+	const Impression = 1;
+	const Click = 2;
+	
 	private $id;
 	private $name;
 	private $description;

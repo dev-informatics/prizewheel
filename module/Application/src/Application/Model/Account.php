@@ -5,18 +5,18 @@ namespace Application\Model;
 abstract class Account
 {
 	protected $id;
-	protected $facebookUserId;
-	protected $firstName;
-	protected $lastName;
-	protected $address1;
-	protected $address2;
-	protected $city;
-	protected $state;
-	protected $country;
-	protected $postal;
-	protected $telephone;
-	protected $emailAddress;
-	protected $enabled;
+	protected $facebookUserId = '';
+	protected $firstName = '';
+	protected $lastName = '';
+	protected $address1 = '';
+	protected $address2 = '';
+	protected $city = '';
+	protected $state = '';
+	protected $country = '';
+	protected $postal = '';
+	protected $telephone = '';
+	protected $emailAddress = '';
+	protected $enabled = false;
 	
 	public function id($id=0)
 	{
@@ -114,6 +114,19 @@ abstract class Account
 		return $this->emailAddress;
 	}
 	
+	public function enabled($enabled=null)
+	{
+		if(is_bool($enabled)){
+			$this->enabled = $enabled;
+		} // if
+		return $this->enabled;
+	}
+	
+	public function name()
+	{
+		return $this->firstName() . " " . $this->lastName();
+	}
+	
 	public function __construct()
 	{
 	
@@ -121,18 +134,19 @@ abstract class Account
 	
 	public function exchangeArray($data)
 	{
-		$this->id = (isset($data['id'])) ? $data['id'] : 0;
-		$this->facebookUserId = (isset($data['facebookuserid'])) ? $data['facebookuserid'] : null;
-		$this->firstName = (isset($data['firstname'])) ? $data['firstname'] : null;
-		$this->lastName = (isset($data['lastname'])) ? $data['lastname'] : null;
-		$this->address1 = (isset($data['address1'])) ? $data['address1'] : null;
-		$this->address2 = (isset($data['address2'])) ? $data['address2'] : null;
-		$this->city = (isset($data['city'])) ? $data['city'] : null;
-		$this->state (isset($data['state'])) ? $data['state'] : null;
-		$this->country = (isset($data['country'])) ? $data['country'] : null;
-		$this->postal = (isset($data['postal'])) ? $data['postal'] : null;
-		$this->telephone = (isset($data['telephone'])) ? $data['telephone'] : null;
-		$this->emailAddress = (isset($data['emailaddress'])) ? $data['emailaddress'] : null;
+		$this->id = (isset($data['id'])) ? $data['id'] : $this->id();
+		$this->facebookUserId = (isset($data['facebookuserid'])) ? $data['facebookuserid'] : $this->facebookUserId();
+		$this->firstName = (isset($data['firstname'])) ? $data['firstname'] : $this->firstName();
+		$this->lastName = (isset($data['lastname'])) ? $data['lastname'] : $this->lastName();
+		$this->address1 = (isset($data['address1'])) ? $data['address1'] : $this->address1();
+		$this->address2 = (isset($data['address2'])) ? $data['address2'] : $this->address2();
+		$this->city = (isset($data['city'])) ? $data['city'] : $this->city();
+		$this->state = (isset($data['state'])) ? $data['state'] : $this->state();
+		$this->country = (isset($data['country'])) ? $data['country'] : $this->country();
+		$this->postal = (isset($data['postal'])) ? $data['postal'] : $this->postal();
+		$this->telephone = (isset($data['telephone'])) ? $data['telephone'] : $this->telephone();
+		$this->emailAddress = (isset($data['emailaddress'])) ? $data['emailaddress'] : $this->emailAddress();
+		$this->enabled = (isset($data['enabled'])) ? $data['enabled'] : $this->enabled();
 	}
 	
 	public function getArrayCopy()
@@ -149,7 +163,9 @@ abstract class Account
 			'country' => $this->country,
 			'postal' => $this->postal,
 			'telephone' => $this->telephone,
-			'emailaddress' => $this->emailaddress
+			'emailaddress' => $this->emailAddress,
+			'enabled' => $this->enabled,
+			'name' => $this->firstName() . " " . $this->lastName()
 		);
 	}
 }

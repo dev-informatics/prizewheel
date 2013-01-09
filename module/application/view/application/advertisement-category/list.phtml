@@ -1,0 +1,92 @@
+<?php
+
+$this->layout("layout/admin_layout");
+$title = "Advertisement Categories";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
+
+<h2>Advertisement Categories - <?php echo $this->count?></h2>
+
+<div>
+	<a href="<?php echo $this->url('advertisement-category', array('action' => 'create'))?>">Create New</a>
+</div>
+
+<br/>
+
+<div id="paginator"></div>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th style="text-align: left;">Enabled</th>
+			<th style="text-align: left;">Name</th>
+			<th style="text-align: left;">Click Rate</th>
+			<th style="text-align: left;">Impression Rate</th>		
+		</tr>
+	</thead>
+	<tbody id="list-body">
+		<?php foreach($this->advertisementcategories as $advertisementCategory):?>
+		<tr>
+			<td>
+				<a href="<?php echo $this->url('advertisement-category', array('action' => 'manage', 'id' => $advertisementCategory->id()))?>">View</a>
+			</td>
+			<td>
+				<?php if($advertisementCategory->enabled()):?>
+				<input type="checkbox" id="advertisement-category-status-<?php echo $this->escapeHtml($advertisementCategory->id())?>" checked="checked" />
+				<?php else:?>
+				<input type="checkbox" id="advertisement-category-status-<?php echo $this->escapeHtml($advertisementCategory->id())?>" />
+				<?php endif;?>
+			</td>
+			<td><?php echo $this->escapeHtml($advertisementCategory->name())?></td>
+			<td><?php echo $this->escapeHtml(number_format($advertisementCategory->clickRate(), 2, '.', ','))?></td>
+			<td><?php echo $this->escapeHtml(number_format($advertisementCategory->impressionRate(), 2, '.', ','))?></td>		
+		</tr>
+		<?php endforeach;?>
+		
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#paginator").pagination({
+			items: <?php echo $this->count?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '<?php echo $this->url('advertisement-category', array('action' => 'list'))?>',
+					type: 'post',
+					data: 'page=' + pageNumber,
+					dataType: 'json',
+					success: function(response){
+
+						var listBody = $("#list-body");
+						
+						listBody.empty();
+
+						$.each(response.advertisementCategories, function(index, advertisementCategory){
+			
+							var row = $('<tr></tr>');
+
+							row.append($('<td><a href="/advertisement/manage/' + advertisementCategory.id + '">View</a></td>'));							
+							if(advertisementCategory.enabled){
+								row.append($('<td><input type="checkbox" id="advertisement-category-status-' + advertisementCategory.id + '" checked="checked" /></td>'));
+							} // if
+							else{
+								row.append($('<td><input type="checkbox" id="advertisement-category-status-' + advertisementCategory.id + '" /></td>'));
+							} // else
+							row.append($('<td>' + advertisementCategory.name + '</td>'));
+							row.append($('<td>' + parseFloat(advertisementCategory.clickrate).toFixed(2) + '</td>'));
+							row.append($('<td>' + parseFloat(advertisementCategory.impressionrate).toFixed(2) + '</td>'));
+														
+							listBody.append(row);	
+						});
+					}
+				});
+			}
+		});
+	});
+</script>

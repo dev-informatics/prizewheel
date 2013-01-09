@@ -6,6 +6,7 @@ class AdvertisementPlacementType
 {
 	const PrizeWheel = 1;
 	const Sponser = 2;
+	const Any = 3;
 	
 	protected $id;
 	protected $name;

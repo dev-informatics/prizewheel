@@ -1,0 +1,27 @@
+<?php
+
+$title = "Login";
+$this->headTitle($title);
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('authentication'));
+$form->prepare();
+?>
+<h2>Login</h2>
+<fieldset>
+<?php echo $this->form()->openTag($form)?>
+<?php echo $this->formRow($form->get('username'))?>
+<?php echo $this->formRow($form->get('password'))?>
+<input type="hidden" id="redirecturl" name="redirecturl" value="<?php echo $this->redirecturl?>" />
+<button id="login" name="login" type="submit">
+	Login
+</button>
+<?php if(count($this->authenticationmessages) > 0):?>
+<ul id="authentication-errors">
+<?php foreach($this->authenticationmessages as $error):?>
+<li><?php echo $error?></li>
+<?php endforeach;?>
+</ul>
+<?php endif;?>
+<?php echo $this->form()->closeTag()?>
+</fieldset>

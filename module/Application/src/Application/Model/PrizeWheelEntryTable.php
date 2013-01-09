@@ -15,27 +15,113 @@ class PrizeWheelEntryTable
 		$this->tableGateway = $tableGateway;
 	}
 	
-	public function fetchAll()
+	public function fetchAll($page=1, $size=25, &$count)
 	{
-		$results = $this->tableGateway->select();
-		return $results;
+		if($page < 1){
+			$page = 1;
+		} // if
+		
+		$select = new Select();
+		
+		$select->from($this->tableGateway->getTable())
+		       ->offset((int)($page - 1) * (int)$size)
+		       ->limit((int)$size);
+
+		$results = $this->tableGateway->selectWith($select);
+		
+		$count = $this->getCount();
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
 	}
 	
-	public function fetchAllByPrizeWheelId($prizewheelid, $skip=0, $take=25)
+	public function getCount()
 	{
+		$stmt = $this->tableGateway->getAdapter()->createStatement("SELECT count(id) as count FROM prizewheel_entries");
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result || !isset($result['count'])){
+			return 0;
+		} // if
+		
+		return $result['count'];
+	}
+	
+	public function fetchAllWithId(array $idlist)
+	{
+		$where = new \Zend\Db\Sql\Where();
+		$where->in('id', $idlist);
+
+		$results = $this->tableGateway->select($where);
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;
+		} // foreach
+		
+		return $list;
+	}
+	
+	public function fetchAllByPrizeWheelId($prizewheelid, $page=1, $size=25, &$count)
+	{
+		if($page < 1){
+			$page = 1;
+		} // if
+		
 		$prizewheelid = (int)$prizewheelid;
 		
 		$select = new Select();
-		$select->where(array('prizewheelid' => $prizewheelid));
-		$select->limit($take);
-		$select->offset($skip);
+		
+		$select->from($this->tableGateway->getTable())
+	 		   ->where(array('prizewheelid' => $prizewheelid))
+		       ->offset((int)($page - 1) * (int)$size)
+		       ->limit((int)$size);
 		
 		$results = $this->tableGateway->selectWith($select);
 		
-		return $results;
+		$count = $this->getCountByPrizeWheelId($prizewheelid);
+		
+		$list = array();
+		
+		foreach($results as $result){
+			$list[] = $result;			
+		} // foreach
+		
+		return $list;
 	}
 	
-	public function fetch($options=array(), $page=1, $take=25)
+	public function getLastPrizeWheelEntryByFacebookUserId($prizewheelid, $facebookuserid)
+	{
+		$prizewheelid = (int)$prizewheelid;
+		$facebookuserid = (string)$facebookuserid;
+		
+		$select = new \Zend\Db\Sql\Select();
+		
+		$select->from($this->tableGateway->getTable())
+		       ->where(array('prizewheelid' => $prizewheelid, 'facebookuserid' => $facebookuserid))
+		       ->order('id DESC');
+		
+		$results = $this->tableGateway->selectWith($select);
+		
+		$result = $results->current();
+		
+		if(!$result){
+			return null;
+		} // if
+		
+		return $result; 
+	}
+	
+	public function fetch($options=array(), $prizewheelid, $page=1, $take=25)
 	{
 		$select = new \Zend\Db\Sql\Select();
 		
@@ -103,10 +189,14 @@ class PrizeWheelEntryTable
 			} // else
 		} // if
 		
+		$prizewheelid = (int)$prizewheelid;
+		
+		$where = $where->equalTo('prizewheelid', $prizewheelid);
+		
 		$select->where($where)
 		       ->offset(($page - 1) * $take)
 		       ->limit($take);
-		
+
 		$results = $this->tableGateway->selectWith($select);
 		
 		$list = array();
@@ -118,12 +208,32 @@ class PrizeWheelEntryTable
 		return $list;
 	}
 	
+	public function getExportedCountByPrizeWheelId($prizewheelid)
+	{
+		$id = (int)$prizewheelid;
+		
+		$stmt =  $this->tableGateway->getAdapter()->createStatement(
+					"SELECT count(id) as count FROM " . $this->tableGateway->getTable() . ' WHERE prizewheelid = ? AND exported = 1',
+					array($id)
+				);
+		
+		$results = $stmt->execute();
+		
+		$result = $results->current();
+		
+		if(!$result || !isset($result['count'])){
+			return 0;
+		} // if
+		
+		return $result['count'];
+	}
+	
 	public function getCountByPrizeWheelId($prizewheelid)
 	{
 		$prizewheelid = (int)$prizewheelid;
 		
 		$stmt = $this->tableGateway->getAdapter()->createStatement(
-				"SELECT count(`id`) as count FROM `prizewheel_entries` WHERE `prizewheelid` = ?", array($prizewheelid));
+				"SELECT count(id) as count FROM prizewheel_entries WHERE prizewheelid = ?", array($prizewheelid));
 		
 		$results = $stmt->execute();
 		
@@ -148,6 +258,20 @@ class PrizeWheelEntryTable
 		} // if
 		
 		return $result;
+	}
+	
+	public function updateAsExported(array $prizeWheelEntryIdList)
+	{
+		$update = new \Zend\Db\Sql\Update();
+		$where = new \Zend\Db\Sql\Where();	
+	
+		$where->in('id', $prizeWheelEntryIdList);
+		
+		$update->table($this->tableGateway->getTable())
+		       ->set(array('exported' => 1))
+			   ->where($where);
+		
+		$this->tableGateway->updateWith($update);
 	}
 	
 	public function savePrizeWheelEntry(PrizeWheelEntry $prizeWheelEntry)

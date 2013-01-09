@@ -1,0 +1,69 @@
+<?php
+$this->layout("layout/admin_layout");
+$title = "Admin Dashboard";
+$this->headTitle($title);
+?>
+<script type="text/javascript" src="/js/highcharts.js"></script>
+<script type="text/javascript" src="/js/modules/exporting.js"></script>
+
+<h2>Admin Dashboard</h2>
+
+<div id="revenue" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+<script type="text/javascript">
+	var revenueChart;
+
+	$(document).ready(function(){
+		revenueChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'revenue',
+                type: 'line',
+                marginRight: 130,
+                marginBottom: 25
+            },
+            title: {
+                text: 'Revenue & Payouts Last 30 Days',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Source: Transactions & Affiliate Payout Entry Tables',
+                x: -20
+            },
+            xAxis: {
+				categories: ['01-01-2013', '01-02-2013', '01-03-2013', '01-04-2013', '01-05-2013', '01-06-2013',
+                    '01-06-2013', '01-07-2013', '01-08-2013', '01-09-2013', '01-10-2013', '01-11-2013']
+            },
+            yAxis: {
+                title: {
+                    text: 'Revenue (USD)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': $'+ parseFloat(this.y).toFixed(2);
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Revenue',
+                data: [225.00, 550.00, 450.00, 275.00, 325.00, 600.00, 225.00, 350.00, 375.00, 575.00, 475.00, 350.00]
+            }, {
+                name: 'Payouts',
+                data: [22.75, 35.65, 43.05, 42.30, 55.70, 49.80, 52.50, 56.55, 45.95, 35.90, 42.10, 46.20]
+            }]
+        });
+	});
+</script>

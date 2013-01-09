@@ -29,19 +29,28 @@ class Module
         $e->getApplication()->getServiceManager()->get('translator');
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
+        $moduleRouteListener->attach($eventManager);        
+        
+        $sharedEventManager = \Zend\EventManager\StaticEventManager::getInstance();
+        
+        $sm = $e->getApplication()->getServiceManager();
+
+        $sharedEventManager->attach('Application\Controller\FacebookAwareController', 'getConfigurationEntryTable', function(\Zend\EventManager\Event $event) use($sm){        	
+        	$table = $sm->get('\Application\Model\ConfigurationEntryTable');        	
+        	$event->getTarget()->setConfigurationEntryTable($table);
+        });
     }
 
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
-    }
+    } // getConfig
     
     public function getServiceConfig()
     {
     	return array(
     		'factories' => array(
-    			'Application\Model\AdvertiserTable' => function($sm){
+    			'Application\Model\AdvertiserDataSourceInterface' => function($sm){
     				$tableGateway = $sm->get('AdvertiserTableGateway');
     				$table = new AdvertiserTable($tableGateway);
     				return $table;  				
@@ -52,7 +61,7 @@ class Module
     				$prototype->setArrayObjectPrototype(new Advertiser());
     				return new TableGateway('advertisers', $adapter, null, $prototype);    				
     			},
-    			'Application\Model\AdvertisementTable' => function($sm){
+    			'Application\Model\AdvertisementDataSourceInterface' => function($sm){
     				$tableGateway = $sm->get('AdvertisementTableGateway');
     				$table = new AdvertisementTable($tableGateway);
     				return $table;    				
@@ -140,7 +149,7 @@ class Module
     				$prototype->setArrayObjectPrototype(new \Application\Model\AdvertisementPlacementType());
     				return new TableGateway('advertisement_placement_types', $adapter, null, $prototype);
     			},
-    			'Application\Model\PrizeWheelTable' => function($sm){
+    			'Application\Model\PrizeWheelDataSourceInterface' => function($sm){
     				$tg = $sm->get('PrizeWheelTableGateway');
     				$table = new \Application\Model\PrizeWheelTable($tg);
     				return $table;    				
@@ -205,6 +214,55 @@ class Module
     				$prototype = new ResultSet();
     				$prototype->setArrayObjectPrototype(new \Application\Model\PrizeWheelImpression());
     				return new TableGateway('prizewheel_impressions', $adapter, null, $prototype);    				
+    			},
+    			'Application\Model\ConfigurationEntryTable' => function($sm){
+    				$tg = $sm->get('ConfigurationEntryTableGateway');
+    				$table = new \Application\Model\ConfigurationEntryTable($tg);
+    				return $table;    				
+    			},
+    			'ConfigurationEntryTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\ConfigurationEntry());
+    				return new TableGateway('configuration_entries', $adapter, null, $prototype);
+    			},
+    			'Application\Model\AffiliatePayoutEntryTable' => function($sm){
+    				$tg = $sm->get('AffiliatePayoutEntryTableGateway');
+    				$table = new \Application\Model\AffiliatePayoutEntryTable($tg);
+    				return $table;
+    			},
+    			'AffiliatePayoutEntryTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\AffiliatePayoutEntry());
+    				return new TableGateway('affiliate_payout_entries', $adapter, null, $prototype);    				
+    			},
+    			'Application\Model\UserDataSourceInterface' => function($sm){
+    				$tg = $sm->get('UserTableGateway');
+    				$table = new \Application\Model\UserTable($tg);
+    				return $table;  				
+    			},
+    			'UserTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\User());
+    				return new TableGateway('users', $adapter, null, $prototype);
+    			},
+    			'Application\Model\TransactionTable' => function($sm){
+    				$tg = $sm->get('TransactionTableGateway');
+    				$rawTg = $sm->get('RawTransactionTableGateway');
+    				$table = new \Application\Model\TransactionTable($tg, $rawTg);
+    				return $table;    				
+    			},
+    			'TransactionTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				$prototype = new ResultSet();
+    				$prototype->setArrayObjectPrototype(new \Application\Model\Transaction());
+    				return new TableGateway('transactions', $adapter, null, $prototype);
+    			},
+    			'RawTransactionTableGateway' => function($sm){
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+    				return new TableGateway('transactions', $adapter);    				
     			}
     		)	
     	);
@@ -214,34 +272,74 @@ class Module
     {
     	return array(
     		'factories' => array(
+    			'Application\Controller\AffiliatePayoutEntry' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$affiliatePayoutEntryTable = $sm->get('Application\Model\AffiliatePayoutEntryTable');
+    				$affiliateTable = $sm->get('Application\Model\AffiliateTable');
+    				$facebook = $sm->get('Facebook');
+    				$controller = new \Application\Controller\AffiliatePayoutEntryController($affiliatePayoutEntryTable, $affiliateTable, $facebook);
+    				
+    				return $controller;
+    			},
+    			'Application\Controller\Transaction' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$transactionTable = $sm->get('Application\Model\TransactionTable');
+    				$advertiserDataSourceInterface = $sm->get('Application\Model\AdvertiserDataSourceInterface');
+    				$facebook = $sm->get('Facebook');
+    				$controller = new \Application\Controller\TransactionController($transactionTable, $advertiserDataSourceInterface, $facebook);
+    				
+    				return $controller;
+    			},
+    			'Application\Controller\AdvertisementCategory' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$configurationEntryTable = $sm->get('Application\Model\ConfigurationEntryTable');
+    				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');
+    				$controller = new \Application\Controller\AdvertisementCategoryController($configurationEntryTable, $advertisementCategoryTable);
+    				
+    				return $controller;
+    			},
+    			'Application\Controller\Admin' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$configurationEntryTable = $sm->get('Application\Model\ConfigurationEntryTable');
+    				$advertisementTable = $sm->get('Application\Model\AdvertisementDataSourceInterface');
+    				$advertiserDataSourceInterface = $sm->get('Application\Model\AdvertiserDataSourceInterface');
+    				$transactionTable = $sm->get('Application\Model\TransactionTable');
+    				$affiliatePayoutEntryTable = $sm->get('Application\Model\AffiliatePayoutEntryTable');    			
+    				$controller = new \Application\Controller\AdminController($configurationEntryTable, 
+    						$advertisementTable, $advertiserDataSourceInterface, $transactionTable, $affiliatePayoutEntryTable);
+    				
+    				return $controller;
+    			},	
     			'Application\Controller\PrizeWheel' => function(ControllerManager $cm){
     				$sm = $cm->getServiceLocator();
-    				$prizeWheelTable = $sm->get('Application\Model\PrizeWheelTable');
+    				$prizeWheelTable = $sm->get('Application\Model\PrizeWheelDataSourceInterface');
     				$prizeWheelEntryTable = $sm->get('Application\Model\PrizeWheelEntryTable');
     				$advertisementImpressionTable = $sm->get('Application\Model\AdvertisementImpressionTable');
     				$affiliateTable = $sm->get('Application\Model\AffiliateTable');
-    				$advertisementTable = $sm->get('Application\Model\AdvertisementTable');
+    				$advertisementTable = $sm->get('Application\Model\AdvertisementDataSourceInterface');
     				$prizeWheelEntryCategoryEntryTable = $sm->get('Application\Model\PrizeWheelEntryCategoryEntryTable');
     				$prizeWheelCategoryEntryTable = $sm->get('Application\Model\PrizeWheelCategoryEntryTable');
     				$prizeWheelImpressionTable = $sm->get('Application\Model\PrizeWheelImpressionTable');
     				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');
+    				$advertisementCategoryEntryTable = $sm->get('Application\Model\AdvertisementCategoryEntryTable');
     				$facebook = $sm->get('Facebook');
     				$controller = new \Application\Controller\PrizeWheelController(
     						$prizeWheelTable, $prizeWheelEntryTable, 
     						$advertisementImpressionTable, $affiliateTable, $advertisementTable, 
     						$prizeWheelEntryCategoryEntryTable, $prizeWheelCategoryEntryTable, 
-    						$prizeWheelImpressionTable, $advertisementCategoryTable, $facebook);
+    						$prizeWheelImpressionTable, $advertisementCategoryTable, 
+    						$advertisementCategoryEntryTable, $facebook);
     				
     				return $controller;
     			},
     			'Application\Controller\Advertiser' => function(ControllerManager $cm){
     				$sm = $cm->getServiceLocator();
-    				$table = $sm->get('Application\Model\AdvertiserTable');
-    				$advertisementTable = $sm->get('Application\Model\AdvertisementTable');
+    				$advertiserDataSourceInterface = $sm->get('Application\Model\AdvertiserDataSourceInterface');
+    				$advertisementTable = $sm->get('Application\Model\AdvertisementDataSourceInterface');
     				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
     				$advertisementImpressionTable = $sm->get('Application\Model\AdvertisementImpressionTable');    				
     				$facebook = $sm->get('Facebook');
-    				$controller = new \Application\Controller\AdvertiserController($table, $advertisementTable, 
+    				$controller = new \Application\Controller\AdvertiserController($advertiserDataSourceInterface, $advertisementTable, 
     						$advertisementClickTable, $advertisementImpressionTable, $facebook);
     				
     				return $controller;
@@ -250,16 +348,18 @@ class Module
     				$sm = $cm->getServiceLocator();
     				$affiliateTable = $sm->get('Application\Model\AffiliateTable');
     				$prizeWheelTypeTable = $sm->get('Application\Model\PrizeWheelTypeTable');
-    				$prizeWheelTable = $sm->get('Application\Model\PrizeWheelTable');
+    				$prizeWheelTable = $sm->get('Application\Model\PrizeWheelDataSourceInterface');
     				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');
     				$prizeWheelEntryTable = $sm->get('Application\Model\PrizeWheelEntryTable');
     				$prizeWheelImpressionTable = $sm->get('Application\Model\PrizeWheelImpressionTable');
     				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
+    				$affiliatePayoutEntryTable = $sm->get('Application\Model\AffiliatePayoutEntryTable');
     				$facebook = $sm->get('Facebook');
     				$controller = new \Application\Controller\AffiliateController(
     						$affiliateTable, $prizeWheelTypeTable, $prizeWheelTable, 
     						$advertisementCategoryTable, $prizeWheelEntryTable, 
-    						$prizeWheelImpressionTable, $advertisementClickTable, $facebook);
+    						$prizeWheelImpressionTable, $advertisementClickTable, 
+    						$affiliatePayoutEntryTable, $facebook);
     				
     				return $controller;
     			},
@@ -273,17 +373,37 @@ class Module
     			'Application\Controller\Advertisement' => function(ControllerManager $cm){    				
     				$sm = $cm->getServiceLocator();
     				$facebook = $sm->get('Facebook');
-    				$advertisementTable = $sm->get('Application\Model\AdvertisementTable');
-    				$advertiserTable = $sm->get('Application\Model\AdvertiserTable');
+    				$advertisementTable = $sm->get('Application\Model\AdvertisementDataSourceInterface');
+    				$advertiserDataSourceInterface = $sm->get('Application\Model\AdvertiserDataSourceInterface');
     				$advertisementClickTable = $sm->get('Application\Model\AdvertisementClickTable');
     				$advertisementTypeTable = $sm->get('Application\Model\AdvertisementTypeTable');
     				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');  
     				$advertisementCategoryEntryTable = $sm->get('Application\Model\AdvertisementCategoryEntryTable'); 
-    				$advertisementPlacementTypeTable = $sm->get('Application\Model\AdvertisementPlacementTypeTable');   				
-    				$controller = new \Application\Controller\AdvertisementController($advertisementTable, $advertiserTable, 
+    				$advertisementPlacementTypeTable = $sm->get('Application\Model\AdvertisementPlacementTypeTable');
+    				$transactionTable = $sm->get('Application\Model\TransactionTable'); 			
+    				$controller = new \Application\Controller\AdvertisementController($advertisementTable, $advertiserDataSourceInterface, 
     						$advertisementClickTable, $advertisementTypeTable, 
     						$advertisementCategoryTable, $advertisementCategoryEntryTable, 
-    						$advertisementPlacementTypeTable, $facebook);
+    						$advertisementPlacementTypeTable, $transactionTable, $facebook);
+    				
+    				return $controller;
+    			},
+    			'Application\Controller\Authentication' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$adapter = $sm->get('Zend\Db\Adapter\Adapter');   
+    				$blockCipher = $sm->get('BlockCipher');
+    				$userDataSourceInterface = $sm->get('Application\Model\UserDataSourceInterface');
+    				$authAdapter = new \Application\Model\PrizeWheelAuthenticationAdapter($userDataSourceInterface, $blockCipher);    				   				
+    				$controller = new \Application\Controller\AuthenticationController($authAdapter, $userDataSourceInterface, $blockCipher);
+    				
+    				return $controller;
+    			},
+    			'Application\Controller\PrizeWheelEntry' => function(ControllerManager $cm){
+    				$sm = $cm->getServiceLocator();
+    				$facebook = $sm->get('Facebook');
+    				$prizeWheelEntryTable = $sm->get('Application\Model\PrizeWheelEntryTable');
+    				$affiliateTable = $sm->get('Application\Model\AffiliateTable');    			
+    				$controller = new \Application\Controller\PrizeWheelEntryController($prizeWheelEntryTable, $affiliateTable, $facebook);
     				
     				return $controller;
     			}

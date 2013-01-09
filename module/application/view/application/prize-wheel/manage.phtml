@@ -1,4 +1,7 @@
 <?php
+
+$this->layout($this->layoutpath);
+
 $prizeWheel = $this->prizewheel;
 
 $title = "Manage Prize Wheel " . $prizeWheel->id();
@@ -8,31 +11,78 @@ $form = $this->form;
 $form->setAttribute('action', $this->url('prize-wheel', array('action' => 'manage', 'id' => $prizeWheel->id())));
 $form->prepare();
 ?>
+<script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
+<link type="text/css" href="/css/simplePagination.css" rel="stylesheet" />
 <style type="text/css">
 	#tabs{
 		height: 750px;
 	}
+	
+	.submission{
+		font-size: 12px;
+	}
 </style>
-
+<h2>Manage Prize Wheel for Facebook Page <?php echo $this->escapeHtml($this->facebookpage)?></h2>
 <?php echo $this->form()->openTag($form)?>
+<button id="save-changes" type="submit">
+	Save
+</button>
+<button id="cancel-changes" type="button">
+	Cancel
+</button>
 <div id="tabs">
 	<ul>
 		<li><a href="#basic-tab">Basic</a></li>
 		<li><a href="#validation-tab">Validation</a></li>
 		<li><a href="#prizes-tab">Prizes</a></li>
 		<li><a href="#display-tab">Display</a></li>
-		<li><a href="#notifications-tab">Notifications</a></li>
 		<li><a href="#email-tab">E-Mail</a></li>
 		<li><a href="#submissions">Submissions</a></li>
-		<li><a href="#preview">Preview</a></li>
 	</ul>
 	
 	<div id="basic-tab">
-		<?php echo $this->formRow($form->get('forcelike'))?>
-		<?php echo $this->formRow($form->get('forcelikeimage'))?>
-		<?php echo $this->formRow($form->get('firsttext'))?>
-		<?php echo $this->formRow($form->get('rulestext'))?>
-		<?php echo $this->formRow($form->get('categories'))?>
+		<table>
+			<tr>
+				<td valign="top">
+					<?php if($this->isadmin):?>
+					<?php echo $this->formRow($form->get('enabled'))?>
+					<?php endif;?>
+					<?php echo $this->formRow($form->get('forcelike'))?>
+					<?php echo $this->formRow($form->get('forcelikeimage'))?>
+					<?php if(strlen($prizeWheel->forceLikeImage()) > 0):?>
+					<button id="preview-forcelikeimage-btn" type="button">
+						Preview
+					</button>
+					<div id="preview-forcelikeimage-dialog">
+						<img src="/images/prizewheels/<?php echo $this->escapeHtml($prizeWheel->id())?>/<?php echo $prizeWheel->forceLikeImage()?>" alt="Force Like Image" />
+					</div>
+					<?php endif;?>
+					<?php echo $this->formRow($form->get('firsttext'))?>
+					<?php echo $this->formRow($form->get('textrules'))?>
+					<?php echo $this->formRow($form->get('categories'))?>
+				</td>
+				<td valign="top">
+					<?php if(count($form->getMessages()) > 0):?>
+					<ul style="color: red">
+						<?php foreach($form->getMessages() as $key => $error):?>
+						<li><?php echo $key?>
+						<?php if(is_array($error)):?>
+						<ul style="color: red">
+						<?php foreach($error as $message):?>
+						<li><?php echo $message?></li>
+						<?php endforeach;?>
+						</ul>
+						<?php else:?>
+						 - <?php echo $error?>
+						<?php endif;?>
+						</li>
+						<?php endforeach;?>
+					</ul>
+					<?php endif;?>
+				</td>
+			</tr>
+		</table>
+		
 	</div>
 	<div id="validation-tab">
 		<fieldset>
@@ -77,6 +127,9 @@ $form->prepare();
 						<td>
 							<?php echo $this->formRow($form->get('prize'.$numberString.'text'))?>
 						</td>
+						<td>
+							<?php echo $this->formRow($form->get('prize'.$numberString.'textsize'))?>
+						</td>
 					</tr>
 				</table>
 				<table>
@@ -105,15 +158,47 @@ $form->prepare();
 	</div>
 	<div id="display-tab">
 		<?php echo $this->formRow($form->get('backimage'))?>
+		<?php if(strlen($prizeWheel->backImage()) > 0):?>
+		<button type="button" id="preview-backimage-btn">
+			Preview
+		</button>
+		<?php echo $this->formRow($form->get('resetbackimage'))?>
+		<div id="preview-backimage-dialog">
+			<img src="/images/prizewheels/<?php echo $this->escapeHtml($prizeWheel->id())?>/<?php echo $prizeWheel->backImage()?>" alt="Back Image" />
+		</div>
+		<?php endif;?>
 		<?php echo $this->formRow($form->get('topimage'))?>
+		<?php if(strlen($prizeWheel->topImage()) > 0):?>
+		<button type="button" id="preview-topimage-btn">
+			Preview
+		</button>
+		<?php echo $this->formRow($form->get('resettopimage'))?>
+		<div id="preview-topimage-dialog">
+			<img src="/images/prizewheels/<?php echo $this->escapeHtml($prizeWheel->id())?>/<?php echo $prizeWheel->topImage()?>" alt="Top Image" />
+		</div>
+		<?php endif;?>
 		<?php echo $this->formRow($form->get('buttonimage'))?>
-	</div>
-	<div id="notifications-tab">
-		<?php echo $this->formRow($form->get('sendemailnotifications'))?>
-		<?php echo $this->formRow($form->get('notificationemailaddress'))?>
+		<?php if(strlen($prizeWheel->buttonImage()) > 0):?>
+		<button type="button" id="preview-buttonimage-btn">
+			Preview
+		</button>
+		<?php echo $this->formRow($form->get('resetbuttonimage'))?>
+		<div id="preview-buttonimage-dialog">
+			<img src="/images/prizewheels/<?php echo $this->escapeHtml($prizeWheel->id())?>/<?php echo $prizeWheel->buttonImage()?>" alt="Button Image" />
+		</div>
+		<?php endif;?>
 	</div>
 	<div id="email-tab">
 		<table>
+			<tr>
+				<td valign="top" colspan="2">
+					<fieldset>
+						<legend>Notification Settings</legend>
+						<?php echo $this->formRow($form->get('sendemailnotifications'))?>
+						<?php echo $this->formRow($form->get('notificationemailaddress'))?>
+					</fieldset>
+				</td>
+			</tr>
 			<tr>
 				<td valign="top" style="padding-right: 10px;">
 					<fieldset>
@@ -140,9 +225,40 @@ $form->prepare();
 	</div>
 	<div id="submissions">
 	
-	</div>
-	<div id="preview">
-	
+		<div>
+			<button id="export-selected-btn" type="button">Export</button>
+		</div>
+		
+		<br/>
+		
+		<div>
+			<div>New Submissions: <?php echo $this->newsubmissions?></div>
+			<div>Exported Submissions: <?php echo $this->exportedsubmissions?></div>
+			<div>Total Submissions: <?php echo $this->totalsubmissions?></div>
+		</div>
+		
+		<br/>
+			
+		<div id="paginator"></div>
+		
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<th style="text-align: left;">Facebook User</th>
+					<th style="text-align: left;">First Name</th>
+					<th style="text-align: left;">Last Name</th>
+					<th style="text-align: left;">E-Mail</th>
+					<th style="text-align: left;">Telephone</th>
+					<th style="text-align: left;">IP</th>
+					<th style="text-align: left;">Play Time</th>
+					<th style="text-align: left;">Prize</th>
+					<th style="text-align: left;">Exported</th>
+				</tr>
+			</thead>
+			<tbody id="prize-wheel-entry-list">
+			</tbody>
+		</table>
 	</div>
 </div>
 <?php echo $this->form()->closeTag()?>
@@ -153,5 +269,143 @@ $form->prepare();
 		$("#prizes").accordion({
 			heightStyle: "content"
 		});
+
+		$("#cancel-changes").click(function(){
+			window.location = '<?php echo $this->isadmin ? '/prize-wheel/list' : '/affiliate'?>';
+		});
+
+		$("#preview-forcelikeimage-dialog").dialog({
+			autoOpen: false,
+			modal: true,
+			height: 400,
+			width: 500,
+			title: "Force Like Image Preview"
+		});
+		
+		$("#preview-forcelikeimage-btn").click(function(){
+			$("#preview-forcelikeimage-dialog").dialog("open");
+		});
+
+		$("#preview-backimage-dialog").dialog({
+			autoOpen: false,
+			modal: true,
+			height: 400,
+			width: 500,
+			title: "Back Image Preview"
+		});
+		
+		$("#preview-backimage-btn").click(function(){
+			$("#preview-backimage-dialog").dialog("open");
+		});
+
+		$("#preview-topimage-dialog").dialog({
+			autoOpen: false,
+			modal: true,
+			height: 400,
+			width: 500,
+			title: "Top Image Preview"
+		});
+		
+		$("#preview-topimage-btn").click(function(){
+			$("#preview-topimage-dialog").dialog("open");
+		});
+
+		$("#preview-buttonimage-dialog").dialog({
+			autoOpen: false,
+			modal: true,
+			height: 400,
+			width: 500,
+			title: "Button Image Preview"
+		});
+		
+		$("#preview-buttonimage-btn").click(function(){
+			$("#preview-buttonimage-dialog").dialog("open");
+		});
+
+		$("#export-selected-btn").click(function(){
+			
+			var form = $('<form id="export-form" action="<?php echo $this->url("prize-wheel-entry", array("action" => "export"))?>" method="post"></form>');
+			form.append($('<input type="hidden" name="affiliateid" value="<?php echo $prizeWheel->affiliateId()?>" />'));
+			form.append($('<input type="hidden" name="prizewheelid" value="<?php echo $prizeWheel->id()?>" />'));
+
+			$("#prize-wheel-entry-list :checked").each(function(){
+				var id = $(this).val();				
+				form.append($('<input type="hidden" name="entries[]" value="' + id + '" />'));
+			});
+
+			$(document.body).append(form);
+			
+			form.submit();
+			
+			$(document.body).remove("#export-form");
+		});		
+
+		$.ajax({
+			url: '/prize-wheel-entry/list',
+			type: 'post',
+			data: 'affiliateid=<?php echo $prizeWheel->affiliateId()?>&prizewheelid=<?php echo $prizeWheel->id()?>&page=1',
+			dataType: 'json',
+			success: function(response){
+				$("#paginator").pagination({
+					items: response.count,
+					itemsOnPage: 25,
+					cssStyle: 'light-theme',
+					onPageClick: function(pageNumber){
+						turnThePage(pageNumber);
+					}
+				});
+				displaySubmissions(response.prizewheelentries);
+			}
+		});
 	});
+
+	function displaySubmissions(submissions){
+
+		var prizeWheelEntryList = $("#prize-wheel-entry-list");
+
+		prizeWheelEntryList.empty();
+
+		$.each(submissions, function(index, prizeWheelEntry){
+
+			var row = $("<tr></tr>");
+
+			row.append($('<td><input type="checkbox" id="prize-wheel-entry-' + prizeWheelEntry.id + '" value="' + prizeWheelEntry.id + '" /></td>')); 
+			row.append($('<td class="submission"><a href="https://facebook.com/'+ prizeWheelEntry.facebookuserid + '">' + prizeWheelEntry.facebookuserid + '</td>'));
+			row.append($('<td class="submission">' + prizeWheelEntry.firstname + "</td>"));
+			row.append($('<td class="submission">' + prizeWheelEntry.lastname + "</td>"));
+			row.append($('<td class="submission">' + prizeWheelEntry.emailaddress + "</td>"));
+			row.append($('<td class="submission">' + prizeWheelEntry.telephone + "</td>"));
+			row.append($('<td class="submission">' + prizeWheelEntry.ipaddress + "</td>"));
+			row.append($('<td class="submission">' + prizeWheelEntry.playtime + "</td>"));
+			row.append($('<td class="submission">' + prizeWheelEntry.prize + "</td>"));
+			row.append($('<td class="submission">' + (prizeWheelEntry.exported == 1 ? "true" : "false") + "</td>"));
+
+			prizeWheelEntryList.append(row);
+		});
+	}
+	
+	function turnThePage(pageNumber){
+		$.ajax({
+			url: '/prize-wheel-entry/list',
+			type: 'post',
+			data: 'affiliateid=<?php echo $prizeWheel->affiliateId()?>&prizewheelid=<?php echo $prizeWheel->id()?>&page=' + pageNumber,
+			dataType: 'json',
+			success: function(response){			
+
+				$("#paginator").pagination({
+					items: response.count,
+					itemsOnPage: 25,
+					currentPage: pageNumber,
+					cssStyle: 'light-theme',
+					onPageClick: function(pageNumber){
+						turnThePage(pageNumber);
+					}
+				});	
+				displaySubmissions(response.prizewheelentries);
+			},
+			error: function(a,b,c){
+				alert(a);
+			}
+		});	
+	}
 </script>

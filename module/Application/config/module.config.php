@@ -10,6 +10,48 @@
 return array(
     'router' => array(
         'routes' => array(
+        	'advertisement-category' => array(
+        		'type' => 'segment',
+        		'options' => array(
+        			'route' => '/advertisement-category[/:action][/:id]',
+        			'constraints' => array(
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				'id' => '[0-9]+'
+        			),
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\AdvertisementCategory',
+        				'action' => 'list'
+        			)
+        		)
+        	),
+        	'affiliate-payout-entry' => array(
+        		'type' => 'segment',
+        		'options' => array(
+        			'route' => '/affiliate-payout-entry[/:action][/:id]',
+        			'constraints' => array(
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				'id' => '[0-9]+'
+        			),
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\AffiliatePayoutEntry',
+        				'action' => 'list'
+        			)
+        		)
+        	),
+        	'transaction' => array(
+        		'type' => 'segment',
+        		'options' => array(
+        			'route' => '/transaction[/:action][/:id]',
+        			'constraints' => array(
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				'id' => '[0-9]+'
+        			),
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Transaction',
+        				'action' => 'list'
+        			)
+        		)
+        	),
         	'prize-wheel' => array(
         		'type' => 'segment',
         		'options' => array(
@@ -23,6 +65,20 @@ return array(
         				'action' => 'index'
         			)
         		)	
+        	),
+        	'authentication' => array(
+        		'type' => 'segment',
+        		'options' => array(
+        			'route' => '/authentication[/:action][/:id]',
+        			'constraints' => array(
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				'id' => '[0-9]+'
+        			),
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Authentication',
+        				'action' => 'login'		
+        			)
+        		)
         	),
         	'affiliate' => array(
         		'type' => 'segment',
@@ -38,6 +94,19 @@ return array(
         			)
         		)
         	),
+        	'prize-wheel-entry' => array(
+        		'type' => 'segment',
+        		'options' => array(
+        			'route' => '/prize-wheel-entry[/:action][/:id]',
+        			'constraints' => array(
+        				'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        				'id' => '[0-9]+'
+        			),
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\PrizeWheelEntry'
+        			)
+        		)
+        	),
         	'advertiser' => array(
         		'type' => 'segment',
         		'options' => array(
@@ -49,6 +118,46 @@ return array(
         			'defaults' => array(
         				'controller' => 'Application\Controller\Advertiser',
         				'action' => 'index'
+        			)
+        		)
+        	),
+        	'admin' => array(
+        		'type' => 'literal',
+        		'options' => array(
+        			'route' => '/admin',
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Admin',
+        				'action' => 'index'
+        			)
+        		)
+        	),
+        	'revenue-and-payouts-report' => array(
+        		'type' => 'literal',
+        		'options' => array(
+        			'route' => '/admin/revenue-and-payouts-report',
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Admin',
+        				'action' => 'revenue-and-payouts-report'
+        			)
+        		)
+        	),
+        	'instant-payment-notification' => array(
+        		'type' => 'literal',
+        		'options' => array(
+        			'route' => '/instant-payment-notification',
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Admin',
+        				'action' => 'instant-payment-notification'
+        			)
+        		)
+        	),
+        	'settings' => array(
+        		'type' => 'literal',
+        		'options' => array(
+        			'route' => '/admin/settings',
+        			'defaults' => array(
+        				'controller' => 'Application\Controller\Admin',
+        				'action' => 'settings'
         			)
         		)
         	),
@@ -124,6 +233,16 @@ return array(
             		)
             	)
             ),
+            'demo' => array(
+            	'type' => 'Zend\Mvc\Router\Http\Literal',
+            	'options' => array(
+            		'route' => '/demo',
+            		'defaults' => array(
+            			'controller' => 'Application\Controller\Index',
+            			'action' => 'demo'
+            		)
+            	)
+            ),
             'contact' => array(
             	'type' => 'Zend\Mvc\Router\Http\Literal',
             	'options' => array(
@@ -189,18 +308,19 @@ return array(
         'exception_template'       => 'error/index',
         'template_map' => array(
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            'layout/admin_layout'     => __DIR__ . '/../view/layout/admin_layout.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'prize-wheel/index'       => __DIR__ . '/../view/application/prize-wheel/index.phtml',
+            'application/partial/registration' => __DIR__ . '/../view/partial/registration.phtml',
+            'prize-wheel/non-fan' 	  => __DIR__ . '/../view/application/prize-wheel/non-fan.phtml'
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
         'strategies' => array(
         	'ViewJsonStrategy'
-        ),
-        'template_map' => array(
-        	'application/partial/registration' => __DIR__ . '/../view/partial/registration.phtml'
         )
     ),
 );

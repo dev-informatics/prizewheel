@@ -1,0 +1,41 @@
+<?php
+
+$this->layout($this->layoutpath);
+$title = "Manage Affiliate " . $this->escapeHtml($this->affiliatename);
+$this->headTitle($title);
+$form = $this->form;
+$form->setAttribute('action', $this->url('affiliate', array('action' => 'manage', 'id' => $this->id)));
+$form->prepare();
+?>
+
+<?php if($this->isadmin):?>
+<div>
+	<a href="<?php echo $this->url('affiliate', array('action' => 'list'))?>">Return to Affiliate List</a>
+</div>
+<?php else:?>
+<div>
+	<a href="<?php echo $this->url('affiliate')?>">Return to Affiliate Dashboard</a>
+</div>
+<?php endif;?>
+
+<h2>Manage Affiliate <?php echo $this->escapeHtml($this->affiliatename)?></h2>
+
+<?php echo $this->form()->openTag($form)?>
+<?php echo $this->formCollection($form)?>
+<br/>
+<br/>
+<button type="submit" id="save-changes">
+	Save
+</button>
+<button  type="button" id="cancel-changes">
+	Cancel
+</button>
+<?php echo $this->form()->closeTag()?>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#cancel-changes").click(function(){
+			window.top.location = '<?php echo $this->isadmin ? $this->url('affiliate', array('action' => 'list')) : $this->url('affiliate')?>';
+		});
+	});
+</script>

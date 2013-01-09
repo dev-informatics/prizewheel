@@ -13,7 +13,7 @@
 
 return array(
 	'appconfig' => array(
-		'baseurl' => 'http://fbstaging.ecrmplus.net:9090'
+		'baseurl' => 'https://fbstaging.devinformatics.com'
 	),
 	'facebook' => array(
 		'cookie' => true
@@ -25,12 +25,18 @@ return array(
 			PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
 		)
 	),
+	'crypto' => array(
+		'extension' => 'mcrypt',
+		'algo' => 'aes'
+	),
 	'service_manager' => array(
     	'factories' => array(
     		'Zend\Db\Adapter\Adapter' =>
     			'Zend\Db\Adapter\AdapterServiceFactory',
     		'Facebook' =>
-    			'Application\Factory\FacebookServiceFactory'    	
+    			'Application\Factory\FacebookServiceFactory',
+    		'BlockCipher' =>
+    			'Application\Factory\CryptoServiceFactory'   	
     	)
 	)
 );

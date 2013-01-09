@@ -19,5 +19,8 @@ return array(
 	'db' => array(
     	'username' => 'root',
     	'password' => 'password'
-    )
+    ),
+	'crypto' => array(
+		'key' => 'Pa$$w0rd'
+	)
 );

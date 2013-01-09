@@ -1,0 +1,60 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://www.facebook.com/2008/fbml">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('FB PrizeWheel')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+
+        <!-- Le styles -->
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))
+                        ->prependStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
+                        ->prependStylesheet($this->basePath() . '/css/style.css')
+                        ->prependStylesheet($this->basePath() . '/css/smoothness/jquery-ui-1.9.0.custom.min.css')
+                        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
+
+        <!-- Scripts -->
+        <?php echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                                      ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+                                      ->prependFile($this->basePath() . '/js/jquery-ui-1.9.0.custom.min.js')
+                                      ->prependFile($this->basePath() . '/js/jquery.validate.min.js')
+                                      ->prependFile($this->basePath() . '/js/jquery.min.js')?>
+    </head>
+    <body>
+    	<div id="fb-root"></div>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>                                 
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="<?php echo $this->url('admin')?>">Home</a></li>
+                            <li class="active"><a href="<?php echo $this->url('advertisement-category', array('action' => 'list'))?>">Categories</a></li>
+                            <li class="active"><a href="<?php echo $this->url('affiliate', array('action' => 'list'))?>">Affiliates</a></li>
+                            <li class="active"><a href="<?php echo $this->url('advertiser', array('action' => 'list'))?>">Advertisers</a></li>
+                            <li class="active"><a href="<?php echo $this->url('prize-wheel', array('action' => 'list'))?>">Prize Wheels</a></li>
+                            <li class="active"><a href="<?php echo $this->url('advertisement', array('action' => 'list'))?>">Advertisements</a></li>
+                            <li class="active"><a href="<?php echo $this->url('transaction', array('action' => 'list'))?>">Transactions</a></li>
+                            <li class="active"><a href="<?php echo $this->url('affiliate-payout-entry', array('action' => 'list'))?>">Payouts</a><li>
+                            <li class="active"><a href="<?php echo $this->url('settings')?>">Settings</a></li>
+                            <li class="active"><a href="<?php echo $this->url('authentication', array('action' => 'logout'))?>">Logout</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <?php echo $this->content; ?>
+            <hr>
+            <footer>
+                <p>&copy; 2005 - 2012 by Five Star Fulfillment. All rights reserved.</p>
+            </footer>
+        </div> <!-- /container -->
+        <?php echo $this->inlineScript() ?>        
+    </body>
+</html>

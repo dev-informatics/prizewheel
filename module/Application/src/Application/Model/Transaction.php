@@ -5,10 +5,14 @@ namespace Application\Model;
 class Transaction
 {
 	protected $id;
-	protected $advertiserId;
+	protected $advertisementId;
+	protected $advertisementName;
+	protected $advertiserName;
+	protected $transactionStatusId;
 	protected $firstName;
 	protected $lastName;
 	protected $emailAddress;
+	protected $telephone;
 	protected $address1;
 	protected $address2;
 	protected $city;
@@ -26,6 +30,7 @@ class Transaction
 	protected $memo;
 	protected $ipAddress;
 	protected $createDateTime;
+	protected $advertiserId;
 	
 	public function id($id=0)
 	{
@@ -35,12 +40,30 @@ class Transaction
 		return $this->id;
 	}
 	
-	public function advertiserId($advertiserid=0)
+	public function advertisementId($advertisementid=0)
 	{
-		if(!empty($advertiserid)){
-			$this->advertiserId = $advertiserid;
+		if(!empty($advertisementid)){
+			$this->advertisementId = $advertisementid;
 		} // if
-		return $this->advertiserId;		
+		return $this->advertisementId;		
+	}
+	
+	public function advertisementName()
+	{
+		return $this->advertisementName;
+	}
+	
+	public function advertiserName()
+	{
+		return $this->advertiserName;
+	}
+	
+	public function transactionStatusId($transactionstatusid=0)
+	{
+		if(!empty($transactionstatusid)){
+			$this->transactionStatusId = $transactionstatusid;
+		} // if
+		return $this->transactionStatusId;
 	}
 	
 	public function firstName($firstname='')
@@ -65,6 +88,14 @@ class Transaction
 			$this->emailAddress = $emailaddress;
 		} // if
 		return $this->emailAddress;
+	}
+	
+	public function telephone($telephone='')
+	{
+		if(!empty($telephone)){
+			$this->telephone = $telephone;
+		} // if
+		return $this->telephone;
 	}
 	
 	public function address1($address1='')
@@ -202,6 +233,11 @@ class Transaction
  		} // if
  		return $this->createDateTime;
  	}
+ 	
+ 	public function advertiserId()
+ 	{
+ 		return $this->advertiserId;
+ 	}
 	
 	public function __construct()
 	{
@@ -210,33 +246,44 @@ class Transaction
 	
 	public function exchangeArray($data)
 	{
-		$this->id = (isset($data['id'])) ? $data['id'] : 0;
-		$this->advertiserId = (isset($data['advertiserid'])) ? $data['advertiserid'] : 0;
-		$this->firstName = (isset($data['firstname'])) ? $data['firstname'] : null;
-		$this->lastName = (isset($data['lastname'])) ? $data['lastname'] : null;
-		$this->address1 = (isset($data['address1'])) ? $data['address1'] : null;
-		$this->address2 = (isset($data['address2'])) ? $data['address2'] : null;
-		$this->city = (isset($data['city'])) ? $data['city'] : null;
-		$this->state = (isset($data['state'])) ? $data['state'] : null;
-		$this->country = (isset($data['country'])) ? $data['country'] : null;
-		$this->postal = (isset($data['postal'])) ? $data['postal'] : null;
-		$this->cardFirstFour = (isset($data['cardfirstfour'])) ? $data['cardfirstfour'] : null;
-		$this->cardLastFour = (isset($data['cardlastfour'])) ? $data['cardlastfour'] : null;
-		$this->cardExpMonth = (isset($data['cardexpmonth'])) ? $data['cardexpmonth'] : null;
-		$this->cardExpYear = (isset($data['cardexpyear'])) ? $data['cardexpyear'] : null;
-		$this->processor = (isset($data['processor'])) ? $data['processor'] : null;
-		$this->amount = (isset($data['amount'])) ? $data['amount'] : null;
-		$this->paymentId = (isset($data['paymentid'])) ? $data['paymentid'] : null;
-		$this->status = (isset($data['status'])) ? $data['status'] : null;
-		$this->memo = (isset($data['memo'])) ? $data['memo'] : null;
-		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : null;
- 	}
+		$this->id = (isset($data['id'])) ? $data['id'] : $this->id;
+		$this->advertisementId = (isset($data['advertisementid'])) ? $data['advertisementid'] : $this->advertisementId;
+		$this->advertisementName = (isset($data['advertisementname'])) ? $data['advertisementname'] : "";
+		$this->advertiserName = (isset($data['advertiserfirstname']) && isset($data['advertiserlastname'])) ? 
+			($data['advertiserfirstname'] . ' ' . $data['advertiserlastname']) : '';
+		$this->transactionStatusId = (isset($data['transactionstatusid'])) ? $data['transactionstatusid'] : $this->transactionStatusId;
+		$this->firstName = (isset($data['firstname'])) ? $data['firstname'] : $this->firstName;
+		$this->lastName = (isset($data['lastname'])) ? $data['lastname'] : $this->lastName;
+		$this->address1 = (isset($data['address1'])) ? $data['address1'] : $this->address1;
+		$this->address2 = (isset($data['address2'])) ? $data['address2'] : $this->address2;
+		$this->city = (isset($data['city'])) ? $data['city'] : $this->city;
+		$this->state = (isset($data['state'])) ? $data['state'] : $this->state;
+		$this->country = (isset($data['country'])) ? $data['country'] : $this->country;
+		$this->postal = (isset($data['postal'])) ? $data['postal'] : $this->postal;
+		$this->cardFirstFour = (isset($data['cardfirstfour'])) ? $data['cardfirstfour'] : $this->cardFirstFour;
+		$this->cardLastFour = (isset($data['cardlastfour'])) ? $data['cardlastfour'] : $this->cardLastFour;
+		$this->cardExpMonth = (isset($data['cardexpmonth'])) ? $data['cardexpmonth'] : $this->cardExpMonth;
+		$this->cardExpYear = (isset($data['cardexpyear'])) ? $data['cardexpyear'] : $this->cardExpYear;
+		$this->processor = (isset($data['processor'])) ? $data['processor'] : $this->processor;
+		$this->amount = (isset($data['amount'])) ? $data['amount'] : $this->amount;
+		$this->paymentId = (isset($data['paymentid'])) ? $data['paymentid'] : $this->paymentId;
+		$this->status = (isset($data['status'])) ? $data['status'] : $this->status;
+		$this->memo = (isset($data['memo'])) ? $data['memo'] : $this->memo;
+		$this->createDateTime = (isset($data['createdatetime'])) ? $data['createdatetime'] : $this->createDateTime;
+		$this->emailAddress = (isset($data['emailaddress'])) ? $data['emailaddress'] : $this->emailAddress;
+		$this->telephone = (isset($data['telephone'])) ? $data['telephone'] : $this->telephone;
+		$this->ipAddress = (isset($data['ipaddress'])) ? $data['ipaddress'] : $this->ipAddress;
+		$this->advertiserId = (isset($data['advertiserid'])) ? $data['advertiserid'] : $this->advertiserId;
+ 	} // exchangeArray
 	
 	public function getArrayCopy()
 	{
 		return array(
 			'id' => $this->id,
-			'advertiserid' => $this->advertiserId,
+			'advertisementid' => $this->advertisementId,
+			'advertisementname' => $this->advertisementName,
+			'advertisername' => $this->advertiserName,
+			'transactionstatusid' => $this->transactionStatusId,
 			'firstname' => $this->firstName,
 			'lastname' => $this->lastName,
 			'address1' => $this->address1,
@@ -254,7 +301,11 @@ class Transaction
 			'paymentid' => $this->paymentId,
 			'status' => $this->status,
 			'memo' => $this->memo,
-			'createdatetime' => $this->createDateTime	
+			'emailaddress' => $this->emailAddress,
+			'telephone' => $this->telephone,
+			'createdatetime' => $this->createDateTime,
+			'ipaddress' => $this->ipAddress,
+			'advertiserid' => $this->advertiserId
 		);
-	}
+	} // getArrayCopy
 }

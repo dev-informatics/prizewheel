@@ -80,6 +80,27 @@ class ManageAdvertisementForm extends Form
 		
 		$this->add($upload);
 		
+		$sponserUpload = new \Zend\Form\Element\File();
+		$sponserUpload->setName("sponserimage");
+		$sponserUpload->setAttributes(array(
+				"id" => "sponserimage"
+		));
+		$sponserUpload->setOptions(array(
+				"label"	=> "Sponser Image"
+		));
+		
+		$this->add($sponserUpload);
+		
+		$enabled = new \Zend\Form\Element\Checkbox("enabled");
+		$enabled->setAttributes(array(
+			'id' => "enabled"	
+		));
+		$enabled->setOptions(array(
+			"label" => "Enabled"	
+		));
+		
+		$this->add($enabled);
+		
 		$this->inputFilter = $this->getDefaultInputFilter();
  	}
  	
@@ -138,6 +159,28 @@ class ManageAdvertisementForm extends Form
  			"name" => "bannerimage",
  			"required" => false 
  		))); 	
+ 		$inputFilter->add($factory->createInput(array(
+ 			"name" => "sponserimage",
+ 			"required" => false,
+ 			"filters" => array(
+ 				array("name" => "StringTrim"),
+ 				array("name" => "StripTags")
+ 			),
+ 			"validators" => array(
+ 				array(
+ 					"name" => "StringLength",
+ 					"options" => array(
+ 						"encoding" => "UTF-8",
+ 						"min" => 1,
+ 						"max" => 150
+ 					)
+ 				)
+ 			)
+ 		)));
+ 		$inputFilter->add($factory->createInput(array(
+ 			"name" => "enabled",
+ 			"required" => false	
+ 		)));
  	
  		return $inputFilter;
  	}

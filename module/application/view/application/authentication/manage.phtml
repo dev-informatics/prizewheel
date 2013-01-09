@@ -1,0 +1,27 @@
+<?php
+
+$this->layout('layout/admin_layout');
+$title = "Manage Admin Account";
+$this->headTitle($title);
+$form = $this->form;
+$form->prepare();
+?>
+<h2><?php echo $this->escapeHtml($title)?></h2>
+
+<?php echo $this->form()->openTag($form)?>
+<?php echo $this->formCollection($form)?>
+<button type="submit">
+	Save
+</button>
+<button type="button" id="cancel">
+	Cancel
+</button>
+<?php echo $this->form()->closeTag()?>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#cancel").click(function(){
+			window.location = '<?php echo $this->url('admin')?>';
+		});
+	});
+</script>

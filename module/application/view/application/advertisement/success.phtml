@@ -1,0 +1,21 @@
+<?php
+
+$title = "Bucket Load Details";
+$this->headTitle($title);
+?>
+<h2>Thank You for your Payment: <?php echo $this->advertiser->name()?></h2>
+
+<p>Your bucket load for Advertisement <?php echo $this->advertisement->name()?> was successful.
+Your Order details are listed below. Please note it could take up to 10 minutes for your deposit
+to be refelected in your Advertisement's bucket. If a deposit has not been made within that
+timeframe please contact support with the Payment Method and Transaction ID listed below.</p>
+
+<ul>
+	<li>Payment Method <?php echo $this->escapeHtml($this->processor)?></li>
+	<li>Transaction ID <?php echo $this->escapeHtml($this->transactionid)?></li>
+	<li>Amount $<?php echo number_format($this->amount, 2, '.',',')?></li>
+</ul>
+
+<div>
+	<a href="/advertisement/manage/<?php echo $this->advertisement->id()?>">Return to Advertisement <?php echo $this->escapeHtml($this->advertisement->name())?></a>
+</div>
