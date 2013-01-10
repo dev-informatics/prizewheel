@@ -13,7 +13,7 @@
 
 return array(
 	'appconfig' => array(
-		'baseurl' => 'https://fbstaging.devinformatics.com'
+		'baseurl' => 'https://staging.devinformatics.info'
 	),
 	'facebook' => array(
 		'cookie' => true

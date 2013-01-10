@@ -3,7 +3,6 @@
 namespace Application\Controller;
 
 use Application\Model\AdvertisementDataSourceInterface;
-
 use Application\Model\PrizeWheelDataSourceInterface;
 use Application\Model\AdvertisementCategoryEntryTable;
 use Application\Model\AdvertisementType;
@@ -25,6 +24,7 @@ use Application\Model\PrizeWheelEntryCategoryEntryTable;
 use Application\Model\PrizeWheelImpressionTable;
 use Application\Model\AdvertisementCategoryTable;
 use Application\Model\SimpleImage;
+use Application\Model\SubscriptionTransactionEntryDataSourceInterface;
 
 /**
  * PrizeWheelController
@@ -47,6 +47,8 @@ class PrizeWheelController extends FacebookAwareController
 	protected $advertisementCategoryTable = null;
 	protected $authenticationService = null;
 	protected $advertisementCategoryEntryTable = null;
+	protected $subscriptionTransactionEntryDataSource = null;
+	protected $prizeWheelSession = null;
 	
 	public function __construct(PrizeWheelDataSourceInterface $prizeWheelTable, 
 			PrizeWheelEntryTable $prizeWheelEntryTable, 
@@ -58,6 +60,7 @@ class PrizeWheelController extends FacebookAwareController
 			PrizeWheelImpressionTable $prizeWheelImpressionTable,
 			AdvertisementCategoryTable $advertisementCategoryTable,
 			AdvertisementCategoryEntryTable $advertisementCategoryEntryTable,
+			SubscriptionTransactionEntryDataSourceInterface $subscriptionTransactionEntryDataSource,
 			\Facebook $facebook)
 	{
 		parent::__construct();
@@ -70,9 +73,11 @@ class PrizeWheelController extends FacebookAwareController
 		$this->prizeWheelCategoryEntryTable = $prizeWheelCategoryEntryTable;
 		$this->prizeWheelImpressionTable = $prizeWheelImpressionTable;
 		$this->advertisementCategoryTable = $advertisementCategoryTable;
+		$this->subscriptionTransactionEntryDataSource = $subscriptionTransactionEntryDataSource;
 		$this->facebook = $facebook;
 		$this->authenticationService = new \Zend\Authentication\AuthenticationService();
 		$this->advertisementCategoryEntryTable = $advertisementCategoryEntryTable;
+		$this->prizeWheelSession = new \Zend\Session\Container('PrizeWheel');
 	} // ctor
 	
 	/**
@@ -123,13 +128,19 @@ class PrizeWheelController extends FacebookAwareController
 			error_log("Prize Wheel Exception: " . $e->getMessage());
 		} // catch
 		
+		$token = $this->createToken();
+		
+		$this->prizeWheelSession->token = $token;
+		
 		$viewModel = new ViewModel(
 			array(
 				"prizewheel" => $prizeWheel,
 				"facebookappid" => $this->getFacebookAppId(),
-				"facebookpagename" => $pageInformation['name']	
+				"facebookpagename" => $pageInformation['name'],
+				"token" => $token	
 			)		
-		);
+		);	
+
 		$viewModel->setTerminal(true);
 		
 		return $viewModel;
@@ -182,7 +193,18 @@ class PrizeWheelController extends FacebookAwareController
 	public function settingsAction()
 	{
 		$id = (int)$this->params()->fromRoute('id', 0);
-
+		$token = (string)$this->params()->fromQuery('token', '');
+		
+		if(!isset($this->prizeWheelSession->token)){
+			error_log('Prize Wheel Exception: The token does not exist');
+			return $this->response;
+		} // if
+		
+		if($this->prizeWheelSession->token != $token){
+			error_log('Prize Wheel Exception: The tokens do not match!');
+			return $this->response;
+		} // if
+		
 		if($id > 0){
 			$prizeWheel = $this->prizeWheelTable->getPrizeWheel($id);
 		
@@ -199,11 +221,13 @@ class PrizeWheelController extends FacebookAwareController
 				switch($prizeWheel->prizeWheelTypeId()){
 					case \Application\Model\PrizeWheelType::Personalized:
 						
-						$advertisement = $this->advertisementTable->getRandomOfPlacementType(
-							AdvertisementPlacementType::Sponser, $prizeWheelCategories
-						);
-
-						$options[] = $advertisement;
+						if(!$prizeWheel->paid()){
+							$advertisement = $this->advertisementTable->getRandomOfPlacementType(
+								AdvertisementPlacementType::Sponser, $prizeWheelCategories
+							);
+	
+							$options[] = $advertisement;
+						} // if
 						break;
 					case \Application\Model\PrizeWheelType::AdDriven:
 					
@@ -273,6 +297,11 @@ class PrizeWheelController extends FacebookAwareController
 		$isAd = $this->params()->fromQuery('ad', false);
 			
 		$prizeWheel = $this->prizeWheelTable->getPrizeWheel($id);
+		
+		// If this is a Paid Prize Wheel, jsut redirect.
+		if($prizeWheel->paid()){
+			return $this->redirect()->toUrl($redirect);
+		} // if
 		
 		$prizeWheelCategories = array();
 		
@@ -620,6 +649,8 @@ class PrizeWheelController extends FacebookAwareController
 		
 		$exportedSubmissions = $this->prizeWheelEntryTable->getExportedCountByPrizeWheelId($prizeWheel->id());
 		$totalSubmissions = $this->prizeWheelEntryTable->getCountByPrizeWheelId($prizeWheel->id());
+		$subscriptionTransactionEntryCount = 0;
+		$subscriptionTransactionEntries = $this->subscriptionTransactionEntryDataSource->fetchAllByPrizeWheelId($prizeWheel->id(), 1, 24, $subscriptionTransactionEntryCount);
 		$newSubmissions = $totalSubmissions - $exportedSubmissions;
 		
 		$viewModel = new ViewModel();
@@ -630,7 +661,11 @@ class PrizeWheelController extends FacebookAwareController
 			'layoutpath' => $layout,
 			'newsubmissions' => $newSubmissions,
 			'exportedsubmissions' => $exportedSubmissions,
-			'totalsubmissions' => $totalSubmissions				
+			'totalsubmissions' => $totalSubmissions,
+			'subscriptiontransactionentries' => $subscriptionTransactionEntries,
+			'subscriptiontransactionentrycount' => $subscriptionTransactionEntryCount,
+			'paypalsubscribebutton'	=> $this->getConfigValue('paypal subscribe button')->value(),
+			'paypalunsubscribebutton' => $this->getConfigValue('paypal unsubscribe button')->value()			
 		));		 
 		
 		$request = $this->getRequest();
@@ -728,6 +763,10 @@ class PrizeWheelController extends FacebookAwareController
 							$prizeWheel->buttonImage("");
 						} // if
 						
+						if($this->params()->fromPost('resetsponserimage', false)){
+							$prizeWheel->sponserImage("");
+						} // if
+						
 						$files = array();
 						
 						foreach($this->getPrizeNameNumericalStrings() as $numerical){
@@ -762,6 +801,12 @@ class PrizeWheelController extends FacebookAwareController
  						if($buttonimage['error'] <= 0){
  							$files[] = $buttonimage;
  							$prizeWheel->buttonImage($buttonimage['name']);
+ 						} // if
+ 						
+ 						$sponserimage = $this->params()->fromFiles("sponserimage");
+ 						if($sponserimage['error'] <= 0){
+ 							$files[] = $sponserimage;
+ 							$prizeWheel->sponserImage($sponserimage['name']);
  						} // if
 						
 						$this->prizeWheelTable->save($prizeWheel);
@@ -832,6 +877,13 @@ class PrizeWheelController extends FacebookAwareController
  							$simpleImage->load($uploadDir.'/'.$buttonimage['name']);
  							$simpleImage->resize(123, 64);
  							$simpleImage->save($uploadDir.'/'.$buttonimage['name']); 							
+ 						} // if
+ 						
+ 						if($sponserimage['error'] <= 0){
+ 							$simpleImage = new SimpleImage();
+ 							$simpleImage->load($uploadDir.'/'.$sponserimage['name']);
+ 							$simpleImage->resize(144, 453);
+ 							$simpleImage->save($uploadDir.'/'.$sponserimage['name']);
  						} // if
 						
 						if($this->authenticationService->hasIdentity()){
@@ -940,9 +992,44 @@ class PrizeWheelController extends FacebookAwareController
 		$prizeWheels = $this->prizeWheelTable->fetchAll(1, 25, $count);
 		
 		return new ViewModel(array(
-			'prizewheels' => $prizeWheels,
-			'count' => $count
-		));
+					'prizewheels' => $prizeWheels,
+					'count' => $count
+				));
+	}
+	
+	public function subscribedAction()
+	{
+		$transactionId = $this->params()->fromQuery("tx", "");
+		$amount = $this->params()->fromQuery("amt", 0.00);
+		$prizeWheelId = $this->params()->fromQuery("custom", 0);
+		
+		return new ViewModel(array(
+					'transactionid' => $transactionId,
+					'redirecturl' => ($prizeWheelId > 0 ? '/prize-wheel/manage/'.$prizeWheelId : '/affiliate'),
+					'amount' => $amount
+				));
+	} // subscribedAction
+	
+	public function cancelSignupAction()
+	{
+		return new ViewModel(array(
+				
+				));
+	} // unsubscribedAction
+	
+	public function sponsorRedirectAction()
+	{
+		$id = (int)$this->params()->fromRoute('id', 0);
+		
+		$prizeWheel = $this->prizeWheelTable->getPrizeWheel($id);
+		
+		if(!$prizeWheel){
+			return new ViewModel(array(
+					
+					));
+		} // if
+		
+		return $this->redirect()->toUrl($prizeWheel->sponserLink());
 	}
 	
 	private function getPrizeNameNumericalStrings()
@@ -1004,4 +1091,17 @@ class PrizeWheelController extends FacebookAwareController
 			error_log('Prize Wheel Exception: Prize Wheel ID ' . $prizeWheel->id(). ' ' . $e->getMessage() . ' ' . $e->getTraceAsString());
 		} // catch
 	}
+	
+	private function createToken() {
+	 
+		$length = 15;
+		$characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWZYZ';
+		$real_string_legnth = (strlen($characters) - 1);
+		$string="";
+		 
+		for ($p = 0; $p < $length; $p++) {
+			$string .= $characters[mt_rand(0, $real_string_legnth)];
+		}
+		return $string;
+ 	}
 }

@@ -2,11 +2,18 @@
 
 namespace Application\Controller;
 
+use Application\Model\SubscriptionTransactionEntry;
+use Application\Model\PrizeWheelDataSourceInterface;
+use Application\Model\ConfigurationEntryTable;
+use Application\Model\AdvertisementDataSourceInterface;
+use Application\Model\AdvertiserDataSourceInterface;
+use Application\Model\TransactionTable;
+use Application\Model\AffiliatePayoutEntryTable;
+use Application\Model\SubscriptionTransactionEntryDataSourceInterface;
 use Application\Model\TransactionStatus;
 use Application\Model\Transaction;
 use Application\Model\IpnListener;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class AdminController extends AbstractActionController
@@ -17,13 +24,17 @@ class AdminController extends AbstractActionController
 	protected $advertiserTable = null;
 	protected $transactionTable = null;
 	protected $affiliatePayoutEntryTable = null;
+	protected $subscriptionTransactionEntryDataSource = null;
+	protected $prizeWheelDataSource = null;
 	
 	public function __construct(
-			\Application\Model\ConfigurationEntryTable $configurationEntryTable,
-			\Application\Model\AdvertisementDataSourceInterface $advertisementTable,
-			\Application\Model\AdvertiserDataSourceInterface $advertiserTable,
-			\Application\Model\TransactionTable $transactionTable,
-			\Application\Model\AffiliatePayoutEntryTable $affiliatePayoutEntryTable)
+			ConfigurationEntryTable $configurationEntryTable,
+			AdvertisementDataSourceInterface $advertisementTable,
+			AdvertiserDataSourceInterface $advertiserTable,
+			TransactionTable $transactionTable,
+			AffiliatePayoutEntryTable $affiliatePayoutEntryTable,
+			SubscriptionTransactionEntryDataSourceInterface $subscriptionTransactionEntryDataSource,
+			PrizeWheelDataSourceInterface $prizeWheelDataSource)
 	{
 		$this->configurationEntryTable = $configurationEntryTable;
 		$this->authenticationService = new \Zend\Authentication\AuthenticationService();
@@ -31,6 +42,8 @@ class AdminController extends AbstractActionController
 		$this->advertiserTable = $advertiserTable;
 		$this->transactionTable = $transactionTable;
 		$this->affiliatePayoutEntryTable = $affiliatePayoutEntryTable;
+		$this->subscriptionTransactionEntryDataSource = $subscriptionTransactionEntryDataSource;
+		$this->prizeWheelDataSource = $prizeWheelDataSource;
 	}
 	
 	public function revenueAndPayoutsReportAction()
@@ -122,8 +135,7 @@ class AdminController extends AbstractActionController
 				$paymentId = (string)$this->params()->fromPost('txn_id');
 				$transactionType = (string)$this->params()->fromPost('txn_type', '');
 				$paymentStatus = (string)$this->params()->fromPost('payment_status', 'Denied');
-				$memo = $this->params()->fromPost('item_name', '');
-				$advertisementId = (int)$this->params()->fromPost('custom', 0);
+				$memo = $this->params()->fromPost('item_name', '');				
 				
 				$firstname = $this->params()->fromPost('first_name', '');
 				$lastname = $this->params()->fromPost('last_name', '');
@@ -136,7 +148,127 @@ class AdminController extends AbstractActionController
 				$telephone = $this->params()->fromPost('contact_phone', '');
 				
 				switch($transactionType){
+					case "subscr_cancel":
+						$subscriptionId = $this->params()->fromPost('subscr_id', '');
+						$prizeWheelId = $this->params()->fromPost('custom', 0);
+						
+						// Make sure we haven't already processed this payment.
+						if($this->subscriptionTransactionEntryDataSource->getSubscriptionTransactionEntryByPaymentId($paymentId)){
+							return $this->response;
+						} // if
+						
+						$prizeWheel = $this->prizeWheelDataSource->getPrizeWheel($prizeWheelId);
+						
+						$ste = new SubscriptionTransactionEntry();
+						
+						$ste->amount($amount);
+						$ste->subscriptionId($subscriptionId);
+						$ste->paymentId($paymentId);
+						$ste->memo($memo);
+						$ste->prizeWheelId($prizeWheelId);
+						$ste->status($paymentStatus);
+						$ste->processor('paypal');
+						$ste->firstName($firstname);
+						$ste->lastName($lastname);
+						$ste->address1($address1);
+						$ste->city($city);
+						$ste->state($state);
+						$ste->country($country);
+						$ste->postal($postal);
+						$ste->emailAddress($email);
+						$ste->telephone($telephone);
+						$ste->ipAddress($this->getRequest()->getServer('REMOTE_ADDR'));
+						
+						$ste->transactionStatusId(TransactionStatus::Success);
+						$this->subscriptionTransactionEntryDataSource->save($ste);								
+						break;
+					case "subscr_signup":
+						
+						break;
+					case "subscr_payment":				
+						$subscriptionId = $this->params()->fromPost('subscr_id', '');
+						$prizeWheelId = $this->params()->fromPost('custom', 0);
+						
+						// Make sure we haven't already processed this payment.
+						if($this->subscriptionTransactionEntryDataSource->getSubscriptionTransactionEntryByPaymentId($paymentId)){
+							return $this->response;
+						} // if
+						
+						$prizeWheel = $this->prizeWheelDataSource->getPrizeWheel($prizeWheelId);					
+						
+						$ste = new SubscriptionTransactionEntry();
+						
+						$ste->amount($amount);
+						$ste->subscriptionId($subscriptionId);
+						$ste->paymentId($paymentId);
+						$ste->memo($memo);
+						$ste->prizeWheelId($prizeWheelId);
+						$ste->status($paymentStatus);
+						$ste->processor('paypal');
+						$ste->firstName($firstname);
+						$ste->lastName($lastname);
+						$ste->address1($address1);
+						$ste->city($city);
+						$ste->state($state);
+						$ste->country($country);
+						$ste->postal($postal);
+						$ste->emailAddress($email);
+						$ste->telephone($telephone);
+						$ste->ipAddress($this->getRequest()->getServer('REMOTE_ADDR'));
+						
+						switch($paymentStatus){
+							case "Canceled_Reversal":
+								$ste->transactionStatusId(TransactionStatus::Success);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								$prizeWheel->paidExpiration(date('Y-m-d H:i:s'));
+								$this->prizeWheelDataSource->save($prizeWheel);
+								break;
+							case "Pending":
+								$ste->transactionStatusId(TransactionStatus::Pending);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								break;
+							case "Completed":
+								$ste->transactionStatusId(TransactionStatus::Success);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								$prizeWheel->paidExpiration(date('Y-m-d H:i:s', 35*86400 + time()));
+								$this->prizeWheelDataSource->save($prizeWheel);								
+								break;
+							case "Denied":
+								$ste->transactionStatusId(TransactionStatus::Failed);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								break;
+							case "Expired":
+								$ste->transactionStatusId(TransactionStatus::Failed);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								break;
+							case "Refunded":
+								$ste->transactionStatusId(TransactionStatus::Refund);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								$prizeWheel->paidExpiration(date('Y-m-d H:i:s'));
+								$this->prizeWheelDataSource->save($prizeWheel);
+								break;
+							case "Reversed":
+								$ste->transactionStatusId(TransactionStatus::Chargeback);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								$prizeWheel->paidExpiration(date('Y-m-d H:i:s'));
+								$this->prizeWheelDataSource->save($prizeWheel);
+								break;
+							case "Voided":
+								$ste->transactionStatusId(TransactionStatus::Void);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								$prizeWheel->paidExpiration(date('Y-m-d H:i:s'));
+								$this->prizeWheelDataSource->save($prizeWheel);
+								break;
+							case "Processed":
+								$ste->transactionStatusId(TransactionStatus::Pending);
+								$this->subscriptionTransactionEntryDataSource->save($ste);
+								break;
+						} // switch
+						break;
 					case "web_accept":
+						
+						$advertisementId = (int)$this->params()->fromPost('custom', 0);
+						
 						$advertisement = $this->advertisementTable->getAdvertisement($advertisementId);
 						
 						// @todo Email Error Notifications.
@@ -305,7 +437,6 @@ class AdminController extends AbstractActionController
 			} // if
 		} // try
 		catch(\Exception $e){
-			
 			$previous = $e->getPrevious();
 			
 			if(!$previous){

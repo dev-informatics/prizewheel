@@ -10,7 +10,6 @@
 namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Model\Advertiser;
 
 class IndexController extends FacebookAwareController
 {

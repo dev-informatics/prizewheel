@@ -12,8 +12,8 @@
 	
 			$(document).ready(function(){
 	
-				$("#embed-spin-wheel").attr("src", "/content/spinwheel3.swf?xmlfile=/prize-wheel/settings/<?php echo $this->prizewheel->Id()?>?time=" + date.getMilliseconds());
-				$("#flash-vars").attr("value", "xmlfile=/prize-wheel/settings/<?php echo $this->escapeHtml($this->prizewheel->Id())?>?time=" + date.getMilliseconds());
+				$("#embed-spin-wheel").attr("src", "/content/spinwheel3.swf?xmlfile=/prize-wheel/settings/<?php echo $this->prizewheel->Id()?>?token=<?php echo $this->token?>&time=" + date.getMilliseconds());
+				$("#flash-vars").attr("value", "xmlfile=/prize-wheel/settings/<?php echo $this->escapeHtml($this->prizewheel->Id())?>?token=<?php echo $this->token?>&time=" + date.getMilliseconds());
 				
 				$("#share-fb-link-btn").click(function(){
 						
@@ -55,7 +55,7 @@
 					<script type="text/javascript">
 						AC_FL_RunContent( 'codebase','https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0','width','800','height','500','title','flash','src','/content/spinwheel3',
 							'quality','high','pluginspage','https://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash','movie','/content/spinwheel3','FlashVars',
-							'xmlfile=/prize-wheel/settings/<?php echo $this->prizewheel->Id()?>?time=' + date.getMilliseconds() 
+							'xmlfile=/prize-wheel/settings/<?php echo $this->prizewheel->Id()?>?token=<?php echo $this->token?>&time=' + date.getMilliseconds() 
 						); //end AC code
 					</script>
 					<noscript>

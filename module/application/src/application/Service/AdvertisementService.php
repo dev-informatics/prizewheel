@@ -2,7 +2,6 @@
 
 namespace Application\Service;
 
-use Application\Model\Advertisement;
 use Application\Model\AdvertisementTable;
 
 class AdvertisementService

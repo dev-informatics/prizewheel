@@ -1,0 +1,16 @@
+<?php
+
+$title = "Thank You for Subscribing";
+$this->headTitle($title);
+?>
+<h2>Thank You</h2>
+
+<div>
+	<div>Transaction ID: <?php echo $this->escapeHtml($this->transactionid)?></div>
+	<div>Amount: $<?php echo $this->escapeHtml(number_format($this->amount, 2, '.', ','))?></div>
+</div>
+
+<p>Thank you for subscribing to our Ad-Free version of the Prize-Wheel. Please note that cancellation of the subscription
+will immediately convert the Prize Wheel back to the Free Ad Supported version.</p>
+
+<a href="<?php echo $this->redirecturl?>">Back to your Prize Wheel.</a>

@@ -19,7 +19,9 @@ $this->headTitle($title);
 			<th style="text-align: left;">ID</th>
 			<th style="text-align: left;">Page ID</th>
 			<th style="text-align: left;">Type</th>
-			<th style="text-align: left;">Created</th>			
+			<th style="text-align: left;">Created</th>
+			<th style="text-align: left;">Paid</th>
+			<th style="text-align: left;">Paid Expiration</th>		
 		</tr>
 	</thead>
 	<tbody id="list-body">
@@ -38,7 +40,9 @@ $this->headTitle($title);
 			<td><?php echo $this->escapeHtml($prizeWheel->id())?></td>
 			<td><?php echo $this->escapeHtml($prizeWheel->pageId())?></td>
 			<td><?php echo $this->escapeHtml($prizeWheel->prizeWheelTypeName())?></td>
-			<td><?php echo $this->escapeHtml($prizeWheel->createDateTime())?></td>		
+			<td><?php echo $this->escapeHtml($prizeWheel->createDateTime())?></td>
+			<td><?php echo ($prizeWheel->paid() ? "True" : "False")?></td>
+			<td><?php echo $this->escapeHtml($prizeWheel->paidExpiration())?></td>	
 		</tr>
 		<?php endforeach;?>
 	</tbody>
@@ -77,6 +81,8 @@ $this->headTitle($title);
 							row.append($('<td>' + prizeWheel.pageid + '</td>'));
 							row.append($('<td>' + prizeWheel.prizewheeltypename + '</td>'));
 							row.append($('<td>' + prizeWheel.createdatetime + '</td>'));
+							row.append($('<td>' + (prizeWheel.paid ? 'True' : 'False') + '</td>'));
+							row.append($('<td>' + prizeWheel.paidexpiration + '</td>'));
 							
 							listBody.append(row);	
 						});

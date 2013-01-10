@@ -23,8 +23,8 @@ $form->prepare();
 	}
 </style>
 <h2>Manage Prize Wheel for Facebook Page <?php echo $this->escapeHtml($this->facebookpage)?></h2>
-<?php echo $this->form()->openTag($form)?>
-<button id="save-changes" type="submit">
+
+<button id="save-changes" type="button">
 	Save
 </button>
 <button id="cancel-changes" type="button">
@@ -38,8 +38,9 @@ $form->prepare();
 		<li><a href="#display-tab">Display</a></li>
 		<li><a href="#email-tab">E-Mail</a></li>
 		<li><a href="#submissions">Submissions</a></li>
+		<li><a href="#subscription">Subscription</a>
 	</ul>
-	
+	<?php echo $this->form()->openTag($form)?>
 	<div id="basic-tab">
 		<table>
 			<tr>
@@ -157,6 +158,21 @@ $form->prepare();
 		</div>
 	</div>
 	<div id="display-tab">
+		
+		<?php if($prizeWheel->paid()):?>
+		<?php echo $this->formRow($form->get('sponserlink'))?>
+		<?php echo $this->formRow($form->get('sponserimage'))?>
+		<?php if(strlen($prizeWheel->sponserImage()) > 0):?>
+		<button type="button" id="preview-sponserimage-btn">
+			Preview
+		</button>
+		<?php echo $this->formRow($form->get('resetsponserimage'))?>
+		<div id="preview-sponserimage-dialog">
+			<img src="/images/prizewheels/<?php echo $this->escapeHtml($prizeWheel->id())?>/<?php echo $prizeWheel->sponserImage()?>" alt="Sponsor Image" />
+		</div>
+		<?php endif;?>
+		<?php endif;?>
+	
 		<?php echo $this->formRow($form->get('backimage'))?>
 		<?php if(strlen($prizeWheel->backImage()) > 0):?>
 		<button type="button" id="preview-backimage-btn">
@@ -259,11 +275,54 @@ $form->prepare();
 			<tbody id="prize-wheel-entry-list">
 			</tbody>
 		</table>
+	</div>	
+	<?php echo $this->form()->closeTag()?>
+	<div id="subscription">
+	
+		<div id="sub-paginator"></div>
+	
+		<table>
+			<thead>
+				<tr>					
+					<th>ID</th>
+					<th>Payment ID</th>
+					<th>Amount</th>
+					<th>Status</th>
+					<th>Created</th>
+				</tr>
+			</thead>
+			<tbody id="subscription-tbody">
+				<?php foreach($this->subscriptiontransactionentries as $subscriptionTransactionEntry):?>
+				<tr>
+					<td><?php echo $this->escapeHtml($subscriptionTransactionEntry->id())?></td>
+					<td><?php echo $this->escapeHtml($subscriptionTransactionEntry->paymentId())?></td>
+					<td>$<?php echo $this->escapeHtml(number_format($subscriptionTransactionEntry->amount(), 2, '.',','))?></td>
+					<td><?php echo $this->escapeHtml($subscriptionTransactionEntry->status())?></td>
+					<td><?php echo $this->escapeHtml($subscriptionTransactionEntry->createDateTime())?></td>
+				</tr>
+				<?php endforeach;?>
+			</tbody>
+		</table>
+	
+		<?php if($prizeWheel->paid() == false):?>
+		Subscribe today for only $5.95 a month to have an Ad-Free PrizeWheel.<br/>
+		<?php echo $this->paypalsubscribebutton?>
+		<?php else:?>
+		Click the Un-Subscribe button below to cancel your subscription and revert your Prize-Wheel to the Fee Ad-driven version.<br/>
+		<?php echo $this->paypalunsubscribebutton?>
+		<?php endif;?>
 	</div>
 </div>
-<?php echo $this->form()->closeTag()?>
+
 <script type="text/javascript">
 	$(document).ready(function(){
+
+		$("#paypal-sub-form").append($('<input type="hidden" id="custom" name="custom" value="<?php echo $prizeWheel->id()?>" />'));
+
+		$("#save-changes").click(function(){
+			$("#<?php echo $form->getName()?>").submit();
+		});
+		
 		$("#tabs").tabs();
 
 		$("#prizes").accordion({
@@ -284,6 +343,18 @@ $form->prepare();
 		
 		$("#preview-forcelikeimage-btn").click(function(){
 			$("#preview-forcelikeimage-dialog").dialog("open");
+		});
+
+		$("#preview-sponserimage-dialog").dialog({
+			autoOpen: false,
+			modal: true,
+			height: 400,
+			width: 500,
+			title: "Sponsor Image Preview"
+		});
+		
+		$("#preview-sponserimage-btn").click(function(){
+			$("#preview-sponserimage-dialog").dialog("open");
 		});
 
 		$("#preview-backimage-dialog").dialog({
@@ -340,6 +411,23 @@ $form->prepare();
 			$(document.body).remove("#export-form");
 		});		
 
+		$("#sub-paginator").pagination({
+			items: <?php echo $this->subscriptiontransactionentrycount?>,
+			itemsOnPage: 25,
+			cssStyle: 'light-theme',
+			onPageClick: function(pageNumber){
+				$.ajax({
+					url: '',
+					type: 'post',
+					data: '',
+					dataType: 'json',
+					success: function(response){
+
+					}					
+				});
+			}
+		});
+		
 		$.ajax({
 			url: '/prize-wheel-entry/list',
 			type: 'post',

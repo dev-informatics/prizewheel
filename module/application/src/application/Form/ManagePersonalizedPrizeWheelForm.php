@@ -199,6 +199,15 @@ class ManagePersonalizedPrizeWheelForm extends Form
 		));
 		$this->add($resetButtonImageCheckbox);
 		
+		$resetSponserImageCheckbox = new \Zend\Form\Element\Checkbox("resetsponserimage");
+		$resetSponserImageCheckbox->setAttributes(array(
+				'id' => 'resetsponserimage'
+			));
+		$resetSponserImageCheckbox->setOptions(array(
+				'label' => 'Reset'
+			));
+		$this->add($resetSponserImageCheckbox);
+		
 		foreach($this->getPrizeNameNumericalStrings() as $number){
 			$this->add(array(
 				"name" => "prize" . $number . "name",
@@ -301,6 +310,28 @@ class ManagePersonalizedPrizeWheelForm extends Form
 				'label' => 'Back Image'
 			)
 		));
+		
+		$this->add(array(
+				'name' => 'sponserimage',
+				'attributes' => array(
+						'id' => 'sponserimage',
+						'type' => 'file'
+				),
+				'options' => array(
+						'label' => 'Sponsor Image'
+				)
+			));
+		
+		$this->add(array(
+					'name' => 'sponserlink',
+					'attributes' => array(
+						'id' => 'sponserlink',
+						'type' => 'text'
+					),
+					'options' => array(
+						'label' => 'Sponsor Link'
+					)
+				));
 		
 		$this->add(array(
 			'name' => 'topimage',
@@ -835,6 +866,46 @@ class ManagePersonalizedPrizeWheelForm extends Form
 		)));
 		
 		$inputFilter->add($factory->createInput(array(
+					"name" => "sponserimage",
+					"required" => false,
+					"filters" => array(
+						array("name" => "StringTrim"),
+						array("name" => "StripTags")
+					),
+					"validators" => array(
+						array("name" => "NotEmpty"),
+						array(
+								"name" => "StringLength",
+								"options" => array(
+										"encoding" => "UTF-8",
+										"min" => 1,
+										"max" => 300
+								)
+						)
+					)
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
+					"name" => "sponserlink",
+					"required" => false,
+					"filters" => array(
+						array("name" => "StringTrim"),
+						array("name" => "StripTags")
+					),
+					"validators" => array(
+						array("name" => "NotEmpty"),
+						array(
+							"name" => "StringLength",
+							"options" => array(
+								"encoding" => "UTF-8",
+								"min" => 1,
+								"max" => 500
+							)
+						)
+					)
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
 			"name" => "topimage",
 			"required" => false,
 			"filters" => array(
@@ -1092,6 +1163,11 @@ class ManagePersonalizedPrizeWheelForm extends Form
 		
 		$inputFilter->add($factory->createInput(array(
 					"name" => "resetbuttonimage",
+					"required" => false
+				)));
+		
+		$inputFilter->add($factory->createInput(array(
+					"name" => "resetsponserimage",
 					"required" => false
 				)));
 		

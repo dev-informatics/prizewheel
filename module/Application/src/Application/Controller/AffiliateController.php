@@ -63,7 +63,7 @@ class AffiliateController extends FacebookAwareController
 	{	
 		// Check if we are logged into facebook, if not
 		// redirect to login and await return.
-		if(!$this->isLoggedIntoFacebook()){
+		if(!$this->isLoggedIntoFacebook() || !$this->getUserInformation()){
 			return new ViewModel(array(
 				'loginredirect' => 	$this->fetchLoginUrl('/affiliate')
 			)); 
@@ -124,7 +124,7 @@ class AffiliateController extends FacebookAwareController
 	private function getFacebookPageName($pageid)
 	{
 		try{
-			return $this->getApiResult('/' . $pageid);
+			return $this->getApiResult('/' . $pageid . '?access_token=' . $this->getFacebookAccessToken());
 		} // try
 		catch(\Exception $e){
 			error_log('Prize Wheel Exception: ' . $e->getMessage() . ' ' . $e->getTraceAsString());

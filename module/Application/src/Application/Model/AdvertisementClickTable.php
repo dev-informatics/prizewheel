@@ -2,7 +2,6 @@
 
 namespace Application\Model;
 
-use Application\Exception\AdvertisementClickSaveException;
 use Zend\Db\TableGateway\TableGateway;
 use Application\Model\AdvertisementClick;
 

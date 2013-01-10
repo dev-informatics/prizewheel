@@ -18,10 +18,54 @@ $form->prepare();
 <h2>Settings</h2>
 
 <?php echo $this->form()->openTag($form)?>
-<?php echo $this->formRow($form->get('affiliate-payout-rate'))?>
-<?php echo $this->formRow($form->get('paypal-button-code'))?>
-<br/>
 <button type="submit">
 	Save
 </button>
+<div id="tabs">
+	<ul>
+		<li><a href="#basic">Basic</a></li>
+		<li><a href="#paypal">PayPal</a></li>
+	</ul>
+	
+	<div id="basic">
+		<?php echo $this->formRow($form->get('affiliate-payout-rate'))?>
+	</div>
+	<div id="paypal">
+		
+		<div id="paypal-tabs">
+			<ul>
+				<li><a href="#apikey">API</a></li>
+				<li><a href="#buynow-button">Buy Now Button</a></li>
+				<li><a href="#subscribe-button">Subscribe Button</a></li>
+				<li><a href="#unsubscribe-button">Unsubscribe Button</a></li>
+			</ul>
+			
+			<div id="apikey">
+				<?php echo $this->formRow($form->get('paypal-api-username'))?>
+				<?php echo $this->formRow($form->get('paypal-api-password'))?>
+				<?php echo $this->formRow($form->get('paypal-api-signature'))?>
+			</div>
+			
+			<div id="buynow-button">
+				<?php echo $this->formRow($form->get('paypal-button-code'))?>
+			</div>
+			
+			<div id="subscribe-button">
+				<?php echo $this->formRow($form->get('paypal-subscribe-button'))?>
+			</div>
+			
+			<div id="unsubscribe-button">
+				<?php echo $this->formRow($form->get('paypal-unsubscribe-button'))?>
+			</div>
+		</div>
+		
+	</div>
+</div>
 <?php echo $this->form()->closeTag()?>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#tabs").tabs();
+		$("#paypal-tabs").tabs();
+	});
+</script>

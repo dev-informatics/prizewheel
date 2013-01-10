@@ -17,7 +17,7 @@ abstract class FacebookAwareController extends AbstractActionController
 			$this->eventManager = new \Zend\EventManager\EventManager(array(__CLASS__, get_called_class()));
 			$this->eventManager->setSharedManager(\Zend\EventManager\StaticEventManager::getInstance());
 		} // if
-		$this->authenticationService = new \Zend\Authentication\AuthenticationService();
+		$this->authenticationService = new \Zend\Authentication\AuthenticationService();		
 	}
 	
 	public function setConfigurationEntryTable(\Application\Model\ConfigurationEntryTable $configurationEntryTable)
@@ -67,11 +67,33 @@ abstract class FacebookAwareController extends AbstractActionController
 	
 	protected function isLoggedIntoFacebook()
 	{
-		if($this->facebook->getUser()){
-			return true;
+		$user = null;
+		
+		try{
+			$user = $this->facebook->getUser();	
+		} // try
+		catch(\Exception $e){
+			error_log('Prize Wheel Exception: ' . $e->getMessage() . ' Stack Trace: ' . $e->getTraceAsString());
+		} // catch
+				
+		if(!$user){
+			return false;
 		} // if
-		return false;
-	}
+		else{
+			return true;
+		} // else
+	} // isLoggedIntoFacebook
+	
+	public function getFacebookAccessToken()
+	{
+		try{
+			return $this->facebook->getAccessToken();
+		} // try
+		catch(\FacebookApiException $e){
+			error_log('Prize Wheel Exception: ' . $e->getMessage() . ' Stack Trace: ' . $e->getTraceAsString());
+		} // catch
+		return null;
+	} // getAccessToken
 	
 	protected function getFacebookUserId()
 	{

@@ -123,6 +123,7 @@ class PrizeWheel
 	protected $emailFilter = false;
 	protected $enabled = true;
 	protected $createDateTime = "";
+	protected $paidExpiration = "";
 	
 	protected $prizeWheelTypeName = "";
 	protected $views = 0;
@@ -1077,6 +1078,29 @@ class PrizeWheel
 		return $this->enabled;
 	}
 	
+	public function paid()
+	{
+		if(empty($this->paidExpiration) || $this->paidExpiration == "0000-00-00 00:00:00"){
+			return false;
+		} // if
+		
+		$expTime = strtotime($this->paidExpiration);
+		
+		if((time()-(60*60*24)) < $expTime){
+			return true;
+		} // if
+		
+		return false;
+	}
+	
+	public function paidExpiration($paidexpiration='')
+	{
+		if(!empty($paidexpiration)){
+			$this->paidExpiration = $paidexpiration;
+		} // if
+		return $this->paidExpiration;
+	}
+	
 	public function createDateTime($createdatetime='')
 	{
 		if(!empty($createdatetime)){
@@ -1279,7 +1303,8 @@ class PrizeWheel
 		$this->categories = (isset($data['categories'])) ? $data['categories'] : $this->categories;
 		$this->facebookPageName = (isset($data['facebookpagename'])) ? $data['facebookpagename'] : $this->facebookPageName;
 		$this->revenue = (isset($data['revenue'])) ? $data['revenue'] : $this->revenue;
-		$this->payout = (isset($data['payout'])) ? $data['payout'] : $this->payout;
+		$this->payout = (isset($data['payout'])) ? $data['payout'] : $this->payout;		
+		$this->paidExpiration = (isset($data['paidexpiration'])) ? $data['paidexpiration'] : $this->paidExpiration;
   	}
 	
 	public function getArrayCopy()
@@ -1411,22 +1436,32 @@ class PrizeWheel
 			'categories' => $this->categories,
 			'facebookpagename' => $this->facebookPageName,
 			'revenue' => $this->revenue,
-			'payout' => $this->payout
+			'payout' => $this->payout,
+			'paid' => $this->paid(),
+			'paidexpiration' => $this->paidExpiration
 		);
  	}
 
  	public function parseAdvertisements($advertisements=array())
  	{
  		if($this->prizeWheelTypeId == \Application\Model\PrizeWheelType::Personalized){
- 			foreach($advertisements as $advertisement){
- 				if($advertisement instanceof \Application\Model\Advertisement &&
- 						$advertisement->advertisementPlacementTypeId() == \Application\Model\AdvertisementPlacementType::Sponser){
- 					return array(
- 						'sponserimage' => $advertisement->id().'/'.$advertisement->sponserImage(),
- 						'sponserlink' => '/ads/click/' . $advertisement->id()	. '/' . $this->id() . '?bannerclick=true'
+ 			if(!$this->paid()){
+	 			foreach($advertisements as $advertisement){
+	 				if($advertisement instanceof \Application\Model\Advertisement &&
+	 						$advertisement->advertisementPlacementTypeId() == \Application\Model\AdvertisementPlacementType::Sponser){
+	 					return array(
+	 						'sponserimage' => $advertisement->id().'/'.$advertisement->sponserImage(),
+	 						'sponserlink' => '/ads/click/' . $advertisement->id()	. '/' . $this->id() . '?bannerclick=true'
+	 					);
+	 				} // if
+	 			} // foreach
+ 			} // if
+ 			else{
+ 				return array(
+ 						'sponserimage' => $this->id().'/'.$this->sponserImage(),
+ 						'sponserlink' => '/prize-wheel/sponsor-redirect/'.$this->id()
  					);
- 				} // if
- 			} // foreach
+ 			} // else
  		} // if
  		else if($this->prizeWheelTypeId == \Application\Model\PrizeWheelType::AdDriven){ 			
  			$options = array();
@@ -1522,6 +1557,7 @@ class PrizeWheel
  	{
  		$adir = "/images/advertisements/";
  		$idir = "/images/prizewheels/".$this->id()."/";
+ 		$pdir = "/images/prizewheels/";
  		$redirect = "/prize-wheel/prize-redirect/" . $this->id() . "?redirect=";
  		
  		$image1 = "";
@@ -1627,10 +1663,10 @@ class PrizeWheel
  		
  		$sponserImage = "";
  		if(!isset($options['sponserimage'])){
- 			$sponserImage = strlen($this->sponserImage) > 0 ? $idir.$this->prizeTwelveImage() : '/images/test.jpg';
+ 			$sponserImage = strlen($this->sponserImage) > 0 ? ($this->paid() ? $pdir : $adir).$this->sponserImage() : '/images/test.jpg';
  		} // if
  		else{
- 			$sponserImage = $adir.$options['sponserimage'];
+ 			$sponserImage = ($this->paid() ? $pdir : $adir).$options['sponserimage'];
  		} // else
 
  		$prizeonename = $this->prizeOneName;

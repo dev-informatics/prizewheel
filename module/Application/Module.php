@@ -9,6 +9,8 @@
 
 namespace Application;
 
+use Zend\ServiceManager\ServiceManager;
+
 use Application\Model\AdvertisementClick;
 use Application\Model\AdvertiserTable;
 use Application\Model\AdvertisementTypeTable;
@@ -263,6 +265,15 @@ class Module
     			'RawTransactionTableGateway' => function($sm){
     				$adapter = $sm->get('Zend\Db\Adapter\Adapter');
     				return new TableGateway('transactions', $adapter);    				
+    			},
+    			'Application\Model\SubscriptionTransactionEntryDataSource' => function(ServiceManager $sm){
+    				$tableGateway = $sm->get('SubscriptionTransactionEntryTableGateway');
+    				$table = new \Application\Model\SubscriptionTransactionEntryTable($tableGateway);
+    				return $table;
+    			},
+    			'SubscriptionTransactionEntryTableGateway' => function(ServiceManager $sm){
+					$adapter = $sm->get('Zend\Db\Adapter\Adapter');
+					return new TableGateway('subscription_transactions', $adapter);   				
     			}
     		)	
     	);
@@ -304,9 +315,12 @@ class Module
     				$advertisementTable = $sm->get('Application\Model\AdvertisementDataSourceInterface');
     				$advertiserDataSourceInterface = $sm->get('Application\Model\AdvertiserDataSourceInterface');
     				$transactionTable = $sm->get('Application\Model\TransactionTable');
-    				$affiliatePayoutEntryTable = $sm->get('Application\Model\AffiliatePayoutEntryTable');    			
+    				$affiliatePayoutEntryTable = $sm->get('Application\Model\AffiliatePayoutEntryTable');    
+    				$subscriptionTransactionEntryDataSource = $sm->get('Application\Model\SubscriptionTransactionEntryDataSource');
+    				$prizeWheelDataSource = $sm->get('Application\Model\PrizeWheelDataSourceInterface');
     				$controller = new \Application\Controller\AdminController($configurationEntryTable, 
-    						$advertisementTable, $advertiserDataSourceInterface, $transactionTable, $affiliatePayoutEntryTable);
+    						$advertisementTable, $advertiserDataSourceInterface, $transactionTable, 
+    						$affiliatePayoutEntryTable, $subscriptionTransactionEntryDataSource, $prizeWheelDataSource);
     				
     				return $controller;
     			},	
@@ -322,13 +336,14 @@ class Module
     				$prizeWheelImpressionTable = $sm->get('Application\Model\PrizeWheelImpressionTable');
     				$advertisementCategoryTable = $sm->get('Application\Model\AdvertisementCategoryTable');
     				$advertisementCategoryEntryTable = $sm->get('Application\Model\AdvertisementCategoryEntryTable');
+    				$subscriptionTransactionEntryDataSource = $sm->get('Application\Model\SubscriptionTransactionEntryDataSource');
     				$facebook = $sm->get('Facebook');
     				$controller = new \Application\Controller\PrizeWheelController(
     						$prizeWheelTable, $prizeWheelEntryTable, 
     						$advertisementImpressionTable, $affiliateTable, $advertisementTable, 
     						$prizeWheelEntryCategoryEntryTable, $prizeWheelCategoryEntryTable, 
     						$prizeWheelImpressionTable, $advertisementCategoryTable, 
-    						$advertisementCategoryEntryTable, $facebook);
+    						$advertisementCategoryEntryTable, $subscriptionTransactionEntryDataSource, $facebook);
     				
     				return $controller;
     			},
